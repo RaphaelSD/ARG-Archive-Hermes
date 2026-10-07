@@ -1,0 +1,58 @@
+[
+  {
+    "id": "rel_clara_maggie",
+    "sourceId": "char_clara",
+    "targetId": "char_maggie",
+    "type": "FRIEND",
+    "label": "Подруги (Связь по телефону)",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "rel_clara_leo",
+    "sourceId": "char_clara",
+    "targetId": "char_leo",
+    "type": "ACQUAINTANCE",
+    "label": "Случайное знакомство на фестивале",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "rel_clara_thomas",
+    "sourceId": "char_clara",
+    "targetId": "char_thomas",
+    "type": "CONFLICT",
+    "label": "Старые знакомые. Мотив неизвестен",
+    "unlockedByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "I03"
+    }
+  },
+  {
+    "id": "rel_edward_clara",
+    "sourceId": "char_edward",
+    "targetId": "char_clara",
+    "type": "OBSERVER",
+    "label": "Дежурный портье. Звонил в 00:31",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "rel_thomas_edward",
+    "sourceId": "char_thomas",
+    "targetId": "char_edward",
+    "type": "WITNESS",
+    "label": "Портье подтверждает возвращение Томаса",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "rel_leo_unknown",
+    "sourceId": "char_leo",
+    "targetId": "unknown_caller",
+    "type": "SUSPICIOUS",
+    "label": "Ночной звонок в 01:15",
+    "unlockedByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "C05"
+    }
+  }
+]

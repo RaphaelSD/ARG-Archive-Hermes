@@ -1,0 +1,81 @@
+[
+  {
+    "id": "loc_pinecrest",
+    "title": "Гостиница Pinecrest",
+    "description": "Старая трехэтажная гостиница. Место преступления (Номер 12 находится на втором этаже).",
+    "coordinates": { "x": 45, "y": 30 },
+    "image_asset": "/images/case-001/pinecrest_floor_plan_90s.jpg",
+    "mapUrl": "/images/case-001/pinecrest_floor_plan_90s.jpg",
+    "exploredByDefault": true,
+    "findings": [
+      "Слабый контроль за входом в ночное время.",
+      "Тонкие стены — любые крики были бы услышаны соседями."
+    ]
+  },
+  {
+    "id": "loc_festival",
+    "title": "Фестиваль Riverside",
+    "description": "Музыкальный фестиваль под открытым небом у реки. Место, где Клару видели в последний раз.",
+    "coordinates": { "x": 75, "y": 20 },
+    "exploredByDefault": true,
+    "findings": [
+      "Клара покинула фестиваль около 19:40."
+    ]
+  },
+  {
+    "id": "loc_lantern_bar",
+    "title": "Бар The Lantern",
+    "description": "Местный паб с бильярдом. По словам Томаса Вэйла, он провел здесь вечер.",
+    "coordinates": { "x": 15, "y": 60 },
+    "exploredByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "I03" 
+    },
+    "findings": [
+      "От гостиницы до бара ехать минимум 15 минут.",
+      "Бармен помнит Томаса, но тот отлучался около 23:00."
+    ],
+    "linkedEvidenceId": "D08"
+  },
+  {
+    "id": "loc_leo_house",
+    "title": "Дом Лео Харта",
+    "description": "Частный сектор на Норт-стрит.",
+    "coordinates": { "x": 55, "y": 15 },
+    "exploredByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "I02"
+    },
+    "findings": [
+      "Пешком от гостиницы до дома Лео — 18 минут."
+    ]
+  },
+  {
+    "id": "loc_clothing_store",
+    "title": "Магазин одежды",
+    "description": "Небольшой семейный магазин, работающий допоздна.",
+    "coordinates": { "x": 20, "y": 55 },
+    "exploredByDefault": false,
+    "unlockCondition": {
+      "type": "LOCATION_EXPLORED",
+      "targetId": "loc_lantern_bar"
+    },
+    "findings": [
+      "Подтверждает частичное алиби одного из свидетелей."
+    ],
+    "linkedEvidenceId": "D09"
+  },
+  {
+    "id": "loc_maggie_apt",
+    "title": "Квартира Мэгги",
+    "description": "Жилье подруги жертвы на другом конце города.",
+    "coordinates": { "x": 80, "y": 80 },
+    "exploredByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "D06"
+    }
+  }
+]

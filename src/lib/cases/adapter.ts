@@ -1,10 +1,12 @@
-import type {
-  CaseDocument,
-  CaseFile,
-  CaseNote,
-  CaseStatus,
-  TimelineEntry,
+import {
+  type CaseDocument,
+  type CaseFile,
+  type CaseNote,
+  type CaseStatus,
+  type TimelineEntry,
+  getCase,
 } from '@/lib/archive-data';
+import { isDemoAllowedForCase } from '@/lib/cases/loader';
 import { prisma } from '@/lib/db/prisma';
 
 type BackendDocument = {
@@ -17,13 +19,14 @@ type BackendDocument = {
 };
 
 type ArchiveCaseAdapterResult = CaseFile & {
-  backendId: number;
+  backendId?: number;
   accessStatus?: string;
   progress?: number;
-  mapPoints: Awaited<ReturnType<typeof prisma.mapPoint.findMany>>;
-  evidence: Awaited<ReturnType<typeof prisma.evidenceItem.findMany>>;
-  calls: Awaited<ReturnType<typeof prisma.call.findMany>>;
-  unsupportedDocuments: BackendDocument[];
+  isGuest?: boolean;
+  mapPoints?: Awaited<ReturnType<typeof prisma.mapPoint.findMany>>;
+  evidence?: Awaited<ReturnType<typeof prisma.evidenceItem.findMany>>;
+  calls?: Awaited<ReturnType<typeof prisma.call.findMany>>;
+  unsupportedDocuments?: BackendDocument[];
   caseAccess?: Awaited<ReturnType<typeof prisma.caseAccess.findFirst>>;
   gameProgress?: Awaited<ReturnType<typeof prisma.gameProgress.findFirst>>;
 };
@@ -34,6 +37,7 @@ const sourceDocumentKinds = new Set<CaseDocument['kind']>([
   'audio',
   'note',
   'map',
+  'call',
 ]);
 
 function getCaseNumber(slug: string) {
@@ -86,6 +90,7 @@ function mapDocuments(documents: BackendDocument[]) {
       id: String(document.id),
       title: document.title,
       kind,
+      content: document.content ?? undefined,
     });
   }
 
@@ -106,32 +111,63 @@ export async function getArchiveCaseBySlug(
   slug: string,
   userId?: number,
 ): Promise<ArchiveCaseAdapterResult | null> {
-  const item = await prisma.case.findUnique({
-    where: { slug },
-    include: {
-      documents: true,
-      notes: true,
-      calls: true,
-      mapPoints: true,
-      evidence: true,
-      caseAccess: true,
-      gameProgress: true,
-    },
-  });
+  const normalizedSlug = slug.startsWith('case-') ? slug : `case-${slug}`;
+  const caseId = slug.replace(/^case-/, '');
+  const canonical = getCase(caseId);
+
+  let item = null;
+  try {
+    item = await prisma.case.findUnique({
+      where: { slug: normalizedSlug },
+      include: {
+        documents: true,
+        notes: true,
+        calls: true,
+        mapPoints: true,
+        evidence: true,
+        caseAccess: true,
+        gameProgress: true,
+      },
+    });
+  } catch (err) {
+    console.warn('Prisma lookup failed, falling back to canonical data:', err);
+  }
+
+  if (!item && !canonical) {
+    return null;
+  }
+
+  const userAccess = userId === undefined || !item
+    ? undefined
+    : item.caseAccess.find((access) => access.userId === userId);
+  const userProgress = userId === undefined || !item
+    ? undefined
+    : item.gameProgress.find((progress) => progress.userId === userId);
+
+  // If case has demo clearance and guest/demo access
+  const isGuest = userId === undefined;
+  const accessStatus = userAccess?.status ?? (isDemoAllowedForCase(caseId) ? 'unlocked' : 'locked');
+
+  if (canonical) {
+    return {
+      ...canonical,
+      backendId: item?.id,
+      accessStatus,
+      progress: userProgress?.progress ?? 0,
+      isGuest,
+      mapPoints: item?.mapPoints,
+      evidence: item?.evidence,
+      calls: item?.calls,
+      caseAccess: userAccess,
+      gameProgress: userProgress,
+    };
+  }
 
   if (!item) {
     return null;
   }
 
   const { mappedDocuments, unsupportedDocuments } = mapDocuments(item.documents);
-  const userAccess = userId === undefined
-    ? undefined
-    : item.caseAccess.find((access) => access.userId === userId);
-  const userProgress = userId === undefined
-    ? undefined
-    : item.gameProgress.find((progress) => progress.userId === userId);
-
-  const timeline: TimelineEntry[] = [];
 
   return {
     id: item.slug,
@@ -143,14 +179,16 @@ export async function getArchiveCaseBySlug(
     summary: item.description ?? '',
     documents: mappedDocuments,
     notes: mapNotes(item.notes),
-    timeline,
+    timeline: [],
     mapPoints: item.mapPoints,
     evidence: item.evidence,
     calls: item.calls,
     unsupportedDocuments,
-    accessStatus: userAccess?.status,
+    accessStatus,
     progress: userProgress?.progress,
+    isGuest,
     caseAccess: userAccess,
     gameProgress: userProgress,
   };
 }
+

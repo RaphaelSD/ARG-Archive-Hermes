@@ -153,17 +153,20 @@ model MapPoint {
 }
 
 model GameProgress {
-  id          Int       @id @default(autoincrement())
-  userId      Int
-  caseId      Int
-  progress    Int       @default(0)
-  openedAt    DateTime?
-  lastSeenAt  DateTime?
-  completedAt DateTime?
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  case        Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
+  id              Int       @id @default(autoincrement())
+  userId          Int
+  caseId          Int
+  progress        Int       @default(0)
+  solvedQuestions String    @default("[]")
+  notesData       String    @default("[]")
+  viewedEvidence  String    @default("[]")
+  openedAt        DateTime?
+  lastSeenAt      DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  case            Case      @relation(fields: [caseId], references: [id], onDelete: Cascade)
 
   @@unique([userId, caseId])
 }

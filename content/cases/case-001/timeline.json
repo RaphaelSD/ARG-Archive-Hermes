@@ -1,0 +1,95 @@
+[
+  {
+    "id": "T01",
+    "time": "19:40",
+    "event": "Клара Вэнс уходит с фестиваля Riverside.",
+    "sourceId": "loc_festival",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "T02",
+    "time": "21:40",
+    "event": "Звонок Клары подруге Мэгги Брукс.",
+    "sourceId": "C01",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "T03",
+    "time": "22:15",
+    "event": "Клара прибывает в гостиницу Pinecrest (Номер 12). Ей поступает короткий звонок с неизвестного номера.",
+    "sourceId": "D04",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "T04",
+    "time": "22:25",
+    "event": "Лео Харт утверждает, что расстался с Кларой и ушел. Журнал портье фиксирует звук входной двери.",
+    "sourceId": "D04",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "T05",
+    "time": "22:40",
+    "event": "Томас Вэйл возвращается в гостиницу, поднимается на этаж, затем, по его словам, уходит в бар The Lantern.",
+    "sourceId": "D04",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "T06",
+    "time": "23:05",
+    "event": "Томас Вэйл бронирует столик в баре The Lantern по телефону.",
+    "sourceId": "C03",
+    "unlockedByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "I03"
+    }
+  },
+  {
+    "id": "T07",
+    "time": "00:31",
+    "event": "Портье звонит в номер 12. Ответа нет.",
+    "sourceId": "C04",
+    "unlockedByDefault": true
+  },
+  {
+    "id": "T08",
+    "time": "~01:00",
+    "event": "Расчетное время смерти Клары Вэнс (Акт вскрытия).",
+    "sourceId": "D02",
+    "unlockedByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "D02"
+    }
+  },
+  {
+    "id": "T09",
+    "time": "01:15",
+    "event": "Входящий звонок со скрытого номера Лео Харту.",
+    "sourceId": "C05",
+    "unlockedByDefault": false,
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "I02"
+    }
+  },
+  {
+    "id": "T10",
+    "time": "03:00",
+    "event": "Время, на которое были переведены и остановлены наручные часы Клары.",
+    "sourceId": "P03",
+    "unlockedByDefault": false,
+    "unlockCondition": {
+      "type": "HOTSPOT_DISCOVERED",
+      "targetId": "hotspot_bedside_table"
+    }
+  },
+  {
+    "id": "T11",
+    "time": "08:35",
+    "event": "Горничная Джулия Ривз обнаруживает тело. Прибытие наряда полиции.",
+    "sourceId": "D01",
+    "unlockedByDefault": true
+  }
+]

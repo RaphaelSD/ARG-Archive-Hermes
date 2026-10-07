@@ -1,0 +1,62 @@
+[
+  {
+    "id": "char_clara",
+    "name": "Клара Вэнс",
+    "role": "Жертва",
+    "status": "IDENTIFIED",
+    "description": "21 год, студентка. Приехала в Белмонт на фестиваль Riverside. Остановилась в номере 12 гостиницы Pinecrest. Убита.",
+    "avatarUrl": "/images/characters/clara_vance_01.jpg",
+    "image_asset": "/images/characters/clara_vance_01.jpg",
+    "linkedEvidence": ["D02", "D03", "P01", "P06", "P08"]
+  },
+  {
+    "id": "char_leo",
+    "name": "Лео Харт",
+    "role": "Случайный знакомый",
+    "status": "PERSON_OF_INTEREST",
+    "description": "Познакомился с Кларой на фестивале и проводил ее до гостиницы. Утверждает, что ушел сразу, но журнал портье говорит об обратном.",
+    "avatarUrl": "/images/characters/leo_hart_01.jpg",
+    "image_asset": "/images/characters/leo_hart_01.jpg",
+    "linkedEvidence": ["I02", "D04"]
+  },
+  {
+    "id": "char_thomas",
+    "name": "Томас Вэйл",
+    "role": "Старый знакомый",
+    "status": "SUSPECT",
+    "description": "Останавливался в той же гостинице. Искал Клару вечером. Утверждает, что во время убийства был в баре The Lantern.",
+    "avatarUrl": "/images/characters/thomas_vail_01.jpg",
+    "image_asset": "/images/characters/thomas_vail_01.jpg",
+    "linkedEvidence": ["I03", "D04", "clue_thomas_left_bar"]
+  },
+  {
+    "id": "char_edward",
+    "name": "Эдвард Рид",
+    "role": "Ночной портье",
+    "status": "CONNECTED",
+    "description": "Дежурил на ресепшене гостиницы Pinecrest в ночь убийства. Его журнал является главным источником хронологии, но он мог заснуть на посту.",
+    "avatarUrl": "/images/characters/edward_reed_01.jpg",
+    "image_asset": "/images/characters/edward_reed_01.jpg",
+    "linkedEvidence": ["I04", "D04", "clue_porter_slept"]
+  },
+  {
+    "id": "char_julia",
+    "name": "Джулия Ривз",
+    "role": "Горничная",
+    "status": "MENTIONED",
+    "description": "Обнаружила тело утром. Вызвала полицию.",
+    "avatarUrl": "/images/characters/julia_reeves_01.jpg",
+    "image_asset": "/images/characters/julia_reeves_01.jpg",
+    "linkedEvidence": ["D01"]
+  },
+  {
+    "id": "char_maggie",
+    "name": "Мэгги Брукс",
+    "role": "Подруга жертвы",
+    "status": "CONNECTED",
+    "description": "Общалась с Кларой по телефону в день убийства. Знает подробности о ее личных вещах, включая кольцо.",
+    "avatarUrl": "/images/characters/maggie_brooks_01.jpg",
+    "image_asset": "/images/characters/maggie_brooks_01.jpg",
+    "linkedEvidence": ["I01", "clue_ring_confirmed_stolen", "clue_strange_man_festival"]
+  }
+]
