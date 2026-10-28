@@ -35,8 +35,7 @@
     "findings": [
       "От гостиницы до бара ехать минимум 15 минут.",
       "Бармен помнит Томаса, но тот отлучался около 23:00."
-    ],
-    "linkedEvidenceId": "D08"
+    ]
   },
   {
     "id": "loc_leo_house",
@@ -64,8 +63,7 @@
     },
     "findings": [
       "Подтверждает частичное алиби одного из свидетелей."
-    ],
-    "linkedEvidenceId": "D09"
+    ]
   },
   {
     "id": "loc_maggie_apt",
@@ -75,7 +73,7 @@
     "exploredByDefault": false,
     "unlockCondition": {
       "type": "EVIDENCE_VIEWED",
-      "targetId": "D06"
+      "targetId": "I01"
     }
   }
 ]
