@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { ChevronDown, LogOut, ShieldHalf, UserRound, ShieldCheck, KeyRound } from 'lucide-react';
 import { AuthModal, type AuthUser } from '@/components/auth-modal';
 
@@ -16,6 +16,7 @@ const nav = [
 
 export function SiteHeader() {
   const router = useRouter();
+  const pathname = usePathname();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
@@ -39,8 +40,10 @@ export function SiteHeader() {
   };
 
   useEffect(() => {
-    fetchCurrentUser();
-  }, []);
+    if (!pathname?.startsWith('/cases')) {
+      fetchCurrentUser();
+    }
+  }, [pathname]);
 
   // Close dropdown on outside click
   useEffect(() => {
@@ -52,6 +55,11 @@ export function SiteHeader() {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Early return ONLY after all hooks
+  if (pathname?.startsWith('/cases')) {
+    return null;
+  }
 
   const handleLogout = async () => {
     try {

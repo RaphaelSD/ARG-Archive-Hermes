@@ -23,6 +23,7 @@ const DEFAULT_STATE: InvestigationState = {
   viewedEvidence: [],
   solvedQuestions: [],
   completedDeductions: [],
+  falsifiedDeductions: [],
   exploredLocations: [],
   discoveredHotspots: [],
   askedQuestions: [],
@@ -71,6 +72,7 @@ export function useCaseEngine({ caseFile, isGuest = false }: UseCaseEngineOption
         viewedEvidence: localState.viewedEvidence ?? [],
         solvedQuestions: localState.solvedQuestions ?? [],
         completedDeductions: localState.completedDeductions ?? [],
+        falsifiedDeductions: localState.falsifiedDeductions ?? [],
         exploredLocations: localState.exploredLocations ?? [],
         discoveredHotspots: localState.discoveredHotspots ?? [],
         askedQuestions: localState.askedQuestions ?? [],
@@ -545,8 +547,19 @@ export function useCaseEngine({ caseFile, isGuest = false }: UseCaseEngineOption
     [state.discoveredHotspots]
   );
 
+  const falsifiedDeductionList = useMemo<string[]>(() => {
+    return Array.from(engineResult.falsifiedDeductionIds ?? []);
+  }, [engineResult.falsifiedDeductionIds]);
+
+  const currentState = useMemo<InvestigationState>(() => {
+    return {
+      ...state,
+      falsifiedDeductions: falsifiedDeductionList,
+    };
+  }, [state, falsifiedDeductionList]);
+
   return {
-    state,
+    state: currentState,
     isLoaded,
     engineResult,
     progressPercentage: engineResult.progressPercentage,
@@ -557,6 +570,7 @@ export function useCaseEngine({ caseFile, isGuest = false }: UseCaseEngineOption
     availableInterviews,
     availableDeductions,
     availableRelations,
+    falsifiedDeductions: falsifiedDeductionList,
     isArchiveUnlocked: engineResult.isArchiveUnlocked,
     newlyUnlockedTitle,
     dismissUnlockNotification: () => setNewlyUnlockedTitle(null),

@@ -60,6 +60,8 @@ export type DeductionRule = {
   conclusion: string;
   resultEvidenceId?: string;
   unlockCondition?: UnlockCondition;
+  isFalseTrail?: boolean;
+  falsifiedByCondition?: UnlockCondition;
 };
 
 export type DeductionRebuttal = {
@@ -79,6 +81,7 @@ export type InvestigationState = {
   viewedEvidence: string[];
   solvedQuestions: string[];
   completedDeductions: string[];
+  falsifiedDeductions?: string[];
   exploredLocations: string[];
   discoveredHotspots: string[];
   askedQuestions: string[];
@@ -94,6 +97,7 @@ export type CaseEngineResult = {
   availableInterviewIds: Set<string>;
   availableDeductionIds: Set<string>;
   availableRelationIds?: Set<string>;
+  falsifiedDeductionIds?: Set<string>;
   progressPercentage: number;
   isArchiveUnlocked: boolean;
 };

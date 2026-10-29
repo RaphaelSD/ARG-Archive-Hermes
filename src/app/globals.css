@@ -165,3 +165,61 @@
   letter-spacing: 0.18em;
   text-transform: uppercase;
 }
+
+.desk-scene {
+  background-color: #0a0a0a;
+  background-image:
+    radial-gradient(60% 45% at 62% 8%, rgba(255, 230, 180, 0.12), transparent 70%),
+    linear-gradient(180deg, rgba(20, 20, 20, 0.55), rgba(15, 15, 15, 0.92) 55%),
+    url('/images/Gemini_Generated_Image_.jpg');
+  background-size: cover;
+  background-position: center top;
+  background-attachment: fixed;
+}
+.desk-panel {
+  background: linear-gradient(180deg, rgba(30, 30, 30, 0.8), rgba(20, 20, 20, 0.9));
+  border: 1px solid rgba(100, 100, 100, 0.2);
+  box-shadow: 0 24px 60px -30px rgba(0,0,0,0.9), inset 0 1px 0 rgba(255,255,255,0.05);
+  backdrop-filter: blur(4px);
+}
+.paper-sheet {
+  position: relative;
+  background-color: #f0ebd8;
+  color: #1c1917;
+  background-image:
+    radial-gradient(120% 80% at 0% 0%, rgba(200, 180, 150, 0.3), transparent 55%),
+    radial-gradient(90% 60% at 100% 100%, rgba(180, 160, 140, 0.3), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.4), transparent 30%);
+  box-shadow:
+    6px 8px 0 -2px rgba(220, 210, 190, 0.8),
+    12px 14px 0 -4px rgba(200, 190, 170, 0.8),
+    0 40px 70px -25px rgba(0, 0, 0, 0.9);
+}
+.font-hand {
+  font-family: var(--font-hand, 'Caveat', cursive);
+}
+.stamp-rect {
+  border: 3px double #991b1b;
+  color: #991b1b;
+  font-family: var(--font-display, monospace);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.8;
+  mix-blend-mode: multiply;
+}
+.stamp-round {
+  border: 3px double #312e81;
+  color: #312e81;
+  border-radius: 9999px;
+  font-family: var(--font-display, monospace);
+  text-transform: uppercase;
+  opacity: 0.75;
+  mix-blend-mode: multiply;
+}
+.sticky-note {
+  background-color: #fef08a;
+  color: #3f3f46;
+  background-image: repeating-linear-gradient(180deg, transparent 0 25px, rgba(0,0,0,0.05) 25px 26px);
+  box-shadow: 0 14px 30px -12px rgba(0,0,0,0.8);
+}
+

@@ -39,5 +39,17 @@
       "type": "EVIDENCE_VIEWED",
       "targetId": "D10"
     }
+  },
+  {
+    "id": "ded_robbery_hypothesis",
+    "title": "Версия бытового ограбления",
+    "clueIds": ["D01", "D03"],
+    "conclusion": "В первичном рапорте и описи вещей зафиксировано отсутствие ценностей и украшений, что на первый взгляд указывает на мотив наживы.",
+    "isFalseTrail": true,
+    "unlockCondition": { "type": "ALWAYS" },
+    "falsifiedByCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "evidenceId": "D02"
+    }
   }
 ]

@@ -40,6 +40,8 @@ export type CasePerson = {
   role: string;
   description: string;
   phone?: string;
+  avatarUrl?: string;
+  image_asset?: string;
   relatedEvidenceIds?: string[];
 };
 
@@ -54,6 +56,13 @@ export type EvidenceRelation = {
   type?: string;
   unlockedByDefault?: boolean;
   unlockCondition?: UnlockCondition;
+};
+
+export type DocumentAccessLevel = 'hidden' | 'locked' | 'unlocked';
+
+export type DocumentUnlockConditions = {
+  required_evidence?: string[];
+  required_locations?: string[];
 };
 
 export type CaseDocument = {
@@ -72,9 +81,17 @@ export type CaseDocument = {
   relatedIds?: string[];
   notes?: string;
   transcript?: string;
+  search_tags?: string[];
+  is_initially_visible?: boolean;
+  unlockedByDefault?: boolean;
+  access_level?: DocumentAccessLevel;
+  unlock_conditions?: DocumentUnlockConditions;
   unlockCondition?: UnlockCondition;
   hotspots?: PhotoHotspot[];
 };
+
+export type Document = CaseDocument;
+export type IDocument = CaseDocument;
 
 export type CaseNote = {
   id: string;

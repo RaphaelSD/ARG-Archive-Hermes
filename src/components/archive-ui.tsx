@@ -23,7 +23,7 @@ export function Panel({
   return (
     <section
       className={cn(
-        'border border-border/70 bg-card/60 p-5 shadow-[0_20px_60px_-40px_oklch(0_0_0/1)] sm:p-6',
+        'desk-panel p-5 sm:p-6',
         className,
       )}
     >

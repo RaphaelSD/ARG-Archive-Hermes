@@ -48,6 +48,8 @@ export type ViewerItem = {
   number?: string;
   summary?: string;
   hotspots?: PhotoHotspot[];
+  access_level?: 'hidden' | 'locked' | 'unlocked';
+  search_tags?: string[];
 };
 
 type EvidenceViewerProps = {
@@ -266,7 +268,19 @@ export function EvidenceViewer({
 
             {/* Kind-specific viewer render */}
             <div className="mt-6 border-t border-ink/20 pt-5">
-              {/* PHOTO KIND */}
+              {item.access_level === 'locked' ? (
+                <div className="my-6 border-2 border-dashed border-red-800/60 bg-red-950/20 p-6 sm:p-8 text-center space-y-3">
+                  <div className="text-3xl">⚠️</div>
+                  <h3 className="font-mono text-sm sm:text-base font-bold tracking-wider text-red-700 uppercase">
+                    ДОСТУП ЗАКРЫТ. НЕ ДОСТАТОЧНО УЛИК ДЛЯ АВТОРИЗАЦИИ
+                  </h3>
+                  <p className="font-mono text-xs text-ink/70 max-w-md mx-auto leading-relaxed">
+                    Материал защищен протоколом секретности Архива. Для получения доступа сопоставьте ключевые улики на доске дедукции или введите авторизационные данные в терминал.
+                  </p>
+                </div>
+              ) : (
+                <>
+                  {/* PHOTO KIND */}
               {item.kind === 'photo' && (
                 <div className="space-y-4">
                   {item.mediaUrl && (
@@ -542,6 +556,8 @@ export function EvidenceViewer({
                     </div>
                   )}
                 </div>
+              )}
+                </>
               )}
             </div>
           </div>

@@ -179,11 +179,25 @@ export function evaluateCaseState(
     }
   }
 
-  // 6. Дедукции
+  // 6. Дедукции и опровергнутые ложные ветки
+  const falsifiedDeductionIds = new Set<string>();
   if (caseFile.deductions) {
     for (const deduction of caseFile.deductions) {
       if (isConditionMet(deduction.unlockCondition, state)) {
         availableDeductionIds.add(deduction.id);
+      }
+      const isCompleted = (state.completedDeductions ?? []).some(
+        (ded) =>
+          ded === deduction.id ||
+          ded === `${deduction.clueIds[0]}+${deduction.clueIds[1]}` ||
+          ded === `${deduction.clueIds[1]}+${deduction.clueIds[0]}`
+      );
+      if (
+        isCompleted &&
+        deduction.falsifiedByCondition &&
+        isConditionMet(deduction.falsifiedByCondition, state)
+      ) {
+        falsifiedDeductionIds.add(deduction.id);
       }
     }
   }
@@ -209,6 +223,7 @@ export function evaluateCaseState(
     availableInterviewIds,
     availableDeductionIds,
     availableRelationIds,
+    falsifiedDeductionIds,
     progressPercentage,
     isArchiveUnlocked,
   };

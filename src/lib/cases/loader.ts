@@ -117,6 +117,10 @@ export const case001: CaseFile = {
     relatedIds: doc.relatedIds ?? [],
     notes: doc.notes,
     transcript: doc.transcript,
+    search_tags: doc.search_tags ?? [],
+    is_initially_visible: doc.is_initially_visible ?? doc.unlockedByDefault ?? true,
+    access_level: doc.access_level ?? 'unlocked',
+    unlock_conditions: doc.unlock_conditions,
     unlockCondition: doc.unlockCondition
       ? {
           type: doc.unlockCondition.type,
@@ -277,6 +281,20 @@ export const case001: CaseFile = {
     clueIds: d.clueIds ?? d.cluePair ?? [],
     conclusion: d.conclusion,
     resultEvidenceId: d.resultEvidenceId,
+    isFalseTrail: d.isFalseTrail ?? false,
+    falsifiedByCondition: d.falsifiedByCondition
+      ? {
+          type: d.falsifiedByCondition.type,
+          ...(d.falsifiedByCondition.targetId ? {
+            evidenceId: d.falsifiedByCondition.targetId,
+            hotspotId: d.falsifiedByCondition.targetId,
+            locationId: d.falsifiedByCondition.targetId,
+            questionId: d.falsifiedByCondition.targetId,
+            targetId: d.falsifiedByCondition.targetId,
+          } : {}),
+          ...d.falsifiedByCondition,
+        }
+      : undefined,
     unlockCondition: d.unlockCondition
       ? {
           type: d.unlockCondition.type,

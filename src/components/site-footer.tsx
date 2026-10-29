@@ -1,3 +1,6 @@
+'use client';
+
+import { usePathname } from 'next/navigation';
 import { FileText, Lock, Search, ShieldCheck } from 'lucide-react';
 
 const pillars = [
@@ -8,6 +11,11 @@ const pillars = [
 ] as const;
 
 export function SiteFooter() {
+  const pathname = usePathname();
+
+  if (pathname?.startsWith('/cases')) {
+    return null;
+  }
   return (
     <footer className="mt-6 border-t border-border/70 bg-card/40">
       <div className="mx-auto grid max-w-[1600px] gap-8 px-4 py-10 sm:px-6 md:grid-cols-2 xl:grid-cols-4">

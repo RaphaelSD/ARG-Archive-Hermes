@@ -7,6 +7,9 @@
     "content": "/images/case-001/room_overview.jpg",
     "isInspectMode": true,
     "unlockedByDefault": true,
+    "is_initially_visible": true,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "номер 12", "пайнкрест", "клара вэнс", "зеркало", "часы", "кровать", "осмотр", "орлов", "дело 001"],
     "hotspots": [
       {
         "id": "hotspot_mirror",
@@ -37,7 +40,13 @@
     "description": "Крупный план туалетного столика. Зеркало плотно занавешено куском плотной черной ткани.",
     "content": "/images/case-001/macro_mirror.jpg",
     "isInspectMode": false,
-    "unlockedByDefault": false
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "зеркало", "ткань", "черная ткань", "номер 12", "туалетный столик", "пайнкрест"],
+    "unlock_conditions": {
+      "required_evidence": ["P01"]
+    }
   },
   {
     "id": "P03",
@@ -46,7 +55,13 @@
     "description": "Наручные часы с кожаным ремешком. Заводная головка вытянута (механизм остановлен). Часовая, минутная и секундная стрелки сведены вместе на цифре 3.",
     "content": "/images/case-001/macro_watch.jpg",
     "isInspectMode": false,
-    "unlockedByDefault": false
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "часы", "03:00", "стрелки", "заводная головка", "тумбочка", "время", "клара вэнс"],
+    "unlock_conditions": {
+      "required_evidence": ["P01"]
+    }
   },
   {
     "id": "P04",
@@ -55,7 +70,10 @@
     "description": "Замок без следов взлома, обычный ковролин.",
     "content": "/images/case-001/photo_door_room12.jpg",
     "isInspectMode": false,
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "дверь", "замок", "номер 12", "коридор", "вход", "пайнкрест"]
   },
   {
     "id": "MAP-01",
@@ -63,17 +81,23 @@
     "title": "Карта Белмонта (схема связей)",
     "description": "Карта города Белмонт со схемой ключевых локаций и связей.",
     "content": "/images/case-001/map_belmont_dark.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["карта", "белмонт", "город", "схема", "локации", "пайнкрест", "огонек", "риверсайд"]
   },
   {
     "id": "D01",
     "type": "document",
     "title": "Рапорт патрульного",
     "description": "Первичный осмотр места происшествия, составленный прибывшим нарядом.",
-    "content": "ОТЧЕТ ОБ ОСМОТРЕ МЕСТА ПРОИСШЕСТВИЯ\nМесто: Гостиница Pinecrest, второй этаж, номер 12.\nВремя прибытия: 08:35.\nВызов поступил от горничной Д. Ривз. Дверь в номер была заперта на ключ снаружи. Ключ в номере не обнаружен. Следов взлома на дверном замке и раме нет. Окно закрыто на внутреннюю защелку.\nТело женщины (идентифицирована как Клара Вэнс, 21 год) обнаружено на кровати. Видимых следов борьбы в комнате нет. Вещи лежат в естественном порядке. Зеркало завешено тканью (вероятно, сушилась личная вещь убитой).\nПодозрение на удушение. Вызвана следственная группа.",
+    "content": "ОТЧЕТ ОБ ОСМОТРЕ МЕСТА ПРОИСШЕСТВИЯ\nМесто: Гостиница Pinecrest, второй этаж, номер 12.\nВремя прибытия: 08:35.\nВызов поступил от горничной Д. Ривз. Дверь в номер была заперта на ключ снаружи. Ключ в номере не обнаружен. Следов взлома на дверном замке и раме нет. Окно закрыто на внутреннюю защелку.\nТело женщины (идентифицирована как Клара Вэнс, 21 год) обнаружено на кровати. Видимых следов борьбы в комнате нет. Вещи лежат в естественном порядке. Зеркало завешено тканью (вероятно, сушилась личная вещь убитой).\nПодозрение на удушение. Вызвана следственная группа под руководством следователя Орлова.\n\n[СИСТЕМНОЕ УВЕДОМЛЕНИЕ АРХИВА]: Часть материалов дела №12 заблокирована протоколом безопасности. Для снятия блокировки найдите в тексте доступных отчетов ключевые идентификаторы (фамилии, номера, даты) и введите их в терминал ниже.",
     "mediaUrl": "/images/case-001/patrol_report_document_01.jpg",
     "image_asset": "/images/case-001/patrol_report_document_01.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": true,
+    "access_level": "unlocked",
+    "search_tags": ["рапорт", "патрульный", "орлов", "осмотр", "номер 12", "клара вэнс", "д. ривз", "пайнкрест", "удушение", "дело 001"]
   },
   {
     "id": "D02",
@@ -84,9 +108,15 @@
     "mediaUrl": "/images/case-001/autopsy_report_clara_90s.jpg",
     "image_asset": "/images/case-001/autopsy_report_clara_90s.jpg",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["акт вскрытия", "судмедэкспертиза", "экспертиза", "клара вэнс", "время смерти", "01:00", "асфиксия", "удушение", "кольцо", "палец", "орлов"],
     "unlockCondition": {
       "type": "EVIDENCE_VIEWED",
       "targetId": "P01"
+    },
+    "unlock_conditions": {
+      "required_evidence": ["P01"]
     }
   },
   {
@@ -97,7 +127,17 @@
     "content": "ОПИСЬ ИМУЩЕСТВА (Номер 12)\n1. Дорожная сумка (кожа, коричневая) - 1 шт.\n2. Комплекты сменной одежды (блузки, юбки, джинсы) - 4 шт.\n3. Кошелек с наличностью и билетом на фестиваль Riverside - 1 шт.\n4. Наручные часы (на тумбочке, механизм остановлен) - 1 шт.\n5. Блокнот с записями и ручка - 1 шт.\n\nПримечание: Никаких ювелирных украшений (включая кольца) в номере не обнаружено. Черных тканей (за исключением той, что на зеркале) в багаже нет.",
     "mediaUrl": "/images/case-001/evidence_inventory_clara_vance_99.jpg",
     "image_asset": "/images/case-001/evidence_inventory_clara_vance_99.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["опись", "вещи", "багаж", "сумка", "кошелек", "riverside", "часы", "блокнот", "кольцо", "орлов"],
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "evidenceId": "D01"
+    },
+    "unlock_conditions": {
+      "required_evidence": ["D01"]
+    }
   },
   {
     "id": "D04",
@@ -107,7 +147,10 @@
     "content": "ВЫПИСКА ИЗ ЖУРНАЛА (Смена: Э. Рид)\n...\n22:15 - К. Вэнс (№12) прибыла в гостиницу.\n22:25 - Отмечен звук закрывающейся входной двери. Вероятно, ушел спутник К. Вэнс.\n22:40 - Т. Вэйл (№10) вошел в здание. Поднялся на этаж.\n00:31 - Сделан короткий звонок с ресепшена в номер 12. Ответа не последовало.\n...\nПримечание: После полуночи входов и выходов не зафиксировано.",
     "mediaUrl": "/images/case-001/pinecrest_reception_logbook_rus.jpg",
     "image_asset": "/images/case-001/pinecrest_reception_logbook_rus.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["журнал", "регистрация", "портье", "эдвард рид", "пайнкрест", "томас вэйл", "22:15", "00:31", "ресепшн", "орлов"]
   },
   {
     "id": "D05",
@@ -117,7 +160,10 @@
     "content": "ВЫПИСКА ИЗ ЖУРНАЛА ТЕЛЕФОННЫХ СОЕДИНЕНИЙ (АТС Pinecrest // Октябрь 1999)\n\n21:40 — Исходящий: Номер 12 -> Мэгги Брукс (1 мин. 45 сек.)\n22:15 — Входящий: Неизвестный абонент -> Номер 12 (0 мин. 30 сек.)\n23:05 — Исходящий: Томас Вэйл -> Бар The Lantern (0 мин. 15 сек.)\n00:31 — Исходящий: Ресепшн -> Номер 12 (Без ответа)\n01:15 — Входящий: Скрытый номер -> Лео Харт (3 мин. 10 сек.)",
     "mediaUrl": "/images/case-001/pinecrest_call_log_1999.jpg",
     "image_asset": "/images/case-001/pinecrest_call_log_1999.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["биллинг", "звонки", "атс", "телефон", "мэгги брукс", "томас вэйл", "лео харт", "ресепшн", "номер 12", "орлов"]
   },
   {
     "id": "MAP-02",
@@ -127,7 +173,10 @@
     "content": "/images/case-001/pinecrest_floor_plan_90s.jpg",
     "mediaUrl": "/images/case-001/pinecrest_floor_plan_90s.jpg",
     "image_asset": "/images/case-001/pinecrest_floor_plan_90s.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["план", "этаж", "гостиница", "пайнкрест", "номер 12", "номер 10", "номер 15", "лестница"]
   },
   {
     "id": "P06",
@@ -138,9 +187,15 @@
     "mediaUrl": "/images/case-001/missing_ring_evidence_01.jpg",
     "image_asset": "/images/case-001/missing_ring_evidence_01.jpg",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "рука", "кисть", "палец", "кольцо", "след", "трофей", "клара вэнс"],
     "unlockCondition": {
       "type": "EVIDENCE_VIEWED",
       "targetId": "D02"
+    },
+    "unlock_conditions": {
+      "required_evidence": ["D02"]
     }
   },
   {
@@ -151,7 +206,10 @@
     "content": "/images/case-001/nightstand_evidence_room.jpg",
     "mediaUrl": "/images/case-001/nightstand_evidence_room.jpg",
     "image_asset": "/images/case-001/nightstand_evidence_room.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "тумбочка", "номер 12", "часы", "столик", "пайнкрест"]
   },
   {
     "id": "P08",
@@ -161,7 +219,10 @@
     "content": "/images/case-001/clara_festival_90s_01.jpg",
     "mediaUrl": "/images/case-001/clara_festival_90s_01.jpg",
     "image_asset": "/images/case-001/clara_festival_90s_01.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "клара вэнс", "фестиваль", "riverside", "жертва", "платье"]
   },
   {
     "id": "P09",
@@ -171,7 +232,10 @@
     "content": "/images/case-001/crime_scene_corridor_room_12_01.jpg",
     "mediaUrl": "/images/case-001/crime_scene_corridor_room_12_01.jpg",
     "image_asset": "/images/case-001/crime_scene_corridor_room_12_01.jpg",
-    "unlockedByDefault": true
+    "unlockedByDefault": true,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["фото", "коридор", "этаж", "пайнкрест", "дверь", "номер 12", "лестница"]
   },
   {
     "id": "clue_thomas_left_bar",
@@ -180,12 +244,18 @@
     "description": "Из показаний Томаса Вэйла (I03): подтверждение отлучки из бара The Lantern около полуночи.",
     "content": "ВЫПИСКА ИЗ СТЕНОГРАММЫ ДОПРОСА (I03 // Томас Вэйл):\n\n«КРОСС: Интересно. Потому что продавец в круглосуточном магазине одежды и мелочей через два квартала от бара запомнил вас. Сказал, мужчина в длинном пальто покупал у него аспирин около полуночи.\nВЭЙЛ: (Пауза). Да. У меня разболелась голова от шума. Я вышел минут на пятнадцать, купил таблетки и вернулся.\nКРОСС: Почему вы сразу об этом не сказали?\nВЭЙЛ: Потому что перед тем, как уйти в магазин, я видел, как Клара уходит с фестиваля с каким-то парнем. С этим Лео. Мне это... не понравилось. Я подумал, если скажу, что выходил и бродил по улице ночью, вы решите, что я за ними следил.»\n\nВывод следствия: Томас не имел сплошного алиби на период около полуночи и видел Клару с Лео перед уходом.",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["стенограмма", "допрос", "томас вэйл", "бар", "огонек", "алиби", "аспирин", "лео харт", "орлов", "кросс"],
     "unlockCondition": {
       "type": "ANY_OF",
       "conditions": [
         { "type": "EVIDENCE_VIEWED", "targetId": "I03" },
         { "type": "QUESTION_ASKED", "targetId": "q_thomas_04" }
       ]
+    },
+    "unlock_conditions": {
+      "required_evidence": ["I03"]
     }
   },
   {
@@ -195,12 +265,18 @@
     "description": "Из допроса портье Эдварда Рида (I04): признание во сне на дежурстве между 00:30 и 02:00.",
     "content": "ВЫПИСКА ИЗ СТЕНОГРАММЫ ДОПРОСА (I04 // Эдвард Рид):\n\n«РИД: Я... я задремал. В подсобке за коммутатором. Где-то между половиной первого и двумя часами ночи. Было очень тихо, телевизор не работал.\nКРОСС: А журнал?\nРИД: Я заполнил пропущенное под утро. Вписал тех, кого помнил с вечера, или чьих ключей не было на доске. Я не знаю, кто мог пройти по лестнице, пока я спал. Клянусь, я ничего подозрительного не слышал.»\n\nВывод следствия: Записи в журнале ночного портье о событиях после полуночи ненадежны. Кто угодно мог войти или выйти из гостиницы незамеченным.",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["показания", "портье", "эдвард рид", "сон", "коммутатор", "00:30", "02:00", "журнал", "орлов", "пайнкрест"],
     "unlockCondition": {
       "type": "ANY_OF",
       "conditions": [
         { "type": "EVIDENCE_VIEWED", "targetId": "I04" },
         { "type": "QUESTION_ASKED", "targetId": "q_edward_04" }
       ]
+    },
+    "unlock_conditions": {
+      "required_evidence": ["I04"]
     }
   },
   {
@@ -210,12 +286,18 @@
     "description": "Из телефонного разговора с Мэгги Брукс (I01): жалоба Клары на навязчивого незнакомца.",
     "content": "ВЫПИСКА ИЗ РАЗГОВОРА (I01 // Мэгги Брукс):\n\n«БРУКС: Она была напряжена. Сказала, что познакомилась на фестивале с кем-то странным. Он был слишком навязчивым. Я сказала ей возвращаться в номер и запереться, и она обещала так и сделать. Перед самой поездкой она вообще стала очень осторожной, даже параноидальной. Она бы ни за что не открыла дверь незнакомцу ночью.»\n\nВывод следствия: Клара опасалась преследования и соблюдала крайнюю осторожность. Дверь в номер могла быть открыта либо человеку, которому она доверяла, либо снаружи ключом.",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["показания", "мэгги брукс", "фестиваль", "незнакомец", "преследование", "паранойя", "клара вэнс", "риверсайд", "орлов"],
     "unlockCondition": {
       "type": "ANY_OF",
       "conditions": [
         { "type": "EVIDENCE_VIEWED", "targetId": "I01" },
         { "type": "QUESTION_ASKED", "targetId": "q_maggie_02" }
       ]
+    },
+    "unlock_conditions": {
+      "required_evidence": ["I01"]
     }
   },
   {
@@ -225,6 +307,9 @@
     "description": "Из показаний Мэгги Брукс (I01): подтверждение постоянного ношения кольца жертвой.",
     "content": "ВЫПИСКА ИЗ РАЗГОВОРА (I01 // Мэгги Брукс):\n\n«БРУКС: Кольцо. Тонкое серебряное кольцо на правой руке. Его здесь нет. Исключено, что она оставила его дома. Она постоянно носила это кольцо, никогда не снимала, даже когда мыла руки. Если его нет в вещах, значит, тот, кто это сделал... забрал его.»\n\nВывод следствия: Серебряное кольцо присутствовало на пальце в момент нападения и было снято убийцей как трофей (в описи вещей D03 кольцо отсутствует).",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["показания", "мэгги брукс", "кольцо", "серебряное кольцо", "кража", "трофей", "клара вэнс", "орлов"],
     "unlockCondition": {
       "type": "ANY_OF",
       "conditions": [
@@ -232,6 +317,9 @@
         { "type": "QUESTION_ASKED", "targetId": "q_maggie_03" },
         { "type": "QUESTION_ASKED", "targetId": "q_maggie_04" }
       ]
+    },
+    "unlock_conditions": {
+      "required_evidence": ["I01"]
     }
   },
   {
@@ -241,6 +329,9 @@
     "description": "Сводка по хронологии событий следствия ОВР и аналитическое заключение по временному окну.",
     "content": "ОТДЕЛ ВНУТРЕННИХ РАССЛЕДОВАНИЙ / АНАЛИТИЧЕСКИЙ ОТДЕЛ\nСВОДКА ПО ХРОНОЛОГИИ СОБЫТИЙ (ДЕЛО № 99-34)\n\n[АНАЛИЗ ВРЕМЕННОГО ОКНА]\nНа основании собранных показаний (Вэйл Т., Харт Л., Рид Э.) и медицинского акта вскрытия (время смерти — около 01:00), установлена следующая хронология:\n00:15 – Леонард Харт возвращается в номер 15. Подтверждено зафиксированной жалобой на шум.\n00:30 – 02:00 – Ночной портье Эдвард Рид спит на рабочем месте, оставляя входную дверь и лестницу без визуального контроля.\n00:31 – Зафиксирован неотвеченный звонок в номер 12.\n01:00 (приблизительно) – Наступление смерти жертвы.\n\n[ЗАКЛЮЧЕНИЕ]\nСреди установленных лиц, представляющих интерес (Харт, Вэйл), нет подтвержденного нахождения у номера 12 в момент смерти. Сон ночного портье создал неконтролируемое \"слепое окно\" продолжительностью около полутора часов. ВЫВОД: В период с 00:30 до 02:00 на второй этаж могло беспрепятственно пройти неустановленное лицо (НЕИЗВЕСТНЫЙ ПОСЕТИТЕЛЬ).",
     "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "search_tags": ["заключение", "анализ", "овр", "орлов", "хронология", "слепое окно", "неизвестный посетитель", "00:30", "02:00", "дело 001"],
     "unlockCondition": {
       "type": "ALL_OF",
       "conditions": [
@@ -253,6 +344,9 @@
           "targetId": "ded_logbook_unreliable"
         }
       ]
+    },
+    "unlock_conditions": {
+      "required_evidence": ["D04", "clue_porter_slept", "clue_thomas_left_bar"]
     }
   }
 ]

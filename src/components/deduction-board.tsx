@@ -20,6 +20,7 @@ interface DeductionBoardProps {
   deductions: DeductionRule[];
   availableEvidence: CaseDocument[];
   completedDeductionIds: string[];
+  falsifiedDeductionIds?: string[];
   onCompleteDeduction: (clueA: string, clueB: string) => {
     success: boolean;
     deduction?: DeductionRule;
@@ -35,6 +36,7 @@ export function DeductionBoard({
   deductions,
   availableEvidence,
   completedDeductionIds,
+  falsifiedDeductionIds = [],
   onCompleteDeduction,
   onSelectEvidence,
 }: DeductionBoardProps) {
@@ -397,37 +399,57 @@ export function DeductionBoard({
           </div>
 
           <div className="space-y-2">
-            {completedRules.map((rule) => (
-              <div
-                key={rule.id}
-                className="border border-border/50 bg-secondary/30 p-3 text-xs space-y-1.5"
-              >
-                <div className="flex items-center justify-between">
-                  <h5 className="font-semibold text-foreground font-display">
-                    {rule.title}
-                  </h5>
-                  <div className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground">
-                    <span>[{rule.clueIds[0].toUpperCase()}]</span>
-                    <span>+</span>
-                    <span>[{rule.clueIds[1].toUpperCase()}]</span>
+            {completedRules.map((rule) => {
+              const isFalsified = falsifiedDeductionIds.includes(rule.id);
+              return (
+                <div
+                  key={rule.id}
+                  className={cn(
+                    'border p-3 text-xs space-y-1.5 transition-all',
+                    isFalsified
+                      ? 'border-red-900 bg-red-950/30'
+                      : 'border-border/50 bg-secondary/30'
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <h5 className={cn('font-semibold font-display', isFalsified ? 'text-red-400' : 'text-foreground')}>
+                        {rule.title}
+                      </h5>
+                      {isFalsified && (
+                        <span className="border border-red-500/70 bg-red-950/60 px-1.5 py-0.2 text-[9px] font-mono text-red-400 font-bold uppercase">
+                          ОПРОВЕРГНУТО / ТУПИК
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground">
+                      <span>[{rule.clueIds[0].toUpperCase()}]</span>
+                      <span>+</span>
+                      <span>[{rule.clueIds[1].toUpperCase()}]</span>
+                    </div>
                   </div>
+                  <p className={cn('leading-relaxed', isFalsified ? 'text-red-300/80 line-through' : 'text-muted-foreground')}>
+                    {rule.conclusion}
+                  </p>
+                  {isFalsified && (
+                    <p className="text-[11px] font-mono text-red-400 font-medium">
+                      Данная версия была полностью опровергнута новыми материалами расследования.
+                    </p>
+                  )}
+                  {rule.resultEvidenceId && (
+                    <div className="pt-1">
+                      <button
+                        type="button"
+                        onClick={() => onSelectEvidence?.(rule.resultEvidenceId!)}
+                        className="text-[11px] font-mono text-primary hover:underline"
+                      >
+                        → Изучить материал [{rule.resultEvidenceId.toUpperCase()}]
+                      </button>
+                    </div>
+                  )}
                 </div>
-                <p className="text-muted-foreground leading-relaxed">
-                  {rule.conclusion}
-                </p>
-                {rule.resultEvidenceId && (
-                  <div className="pt-1">
-                    <button
-                      type="button"
-                      onClick={() => onSelectEvidence?.(rule.resultEvidenceId!)}
-                      className="text-[11px] font-mono text-primary hover:underline"
-                    >
-                      → Изучить материал [{rule.resultEvidenceId.toUpperCase()}]
-                    </button>
-                  </div>
-                )}
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}
