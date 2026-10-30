@@ -14,6 +14,35 @@ function safeParseJsonArray<T = unknown>(raw: string | null | undefined): T[] {
   }
 }
 
+const MAX_ITEMS = 500;
+const MAX_ITEM_LENGTH = 200;
+const MAX_NOTES = 200;
+const MAX_NOTES_JSON_LENGTH = 200_000;
+
+/** Оставляет только непустые короткие строки, убирает дубликаты и ограничивает размер массива. */
+function sanitizeStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  const result = new Set<string>();
+  for (const item of value) {
+    if (typeof item !== 'string') continue;
+    const trimmed = item.trim();
+    if (!trimmed || trimmed.length > MAX_ITEM_LENGTH) continue;
+    result.add(trimmed);
+    if (result.size >= MAX_ITEMS) break;
+  }
+  return Array.from(result);
+}
+
+function sanitizeNotes(value: unknown): unknown[] {
+  if (!Array.isArray(value)) return [];
+  const notes = value.slice(0, MAX_NOTES);
+  try {
+    return JSON.stringify(notes).length <= MAX_NOTES_JSON_LENGTH ? notes : [];
+  } catch {
+    return [];
+  }
+}
+
 function normalizeSlug(rawCaseId: string): string {
   const trimmed = rawCaseId.trim();
   return trimmed.startsWith('case-') ? trimmed : `case-${trimmed}`;
@@ -160,11 +189,16 @@ export async function POST(request: NextRequest) {
       ? Math.min(100, Math.max(0, Math.round(body.progress)))
       : 0;
 
-    const solvedQuestions = Array.isArray(body.solvedQuestions) ? body.solvedQuestions : [];
-    const notes = Array.isArray(body.notes) ? body.notes : [];
-    const viewedEvidence = Array.isArray(body.viewedEvidence) ? body.viewedEvidence : [];
+    const solvedQuestions = sanitizeStringArray(body.solvedQuestions);
+    const notes = sanitizeNotes(body.notes);
+    const viewedEvidence = sanitizeStringArray(body.viewedEvidence);
 
     const now = new Date();
+
+    const existing = await prisma.gameProgress.findUnique({
+      where: { userId_caseId: { userId: user.id, caseId: caseItem.id } },
+      select: { completedAt: true },
+    });
 
     // 7, 8 & 9. Upsert GameProgress by userId + caseId
     const saved = await prisma.gameProgress.upsert({
@@ -180,6 +214,8 @@ export async function POST(request: NextRequest) {
         notesData: JSON.stringify(notes),
         viewedEvidence: JSON.stringify(viewedEvidence),
         lastSeenAt: now,
+        // Фиксируем момент завершения один раз: при первом достижении 100%.
+        ...(progress >= 100 && !existing?.completedAt ? { completedAt: now } : {}),
       },
       create: {
         userId: user.id,
@@ -190,6 +226,7 @@ export async function POST(request: NextRequest) {
         viewedEvidence: JSON.stringify(viewedEvidence),
         openedAt: now,
         lastSeenAt: now,
+        ...(progress >= 100 ? { completedAt: now } : {}),
       },
     });
 
