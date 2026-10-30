@@ -1638,11 +1638,18 @@ export default function CaseInvestigationLayout({
           <div className="space-y-3.5">
             {/* Карточка активного профиля вверху */}
             <div className="bg-[#141820] border border-[#1e232d] p-3 rounded-sm flex items-start gap-3">
-              <img
-                src={activeCharacter?.avatarUrl || activeCharacter?.image_asset || '/images/characters/clara_vance_01.jpg'}
-                alt={activeCharacter?.name}
-                className="w-[60px] h-[72px] object-cover rounded-xs border border-[#1e232d] grayscale contrast-125 shrink-0"
-              />
+              {isCharacterUnlocked(activeCharacter) ? (
+                <img
+                  key={activeCharacter?.id}
+                  src={activeCharacter?.avatarUrl || activeCharacter?.image_asset || '/images/characters/clara_vance_01.jpg'}
+                  alt={activeCharacter?.name}
+                  className="w-[60px] h-[72px] object-cover rounded-xs border border-[#1e232d] grayscale contrast-125 shrink-0"
+                />
+              ) : (
+                <div className="w-[60px] h-[72px] bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
+                  <Lock className="size-5 text-zinc-600" />
+                </div>
+              )}
               <div className="min-w-0 flex-1">
                 <div className="text-xs font-semibold uppercase tracking-wider text-white truncate">
                   {isCharacterUnlocked(activeCharacter) ? activeCharacter?.name : '[ФИГУРАНТ НЕ УСТАНОВЛЕН]'}
@@ -1651,7 +1658,7 @@ export default function CaseInvestigationLayout({
                   СТАТУС: {isCharacterUnlocked(activeCharacter) ? activeCharacter?.role.toUpperCase() : 'ЗАСЕКРЕЧЕНО'}
                 </div>
                 <div className="text-[11px] text-zinc-400 mt-1">
-                  Возраст: {isCharacterUnlocked(activeCharacter) ? (activeCharacter?.age || '21 год') : '—'}
+                  Возраст: {isCharacterUnlocked(activeCharacter) ? (activeCharacter?.age || '—') : '—'}
                 </div>
                 <div className="text-[11px] text-zinc-400 truncate">
                   Профессия: {isCharacterUnlocked(activeCharacter) ? (activeCharacter?.profession || activeCharacter?.role) : '—'}
@@ -1661,6 +1668,13 @@ export default function CaseInvestigationLayout({
                 </div>
               </div>
             </div>
+
+            {/* Краткое описание выбранного человека */}
+            <p className="text-[11px] text-zinc-400 leading-relaxed px-1">
+              {isCharacterUnlocked(activeCharacter)
+                ? activeCharacter?.description || 'Описание пока не добавлено.'
+                : 'Личность не установлена. Изучите материалы дела, чтобы узнать, кто это.'}
+            </p>
 
             {/* Вкладки: "Люди", "Орлов", "Дневник" */}
             <div className="flex border-b border-[#1e232d] text-xs">

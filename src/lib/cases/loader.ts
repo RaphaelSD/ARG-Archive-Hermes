@@ -184,6 +184,12 @@ export const case001: CaseFile = {
     role: p.role,
     description: p.description,
     phone: p.phone,
+    avatarUrl: p.avatarUrl ?? p.image_asset,
+    image_asset: p.image_asset ?? p.avatarUrl,
+    age: p.age,
+    profession: p.profession,
+    address: p.address,
+    linkedEvidence: p.linkedEvidence ?? p.relatedEvidenceIds ?? [],
     relatedEvidenceIds: p.linkedEvidence ?? p.relatedEvidenceIds ?? [],
   })) as CasePerson[],
   timeline: (Array.isArray(case001Timeline) ? case001Timeline : []).map((t: any) => ({

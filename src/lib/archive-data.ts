@@ -42,6 +42,10 @@ export type CasePerson = {
   phone?: string;
   avatarUrl?: string;
   image_asset?: string;
+  age?: string;
+  profession?: string;
+  address?: string;
+  linkedEvidence?: string[];
   relatedEvidenceIds?: string[];
 };
 
