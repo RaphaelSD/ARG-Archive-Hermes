@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client');
-const bcrypt = require('bcryptjs');
 
 const prisma = new PrismaClient();
 
@@ -20,7 +19,7 @@ async function main() {
     data: {
       email: 'orlov@argarchive.test',
       name: 'Operator',
-      passwordHash: await bcrypt.hash('password123', 10),
+      consentAt: new Date(),
       role: 'player',
     },
   });

@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { FileText, Lock, Search, ShieldCheck } from 'lucide-react';
 
@@ -34,6 +35,10 @@ export function SiteFooter() {
       </div>
       <div className="border-t border-border/60 px-4 py-4 text-center label-xs text-muted-foreground sm:px-6">
         Архив города Н. — интерактивное детективное расследование
+        <span className="mx-2">·</span>
+        <Link href="/privacy" className="underline underline-offset-2 hover:text-foreground">
+          Политика обработки персональных данных
+        </Link>
       </div>
     </footer>
   );

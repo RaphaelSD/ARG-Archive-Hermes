@@ -7,6 +7,7 @@ import { getCase } from '@/lib/archive-data';
 import { getSessionUser } from '@/lib/auth/session';
 import { getArchiveCaseBySlug } from '@/lib/cases/adapter';
 import { isDemoAllowedForCase } from '@/lib/cases/loader';
+import { getCasePriceRub } from '@/lib/payments/config';
 
 type Props = { params: { caseId: string } };
 
@@ -54,13 +55,13 @@ export default async function CasePage({ params }: Props) {
 
   // In dev environment: grant full access to inspect materials without barriers
   if (isDevMode) {
-    return <CasePageClient item={{ ...item, status: 'open' }} isGuest={!user} />;
+    return <CasePageClient item={{ ...item, status: 'open' }} isGuest={!user} playerEmail={user?.email} />;
   }
 
   // If case is locked or user has no clearance: show archival restricted access screen / teaser
-  if (item.status === 'locked' || (item.accessStatus !== 'unlocked' && !isDemoAllowed)) {
-    return <CaseLockedView item={item} isGuest={!user} />;
+  if (item.accessStatus !== 'unlocked' && !isDemoAllowed) {
+    return <CaseLockedView item={item} isGuest={!user} priceRub={getCasePriceRub(caseId)} />;
   }
 
-  return <CasePageClient item={item} isGuest={!user} />;
+  return <CasePageClient item={{ ...item, status: item.status === 'locked' ? 'open' : item.status }} isGuest={!user} playerEmail={user?.email} />;
 }

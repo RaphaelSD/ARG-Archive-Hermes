@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Lock,
   ArrowRight,
@@ -20,12 +21,16 @@ import {
 import { CityMap } from '@/components/city-map';
 import { DetectiveCard } from '@/components/detective-card';
 import { Panel, StatusBadge } from '@/components/archive-ui';
+import { BuyCaseButton } from '@/components/buy-case-button';
 import { cases, type CaseFile } from '@/lib/archive-data';
+import { FREE_CASE_IDS, getCasePriceRub, normalizeCaseId } from '@/lib/payments/config';
 
 export default function ArchiveHome() {
   const [completedCases, setCompletedCases] = useState<Record<string, boolean>>({});
   const [teaserCase, setTeaserCase] = useState<CaseFile | null>(null);
-  const [showPaymentNotice, setShowPaymentNotice] = useState(false);
+  const [unlockedCases, setUnlockedCases] = useState<Record<string, boolean>>(() =>
+    Object.fromEntries(FREE_CASE_IDS.map((id) => [id, true]))
+  );
 
   const [resetNotice, setResetNotice] = useState(false);
 
@@ -50,6 +55,17 @@ export default function ArchiveHome() {
 
   useEffect(() => {
     checkCompletedStatus();
+    fetch('/api/cases')
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!data?.cases) return;
+        const unlocked: Record<string, boolean> = Object.fromEntries(FREE_CASE_IDS.map((id) => [id, true]));
+        for (const c of data.cases as Array<{ slug: string; accessStatus: string }>) {
+          if (c.accessStatus === 'unlocked') unlocked[c.slug.replace(/^case-/, '')] = true;
+        }
+        setUnlockedCases(unlocked);
+      })
+      .catch(() => {});
   }, []);
 
   const handleResetDevProgress = () => {
@@ -72,12 +88,10 @@ export default function ArchiveHome() {
 
   const openTeaser = (c: CaseFile) => {
     setTeaserCase(c);
-    setShowPaymentNotice(false);
   };
 
   const closeTeaser = () => {
     setTeaserCase(null);
-    setShowPaymentNotice(false);
   };
 
   return (
@@ -168,7 +182,7 @@ export default function ArchiveHome() {
                   ? 'DEV: ВСЕ ЭПИЗОДЫ ДОСТУПНЫ'
                   : completedCases['001']
                   ? 'ПРОЙДЕНО: 1 ИЗ 1 ДОСТУПНЫХ'
-                  : 'ДОСТУПНО: 1 ИЗ ' + cases.length}
+                  : `ДОСТУПНО: ${1 + Object.keys(unlockedCases).filter((id) => id !== '001').length} ИЗ ${cases.length}`}
               </span>
             </div>
 
@@ -177,8 +191,9 @@ export default function ArchiveHome() {
                 <CaseCard
                   key={c.id}
                   caseItem={c}
-                  isCompleted={Boolean(completedCases[c.id])}
+                  isCompleted={Boolean(completedCases[normalizeCaseId(c.id)])}
                   isDevMode={isDevMode}
+                  isUnlocked={Boolean(unlockedCases[normalizeCaseId(c.id)])}
                   onResetProgress={handleResetDevProgress}
                   onOpenTeaser={() => openTeaser(c)}
                 />
@@ -280,14 +295,7 @@ export default function ArchiveHome() {
             {/* Action buttons */}
             <div className="space-y-3 pt-2">
               <div className="flex flex-wrap items-center gap-3">
-                <button
-                  type="button"
-                  onClick={() => setShowPaymentNotice(true)}
-                  className="inline-flex items-center gap-2 border-2 border-primary bg-primary px-6 py-3 font-display text-xs uppercase tracking-wider text-primary-foreground font-bold shadow-[0_0_25px_rgba(234,179,8,0.3)] hover:bg-primary/90 transition-transform active:scale-95"
-                >
-                  <CreditCard className="size-4" />
-                  <span>ПОЛУЧИТЬ ДОСТУП</span>
-                </button>
+                <BuyCaseButton caseId={teaserCase.id} priceRub={getCasePriceRub(teaserCase.id)} />
 
                 {isDevMode && (
                   <Link
@@ -308,23 +316,6 @@ export default function ArchiveHome() {
                 </button>
               </div>
 
-              {/* Payment trigger notice */}
-              {showPaymentNotice && (
-                <div className="border border-primary/60 bg-primary/10 p-4 space-y-2 animate-in fade-in slide-in-from-top-2">
-                  <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold uppercase">
-                    <Sparkles className="size-4" />
-                    <span>Шлюз монетизации эпизодов</span>
-                  </div>
-                  <p className="text-xs text-muted-foreground leading-relaxed">
-                    В релизной версии по нажатию кнопки «ПОЛУЧИТЬ ДОСТУП» открывается платежное окно для покупки доступа к Эпизоду №002.
-                  </p>
-                  {isDevMode && (
-                    <p className="text-[11px] font-mono text-emerald-400 font-bold">
-                      В Dev-режиме вы можете открыть дело напрямую по зеленой кнопке выше.
-                    </p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -337,16 +328,21 @@ function CaseCard({
   caseItem,
   isCompleted,
   isDevMode,
+  isUnlocked,
   onResetProgress,
   onOpenTeaser,
 }: {
   caseItem: CaseFile;
   isCompleted?: boolean;
   isDevMode?: boolean;
+  isUnlocked?: boolean;
   onResetProgress?: () => void;
   onOpenTeaser: () => void;
 }) {
+  const router = useRouter();
   const isCase001 = caseItem.id === '001';
+  const openCase = () => router.push(`/cases/${caseItem.id}`);
+  const handleCardClick = isUnlocked ? openCase : onOpenTeaser;
 
   // Карточка 1: Дело №001 «Комната 12»
   if (isCase001) {
@@ -444,7 +440,7 @@ function CaseCard({
 
   return (
     <div
-      onClick={onOpenTeaser}
+      onClick={handleCardClick}
       className="group relative flex min-h-[320px] flex-col justify-between border border-border/70 bg-card/60 p-4 transition-all hover:border-primary/80 hover:bg-card/90 cursor-pointer shadow-sm hover:shadow-[0_0_20px_rgba(234,179,8,0.12)]"
     >
       <div>
@@ -454,6 +450,11 @@ function CaseCard({
             <span className="inline-flex items-center gap-1 border border-emerald-500/70 bg-emerald-950/50 px-2 py-0.5 text-[10px] font-mono uppercase text-emerald-400 font-bold">
               <Unlock className="size-2.5" />
               <span>DEV ДОСТУП</span>
+            </span>
+          ) : isUnlocked ? (
+            <span className="inline-flex items-center gap-1 border border-primary/70 bg-primary/10 px-2 py-0.5 text-[10px] font-mono uppercase text-primary font-bold">
+              <Unlock className="size-2.5" />
+              <span>ОТКРЫТО</span>
             </span>
           ) : (
             <span className="inline-flex items-center gap-1 border border-amber-500/60 bg-amber-950/40 px-2 py-0.5 text-[10px] font-mono uppercase text-amber-400 font-bold">
@@ -479,7 +480,7 @@ function CaseCard({
             <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-[1px] group-hover:bg-black/20 transition-all">
               <div className="flex items-center gap-1.5 border border-primary/70 bg-black/80 px-3 py-1.5 font-mono text-[11px] uppercase tracking-wider text-primary shadow-md">
                 <Eye className="size-3.5" />
-                <span>ОТКРЫТЬ ТИЗЕР ДЕЛА</span>
+                <span>{isUnlocked ? 'ОТКРЫТЬ ДЕЛО' : 'ОТКРЫТЬ ТИЗЕР ДЕЛА'}</span>
               </div>
             </div>
           </div>
@@ -495,12 +496,12 @@ function CaseCard({
           type="button"
           onClick={(e) => {
             e.stopPropagation();
-            onOpenTeaser();
+            handleCardClick();
           }}
           className="flex items-center justify-center gap-2 border border-primary/60 bg-primary/10 py-2 px-3 font-mono text-xs uppercase tracking-wider text-primary group-hover:bg-primary group-hover:text-primary-foreground font-bold transition-all w-full"
         >
-          <CreditCard className="size-3.5" />
-          <span>СМОТРЕТЬ ТИЗЕР / ДОСТУП</span>
+          {isUnlocked ? <ArrowRight className="size-3.5" /> : <CreditCard className="size-3.5" />}
+          <span>{isUnlocked ? 'НАЧАТЬ РАССЛЕДОВАНИЕ' : 'СМОТРЕТЬ ТИЗЕР / ДОСТУП'}</span>
         </button>
       </div>
     </div>

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/db/prisma';
 import { getSessionUser } from '@/lib/auth/session';
+import { FREE_CASE_IDS } from '@/lib/payments/config';
 
 export async function GET() {
   const user = await getSessionUser();
@@ -35,7 +36,9 @@ export async function GET() {
     title: item.title,
     description: item.description,
     status: item.status,
-    accessStatus: byCaseId.get(item.id)?.status ?? 'locked',
+    accessStatus: FREE_CASE_IDS.includes(item.slug.replace(/^case-/, ''))
+      ? 'unlocked'
+      : byCaseId.get(item.id)?.status ?? 'locked',
     progress: byCaseId.get(item.id) ? progressByCaseId.get(item.id) ?? 0 : 0,
   }));
 

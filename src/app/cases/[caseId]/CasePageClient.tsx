@@ -6,12 +6,13 @@ import type { CaseFile } from '@/lib/archive-data';
 
 export function CasePageClient({
   item,
-  isGuest = false,
+  playerEmail,
 }: {
   item: CaseFile;
   isGuest?: boolean;
+  playerEmail?: string;
 }) {
-  return <CaseInvestigationLayout caseFile={item} />;
+  return <CaseInvestigationLayout caseFile={item} playerEmail={playerEmail} />;
 }
 
 export default CasePageClient;

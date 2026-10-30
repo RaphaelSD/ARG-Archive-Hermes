@@ -1,19 +1,20 @@
 'use client';
 
-import { useState } from 'react';
 import Link from 'next/link';
-import { Lock, ShieldAlert, ArrowLeft, KeyRound, AlertTriangle, Sparkles, CreditCard, CheckCircle } from 'lucide-react';
+import { Lock, ArrowLeft, AlertTriangle } from 'lucide-react';
 import type { CaseFile } from '@/lib/archive-data';
 import { StatusBadge } from '@/components/archive-ui';
+import { BuyCaseButton } from '@/components/buy-case-button';
 
 export function CaseLockedView({
   item,
   isGuest = false,
+  priceRub = null,
 }: {
   item: Pick<CaseFile, 'id' | 'number' | 'title' | 'status' | 'summary' | 'archiveCode'>;
   isGuest?: boolean;
+  priceRub?: number | null;
 }) {
-  const [paymentNoticeOpen, setPaymentNoticeOpen] = useState(false);
 
   const isCase002 = item.id === '002' || item.number.includes('002');
   const title = isCase002 ? 'ДЕЛО №002: КРЫША ОГОНЬКА' : `${item.number.toUpperCase()}: ${item.title.toUpperCase()}`;
@@ -96,20 +97,12 @@ export function CaseLockedView({
             </p>
             <div className="pt-2 flex items-center gap-2 font-mono text-[11px] text-ink/60">
               <AlertTriangle className="size-3.5 text-primary" />
-              <span>Доступ к материалам дела №002 открывается через форму авторизованного запроса.</span>
+              <span>Доступ к материалам {item.number} открывается после оплаты.</span>
             </div>
           </div>
 
-          {/* Actions & Paywall Notice */}
-          <div className="flex flex-wrap items-center gap-3 pt-2">
-            <button
-              type="button"
-              onClick={() => setPaymentNoticeOpen(true)}
-              className="inline-flex items-center justify-center gap-2 border-2 border-primary bg-primary px-5 py-2.5 text-xs font-display uppercase tracking-wider text-primary-foreground font-bold shadow-[0_0_20px_rgba(234,179,8,0.25)] hover:bg-primary/90 transition-all hover:scale-105 active:scale-95"
-            >
-              <CreditCard className="size-4" />
-              <span>ПОЛУЧИТЬ ДОСТУП</span>
-            </button>
+          <div className="flex flex-wrap items-start gap-3 pt-2">
+            <BuyCaseButton caseId={item.id} priceRub={priceRub} />
 
             <Link
               href="/"
@@ -118,31 +111,10 @@ export function CaseLockedView({
               <span>Вернуться в архив</span>
             </Link>
           </div>
-
-          {/* Payment Modal / Notice */}
-          {paymentNoticeOpen && (
-            <div className="border border-primary/60 bg-primary/10 p-4 space-y-3 animate-in fade-in slide-in-from-top-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2 text-primary font-mono text-xs font-bold uppercase">
-                  <Sparkles className="size-4" />
-                  <span>Шлюз монетизации эпизодов</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => setPaymentNoticeOpen(false)}
-                  className="text-xs text-muted-foreground hover:text-foreground font-mono"
-                >
-                  ✕
-                </button>
-              </div>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                В финальной версии здесь будет активировано окно оплаты / приобретения доступа к Эпизоду №002.
-              </p>
-              <div className="text-[11px] font-mono text-primary flex items-center gap-1.5">
-                <CheckCircle className="size-3.5" />
-                <span>В режиме разработки (DEV) все дела и материалы разблокированы автоматически.</span>
-              </div>
-            </div>
+          {isGuest && priceRub && (
+            <p className="text-[11px] font-mono text-muted-foreground">
+              Для покупки потребуется войти или зарегистрироваться — доступ привязывается к вашему аккаунту.
+            </p>
           )}
         </div>
       </div>

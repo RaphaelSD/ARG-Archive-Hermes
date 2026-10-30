@@ -39,7 +39,6 @@ import {
   Sparkles,
 } from 'lucide-react';
 
-import { EmailAccessModal } from '@/components/EmailAccessModal';
 
 // Import raw archival data
 import rawCaseMeta from '../../content/cases/case-001/case.json';
@@ -183,8 +182,10 @@ const formatTime = (seconds: number) => {
 
 export default function CaseInvestigationLayout({
   caseFile,
+  playerEmail = '',
 }: {
   caseFile?: any;
+  playerEmail?: string;
 } = {}) {
   // ==========================================================
   // 1. СНАЧАЛА ВСЕ ХУКИ (useState, useEffect, useMemo, useRef)
@@ -234,37 +235,6 @@ export default function CaseInvestigationLayout({
   const [isInspectModalOpen, setIsInspectModalOpen] = useState(false);
   const [isHintModalOpen, setIsHintModalOpen] = useState(false);
   const [isCompareModalOpen, setIsCompareModalOpen] = useState(false);
-
-  // Проверка доступа к делу (Supabase / YooKassa / LocalStorage)
-  const [hasAccess, setHasAccess] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const searchParams = new URLSearchParams(window.location.search);
-        if (
-          searchParams.get('success') === 'true' ||
-          searchParams.get('payment') === 'success'
-        ) {
-          return true;
-        }
-        return localStorage.getItem('arg_has_access') === 'true';
-      } catch {}
-    }
-    return false;
-  });
-
-  const [playerEmail, setPlayerEmail] = useState<string>(() => {
-    if (typeof window !== 'undefined') {
-      try {
-        const searchParams = new URLSearchParams(window.location.search);
-        return (
-          searchParams.get('email') ||
-          localStorage.getItem('arg_player_email') ||
-          ''
-        );
-      } catch {}
-    }
-    return '';
-  });
 
   const unlockInputRef = useRef<HTMLInputElement>(null);
 
@@ -347,52 +317,6 @@ export default function CaseInvestigationLayout({
     }
     return false;
   });
-
-  // 1. Проверка возврата с оплаты (?success=true) и синхронизация с Supabase
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
-    try {
-      const url = new URL(window.location.href);
-      const isSuccess =
-        url.searchParams.get('success') === 'true' ||
-        url.searchParams.get('payment') === 'success';
-      const emailFromUrl = url.searchParams.get('email');
-
-      if (isSuccess) {
-        const activeEmail =
-          emailFromUrl ||
-          localStorage.getItem('arg_player_email') ||
-          'investigator@ovr.local';
-
-        setHasAccess(true);
-        setPlayerEmail(activeEmail);
-        localStorage.setItem('arg_has_access', 'true');
-        localStorage.setItem('arg_player_email', activeEmail);
-
-        // Обновляем статус в базе данных Supabase
-        fetch('/api/activate-access', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: activeEmail }),
-        }).catch((err) => console.warn('[activate-access] Notice:', err));
-
-        // Очищаем query-параметры из строки браузера
-        window.history.replaceState({}, '', window.location.pathname);
-      } else if (!hasAccess && playerEmail) {
-        // Фоновая проверка доступа в Supabase
-        fetch(`/api/check-access?email=${encodeURIComponent(playerEmail)}`)
-          .then((res) => res.json())
-          .then((data) => {
-            if (data?.has_access) {
-              setHasAccess(true);
-              localStorage.setItem('arg_has_access', 'true');
-            }
-          })
-          .catch((err) => console.warn('[check-access] Notice:', err));
-      }
-    } catch {}
-  }, [hasAccess, playerEmail]);
 
   // Таймер обратного отсчета расследования (20:00) с автосохранением в localStorage
   useEffect(() => {
@@ -793,15 +717,6 @@ export default function CaseInvestigationLayout({
     }
   };
 
-  const handleRevokeAccess = () => {
-    if (confirm('Сбросить доступ к делу для тестирования экрана авторизации?')) {
-      setHasAccess(false);
-      try {
-        localStorage.removeItem('arg_has_access');
-      } catch {}
-    }
-  };
-
   // Доступные фотографии для пагинации
   const unlockedPhotos = photosList.filter((p) => isDocUnlocked(p.id));
   const currentPhotoIndex = unlockedPhotos.findIndex((p) => p.id === currentItem.id);
@@ -891,25 +806,12 @@ export default function CaseInvestigationLayout({
         {/* Справа: статус доступа, поиск, кнопка сброса и настройки */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Индикатор статуса доступа */}
-          {hasAccess ? (
+          {playerEmail && (
             <div className="hidden sm:flex items-center gap-1.5 border border-emerald-500/40 bg-emerald-950/30 px-2 py-1 rounded-xs text-[10px] font-mono text-emerald-400">
               <ShieldCheck className="size-3 text-emerald-400" />
-              <span className="truncate max-w-[130px]" title={playerEmail || 'Доступ активен'}>
-                {playerEmail || 'ДОПУСК ОВР'}
+              <span className="truncate max-w-[130px]" title={playerEmail}>
+                {playerEmail}
               </span>
-              <button
-                type="button"
-                onClick={handleRevokeAccess}
-                title="Сбросить допуск для теста"
-                className="text-emerald-500/60 hover:text-emerald-300 ml-0.5"
-              >
-                ✕
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1.5 border border-red-900 bg-red-950/40 px-2 py-1 rounded-xs text-[10px] font-mono text-red-400 animate-pulse">
-              <Lock className="size-3" />
-              <span className="hidden sm:inline">ДОСТУП ЗАБЛОКИРОВАН</span>
             </div>
           )}
 
@@ -948,7 +850,7 @@ export default function CaseInvestigationLayout({
       {/* ======================================================== */}
       <main
         className={`flex-1 p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_280px] xl:grid-cols-[275px_minmax(0,1fr)_295px] gap-3.5 max-w-[1720px] mx-auto w-full transition-all duration-300 ${
-          !hasAccess || isTimerExpired ? 'filter blur-[2px] pointer-events-none select-none opacity-40' : ''
+          isTimerExpired ? 'filter blur-[2px] pointer-events-none select-none opacity-40' : ''
         }`}
       >
         {/* ====================================================== */}
@@ -2076,17 +1978,6 @@ export default function CaseInvestigationLayout({
           </div>
         </div>
       )}
-
-      {/* 5. Модальное окно авторизации по почте / оплате ЮKassa */}
-      <EmailAccessModal
-        isOpen={!hasAccess}
-        onAccessGranted={(email) => {
-          setHasAccess(true);
-          setPlayerEmail(email);
-        }}
-        caseNumber={caseFile?.number || 'ДЕЛО №001'}
-        caseTitle={caseFile?.title || 'КОМНАТА 12'}
-      />
 
       {/* 6. Предупреждение об истечении 20-минутного таймера расследования */}
       {isTimerExpired && !isFinaleActive && (

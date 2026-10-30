@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import { ShieldCheck, ShieldAlert, X, Lock, Mail, User, KeyRound, Loader2 } from 'lucide-react';
-import { cn } from '@/lib/utils';
+import Link from 'next/link';
+import { ShieldCheck, ShieldAlert, X, Mail, KeyRound, Loader2 } from 'lucide-react';
 
 export type AuthUser = {
   id: number;
@@ -15,58 +15,33 @@ type AuthModalProps = {
   isOpen: boolean;
   onClose: () => void;
   onAuthSuccess: (user: AuthUser) => void;
-  initialMode?: 'login' | 'register';
 };
 
-export function AuthModal({
-  isOpen,
-  onClose,
-  onAuthSuccess,
-  initialMode = 'login',
-}: AuthModalProps) {
-  const [mode, setMode] = useState<'login' | 'register'>(initialMode);
+export function AuthModal({ isOpen, onClose, onAuthSuccess }: AuthModalProps) {
+  const [step, setStep] = useState<'email' | 'code'>('email');
   const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
+  const [code, setCode] = useState('');
+  const [consent, setConsent] = useState(false);
+  const [devCode, setDevCode] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const requestCode = async () => {
     setError(null);
     setLoading(true);
-
     try {
-      if (mode === 'login') {
-        const res = await fetch('/api/auth/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error === 'Invalid credentials' ? 'Неверный служебный email или пароль доступа' : data.error || 'Ошибка входа');
-        }
-        onAuthSuccess(data.user);
-        onClose();
-      } else {
-        if (password.length < 6) {
-          throw new Error('Пароль допуска должен содержать не менее 6 символов');
-        }
-        const res = await fetch('/api/auth/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email, password, name: name.trim() || 'Оператор ОВР' }),
-        });
-        const data = await res.json();
-        if (!res.ok) {
-          throw new Error(data.error === 'User already exists' ? 'Оператор с таким email уже зарегистрирован' : data.error || 'Ошибка регистрации');
-        }
-        onAuthSuccess(data.user);
-        onClose();
-      }
+      const res = await fetch('/api/auth/request-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, consent }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Не удалось отправить код');
+      setDevCode(data.devCode ?? null);
+      setCode('');
+      setStep('code');
     } catch (err: any) {
       setError(err.message || 'Ошибка связи с сервером архива');
     } finally {
@@ -74,10 +49,35 @@ export function AuthModal({
     }
   };
 
+  const verifyCode = async () => {
+    setError(null);
+    setLoading(true);
+    try {
+      const res = await fetch('/api/auth/verify-code', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, code }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Неверный код');
+      onAuthSuccess(data.user);
+      onClose();
+    } catch (err: any) {
+      setError(err.message || 'Ошибка связи с сервером архива');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (step === 'email') requestCode();
+    else verifyCode();
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm animate-in fade-in duration-150">
       <div className="relative w-full max-w-md border border-border/80 bg-card shadow-2xl overflow-hidden">
-        {/* Top classified strip */}
         <div className="flex items-center justify-between border-b border-border/70 bg-secondary/80 px-4 py-3">
           <div className="flex items-center gap-2">
             <ShieldCheck className="size-4 text-primary" />
@@ -95,7 +95,6 @@ export function AuthModal({
           </button>
         </div>
 
-        {/* Header content */}
         <div className="p-6 pb-2">
           <div className="flex items-center justify-between">
             <span className="label-xs text-muted-foreground">ФОРМА УЧЁТА СОТРУДНИКОВ</span>
@@ -104,145 +103,98 @@ export function AuthModal({
             </span>
           </div>
           <h2 className="mt-2 font-display text-xl uppercase tracking-[0.06em] text-foreground">
-            {mode === 'login' ? 'Вход в архив ОВР' : 'Регистрация оператора'}
+            {step === 'email' ? 'Вход в архив ОВР' : 'Подтверждение допуска'}
           </h2>
           <p className="mt-1 text-xs text-muted-foreground">
-            {mode === 'login'
-              ? 'Введите служебные реквизиты для доступа к закрытым материалам расследований.'
-              : 'Создайте личный идентификатор исследователя для сохранения протоколов и заметок.'}
+            {step === 'email'
+              ? 'Укажите email — мы пришлём код входа. Пароль не нужен, аккаунт создаётся автоматически.'
+              : `Код отправлен на ${email}. Введите его, чтобы войти.`}
           </p>
-
-          {/* Mode switch tabs */}
-          <div className="mt-4 grid grid-cols-2 border-b border-border/70">
-            <button
-              type="button"
-              onClick={() => {
-                setMode('login');
-                setError(null);
-              }}
-              className={cn(
-                'py-2 text-xs uppercase tracking-wider transition-colors border-b-2 font-medium',
-                mode === 'login'
-                  ? 'border-primary text-primary bg-primary/5'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              )}
-            >
-              Вход
-            </button>
-            <button
-              type="button"
-              onClick={() => {
-                setMode('register');
-                setError(null);
-              }}
-              className={cn(
-                'py-2 text-xs uppercase tracking-wider transition-colors border-b-2 font-medium',
-                mode === 'register'
-                  ? 'border-primary text-primary bg-primary/5'
-                  : 'border-transparent text-muted-foreground hover:text-foreground'
-              )}
-            >
-              Регистрация
-            </button>
-          </div>
         </div>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="p-6 pt-4 space-y-4">
-          {error && (
-            <div className="flex items-start gap-2.5 border border-destructive/60 bg-destructive/10 p-3 text-xs text-destructive">
-              <ShieldAlert className="size-4 shrink-0 mt-0.5" />
-              <span>{error}</span>
-            </div>
-          )}
-
-          {mode === 'register' && (
-            <div className="space-y-1.5">
-              <label className="block label-xs text-muted-foreground">
-                Позывной / ФИО следователя
+          {step === 'email' ? (
+            <>
+              <label className="block">
+                <span className="label-xs text-muted-foreground">EMAIL</span>
+                <div className="relative mt-1">
+                  <Mail className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    type="email"
+                    required
+                    autoFocus
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="investigator@mail.ru"
+                    className="w-full border border-border/80 bg-background/60 py-2.5 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
+                  />
+                </div>
               </label>
-              <div className="relative">
+              <label className="flex items-start gap-2 text-xs text-muted-foreground">
                 <input
-                  type="text"
-                  required
-                  placeholder="напр. Следователь Орлов / И. В. Смирнов"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full border border-border/80 bg-secondary/50 px-3 py-2 pl-9 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
+                  type="checkbox"
+                  checked={consent}
+                  onChange={(e) => setConsent(e.target.checked)}
+                  className="mt-0.5 accent-[hsl(var(--primary))]"
                 />
-                <User className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+                <span>
+                  Я согласен на обработку персональных данных в соответствии с{' '}
+                  <Link href="/privacy" target="_blank" className="text-primary underline underline-offset-2">
+                    политикой обработки персональных данных
+                  </Link>
+                </span>
+              </label>
+            </>
+          ) : (
+            <>
+              {devCode && (
+                <div className="border border-amber-500/50 bg-amber-950/30 px-3 py-2 font-mono text-xs text-amber-300">
+                  ТЕСТОВЫЙ РЕЖИМ: письма не отправляются. Ваш код: <b className="tracking-[0.3em]">{devCode}</b>
+                </div>
+              )}
+              <label className="block">
+                <span className="label-xs text-muted-foreground">КОД ИЗ ПИСЬМА</span>
+                <div className="relative mt-1">
+                  <KeyRound className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                  <input
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                    required
+                    autoFocus
+                    maxLength={6}
+                    value={code}
+                    onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
+                    placeholder="000000"
+                    className="w-full border border-border/80 bg-background/60 py-2.5 pl-9 pr-3 font-mono text-lg tracking-[0.4em] text-foreground placeholder:text-muted-foreground/40 focus:border-primary focus:outline-none"
+                  />
+                </div>
+              </label>
+              <div className="flex justify-between text-xs">
+                <button type="button" onClick={() => setStep('email')} className="text-muted-foreground hover:text-foreground">
+                  ← Другой email
+                </button>
+                <button type="button" onClick={requestCode} disabled={loading} className="text-primary hover:underline disabled:opacity-50">
+                  Отправить код ещё раз
+                </button>
               </div>
-            </div>
+            </>
           )}
 
-          <div className="space-y-1.5">
-            <label className="block label-xs text-muted-foreground">
-              Служебный Email
-            </label>
-            <div className="relative">
-              <input
-                type="email"
-                required
-                placeholder="investigator@ovr.internal"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full border border-border/80 bg-secondary/50 px-3 py-2 pl-9 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
-              />
-              <Mail className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
+          {error && (
+            <div className="flex items-center gap-2 border border-destructive/50 bg-destructive/10 px-3 py-2 text-xs text-destructive">
+              <ShieldAlert className="size-4 shrink-0" />
+              {error}
             </div>
-          </div>
-
-          <div className="space-y-1.5">
-            <label className="block label-xs text-muted-foreground">
-              Пароль допуска
-            </label>
-            <div className="relative">
-              <input
-                type="password"
-                required
-                placeholder={mode === 'register' ? 'Минимум 6 символов' : '••••••••'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full border border-border/80 bg-secondary/50 px-3 py-2 pl-9 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none"
-              />
-              <KeyRound className="absolute left-2.5 top-2.5 size-4 text-muted-foreground" />
-            </div>
-          </div>
+          )}
 
           <button
             type="submit"
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 border border-primary bg-primary/20 py-2.5 font-display text-xs uppercase tracking-[0.14em] text-primary hover:bg-primary hover:text-primary-foreground transition-colors disabled:opacity-50"
+            disabled={loading || (step === 'email' ? !consent || !email : code.length !== 6)}
+            className="flex w-full items-center justify-center gap-2 border border-primary bg-primary/90 py-2.5 font-display text-sm uppercase tracking-[0.14em] text-primary-foreground transition-colors hover:bg-primary disabled:cursor-not-allowed disabled:opacity-50"
           >
-            {loading ? (
-              <>
-                <Loader2 className="size-3.5 animate-spin" />
-                <span>Проверка реквизитов...</span>
-              </>
-            ) : mode === 'login' ? (
-              <>
-                <Lock className="size-3.5" />
-                <span>Авторизовать допуск</span>
-              </>
-            ) : (
-              <>
-                <ShieldCheck className="size-3.5" />
-                <span>Зарегистрировать профиль</span>
-              </>
-            )}
+            {loading && <Loader2 className="size-4 animate-spin" />}
+            {step === 'email' ? 'Получить код' : 'Войти'}
           </button>
-
-          <p className="border-t border-border/50 pt-3 text-[11px] leading-relaxed text-muted-foreground">
-            {mode === 'login' ? (
-              <span>
-                Нет учетной записи? Переключитесь на «Регистрация» выше. Дело №001 доступно и в гостевом режиме.
-              </span>
-            ) : (
-              <span>
-                После создания профиля данные ваших расследований будут синхронизироваться с протоколами ОВР.
-              </span>
-            )}
-          </p>
         </form>
       </div>
     </div>

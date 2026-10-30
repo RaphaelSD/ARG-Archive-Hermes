@@ -13,6 +13,7 @@ import type {
   Location,
 } from '@/lib/archive-data';
 import { locations } from '@/lib/locations-data';
+import { FREE_CASE_IDS } from '@/lib/payments/config';
 
 // Import Case 001 structured content from content/cases/case-001/
 import case001Meta from '../../../content/cases/case-001/case.json';
@@ -31,7 +32,7 @@ import case001Archive from '../../../content/cases/case-001/archive.json';
 export const uiTexts = case001UITexts as Record<string, string>;
 export const archiveCases = case001Archive as Array<any>;
 
-export const DEMO_CASE_IDS = new Set(['001']);
+export const DEMO_CASE_IDS = new Set(FREE_CASE_IDS);
 
 export function isDemoAllowedForCase(caseId: string): boolean {
   // Global check: in development environment, full access is always granted
