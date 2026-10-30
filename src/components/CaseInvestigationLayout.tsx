@@ -210,6 +210,12 @@ export default function CaseInvestigationLayout({
   const [activeTab, setActiveTab] = useState<'people' | 'orlov' | 'diary'>('people');
   const [selectedCharacterId, setSelectedCharacterId] = useState<string>('char_clara');
 
+  // Дедукция: игрок сам выбирает три материала, образующих повторяющийся «почерк» преступника
+  const [deductionPicks, setDeductionPicks] = useState<string[]>(['', '', '']);
+  const [deductionConfirmed, setDeductionConfirmed] = useState(false);
+  const [deductionMisses, setDeductionMisses] = useState(0);
+  const [deductionMessage, setDeductionMessage] = useState<string | null>(null);
+
   // Раскрытие категорий в левом меню
   const [isDocsOpen, setIsDocsOpen] = useState(true);
   const [isPhotosOpen, setIsPhotosOpen] = useState(true);
@@ -501,14 +507,44 @@ export default function CaseInvestigationLayout({
   // 3. ИГРОВЫЕ ДЕЙСТВИЯ (UNLOCK, HOTSPOTS, NOTES)
   // ==========================================================
 
-  // 3 ключевые улики для финала дедукции:
-  // 1. Ткань на зеркале (P02)
-  // 2. Остановленные часы на 03:00 (P03)
-  // 3. Пропавшее серебряное кольцо (P06 или clue_ring_confirmed_stolen)
-  const hasClothClue = isDocUnlocked('P02');
-  const hasWatchClue = isDocUnlocked('P03');
-  const hasRingClue = isDocUnlocked('P06') || isDocUnlocked('clue_ring_confirmed_stolen');
-  const isAllThreeCluesFound = hasClothClue && hasWatchClue && hasRingClue;
+  // Три константы дела (ритуал, трофей, счётчик). Игроку они не подписаны:
+  // он сам выбирает материалы. Для каждой константы подходит один из перечисленных материалов.
+  const DEDUCTION_CONSTANTS: string[][] = [
+    ['P02'], // чёрная ткань на зеркале
+    ['P03'], // часы со стрелками на 3
+    ['P06', 'D03', 'clue_ring_confirmed_stolen'], // пропавшее кольцо
+  ];
+
+  // Выбирать можно только уже открытые фотографии и документы
+  const deductionCandidates = allDocuments.filter(
+    (d) => (d.kind === 'photo' || d.kind === 'document') && isDocUnlocked(d.id)
+  );
+
+  const isDeductionSetCorrect = (picks: string[]) => {
+    if (picks.some((id) => !id) || new Set(picks).size !== picks.length) return false;
+    return DEDUCTION_CONSTANTS.every((group) => picks.some((id) => group.includes(id)));
+  };
+
+  const handleCheckDeduction = () => {
+    if (deductionPicks.some((id) => !id)) {
+      setDeductionMessage('Выберите материал в каждой из трёх ячеек.');
+      return;
+    }
+    if (isDeductionSetCorrect(deductionPicks)) {
+      setDeductionConfirmed(true);
+      setDeductionMessage(null);
+      return;
+    }
+    const misses = deductionMisses + 1;
+    setDeductionMisses(misses);
+    setDeductionMessage(
+      misses >= 3
+        ? 'Недостаточно оснований. Подсказка: ищите то, что не принадлежит гостинице, то, что пропало, и то, что остановилось.'
+        : 'Недостаточно оснований: эти материалы не образуют повторяющийся признак. Попробуйте другое сочетание.'
+    );
+  };
+
+  const isAllThreeCluesFound = deductionConfirmed;
   const isFinalDeductionUnlocked = completedDeductions.includes('ded_unknown_visitor_confirmed');
 
   // Запуск финальной кат-сцены (ded_unknown_visitor_confirmed + старые архивные дела)
@@ -576,16 +612,9 @@ export default function CaseInvestigationLayout({
     if (!query) return;
 
     // Проверка специальных триггеров финала расследования
-    if (
-      query === 'неизвестный посетитель' ||
-      query === 'ded_unknown_visitor_confirmed' ||
-      query === 'финал' ||
-      query === 'паттерн' ||
-      query === 'серия' ||
-      query === '96-1042' ||
-      query === '94-0815' ||
-      query === 'ткань часы кольцо'
-    ) {
+    // Только для разработки: быстрый переход к финалу. На боевом сайте слова-триггеры не работают,
+    // финал открывается через блок «Синтез улик».
+    if (process.env.NODE_ENV === 'development' && query === 'ded_unknown_visitor_confirmed') {
       setUnlockFeedback({
         message: '⚡ [ФИНАЛЬНАЯ ДЕДУКЦИЯ]: Подтвержден неизвестный посетитель! Переход к закрытию дела...',
         type: 'success',
@@ -1295,47 +1324,46 @@ export default function CaseInvestigationLayout({
               <div className="flex items-center gap-2">
                 <ShieldCheck className="size-4 text-[#c5a059]" />
                 <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-200">
-                  СИНТЕЗ УЛИК // ПОДТВЕРЖДЕНИЕ НЕИЗВЕСТНОГО ПОСЕТИТЕЛЯ
+                  СИНТЕЗ УЛИК // ПОВТОРЯЮЩИЕСЯ ПРИЗНАКИ
                 </span>
               </div>
-              <span className="text-[10px] font-mono text-[#c5a059] border border-[#c5a059]/40 bg-[#c5a059]/10 px-2 py-0.5 rounded-xs">
-                ded_unknown_visitor_confirmed
-              </span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-[11px] font-mono">
-              <div
-                className={`p-2 rounded-xs border flex items-center justify-between transition-colors ${
-                  hasClothClue
-                    ? 'border-emerald-500/50 bg-emerald-950/20 text-emerald-300'
-                    : 'border-[#1e232d] bg-[#0c0e12] text-zinc-500'
-                }`}
-              >
-                <span>1. Ткань на зеркале [P02]</span>
-                <span className="font-semibold">{hasClothClue ? '✓ ОБНАРУЖЕНО' : '🔒 ЗАКРЫТО'}</span>
-              </div>
-
-              <div
-                className={`p-2 rounded-xs border flex items-center justify-between transition-colors ${
-                  hasWatchClue
-                    ? 'border-emerald-500/50 bg-emerald-950/20 text-emerald-300'
-                    : 'border-[#1e232d] bg-[#0c0e12] text-zinc-500'
-                }`}
-              >
-                <span>2. Часы на 03:00 [P03]</span>
-                <span className="font-semibold">{hasWatchClue ? '✓ ОБНАРУЖЕНО' : '🔒 ЗАКРЫТО'}</span>
-              </div>
-
-              <div
-                className={`p-2 rounded-xs border flex items-center justify-between transition-colors ${
-                  hasRingClue
-                    ? 'border-emerald-500/50 bg-emerald-950/20 text-emerald-300'
-                    : 'border-[#1e232d] bg-[#0c0e12] text-zinc-500'
-                }`}
-              >
-                <span>3. Кольцо-трофей [P06]</span>
-                <span className="font-semibold">{hasRingClue ? '✓ ОБНАРУЖЕНО' : '🔒 ЗАКРЫТО'}</span>
-              </div>
+              {[0, 1, 2].map((slot) => (
+                <label
+                  key={slot}
+                  className={`p-2 rounded-xs border flex flex-col gap-1 transition-colors ${
+                    deductionConfirmed
+                      ? 'border-emerald-500/50 bg-emerald-950/20 text-emerald-300'
+                      : 'border-[#1e232d] bg-[#0c0e12] text-zinc-500'
+                  }`}
+                >
+                  <span className="text-[10px] uppercase tracking-wider">Признак {slot + 1}</span>
+                  <select
+                    value={deductionPicks[slot]}
+                    disabled={deductionConfirmed || isFinaleActive}
+                    onChange={(e) => {
+                      const next = [...deductionPicks];
+                      next[slot] = e.target.value;
+                      setDeductionPicks(next);
+                      setDeductionMessage(null);
+                    }}
+                    className="w-full bg-[#0b0d11] border border-[#1e232d] text-zinc-200 text-[11px] rounded-xs px-1.5 py-1 focus:outline-none focus:border-[#c5a059] disabled:opacity-70"
+                  >
+                    <option value="">— выберите материал —</option>
+                    {deductionCandidates.map((d) => (
+                      <option
+                        key={d.id}
+                        value={d.id}
+                        disabled={deductionPicks.some((id, i) => i !== slot && id === d.id)}
+                      >
+                        {d.title}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ))}
             </div>
 
             {/* Состояние готовности дедукции */}
@@ -1343,7 +1371,7 @@ export default function CaseInvestigationLayout({
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#1e232d] animate-in fade-in">
                 <span className="text-[11px] font-mono text-[#c5a059] flex items-center gap-1.5">
                   <Sparkles className="size-3.5 text-[#c5a059]" />
-                  <span>Совпадение 3 констант подтверждено: ритуал сокрытия, остановка времени, похищенный трофей.</span>
+                  <span>Связь подтверждена: эти три признака повторяются. Можно сверить их с архивом.</span>
                 </span>
                 <button
                   type="button"
@@ -1351,13 +1379,23 @@ export default function CaseInvestigationLayout({
                   className="w-full sm:w-auto px-4 py-2 bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-mono font-bold text-xs uppercase tracking-wider rounded-xs transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] active:scale-98 flex items-center justify-center gap-2 shrink-0"
                 >
                   <Sparkles className="size-3.5" />
-                  <span>ПОДТВЕРДИТЬ НЕИЗВЕСТНОГО ПОСЕТИТЕЛЯ</span>
+                  <span>СВЕРИТЬ С АРХИВОМ</span>
                 </button>
               </div>
             ) : (
-              <div className="text-[10px] font-mono text-zinc-500 flex items-center justify-between">
-                <span>Для сопоставления найдите в номере 12: зеркало (ткань), наручные часы (03:00) и следы украшения.</span>
-                <span className="text-zinc-600">Осталось найти: {[!hasClothClue && 'ткань', !hasWatchClue && 'часы', !hasRingClue && 'кольцо'].filter(Boolean).join(', ') || 'нет'}</span>
+              <div className="text-[10px] font-mono text-zinc-500 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                <span>
+                  {deductionMessage ??
+                    'Выберите три материала дела, которые указывают на один и тот же почерк преступника.'}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleCheckDeduction}
+                  disabled={isFinaleActive}
+                  className="px-3 py-1.5 border border-[#c5a059]/50 text-[#c5a059] hover:bg-[#c5a059]/10 uppercase tracking-wider rounded-xs transition-colors shrink-0 disabled:opacity-50"
+                >
+                  ПРОВЕРИТЬ СВЯЗЬ
+                </button>
               </div>
             )}
           </div>
