@@ -46,6 +46,13 @@ import rawCaseDocs from '../../content/cases/case-001/documents.json';
 import rawCaseCalls from '../../content/cases/case-001/calls.json';
 import rawCasePeople from '../../content/cases/case-001/people.json';
 import rawCaseTimeline from '../../content/cases/case-001/timeline.json';
+import { useCaseEngine } from '@/lib/engine/useCaseEngine';
+import { isConditionMet } from '@/lib/engine/evaluator';
+import { InterviewDialog } from '@/components/interview-dialog';
+import { CityMap } from '@/components/city-map';
+import { InvestigativeTerminal } from '@/components/investigative-terminal';
+import { getCaseById } from '@/lib/cases/loader';
+import type { CaseFile } from '@/lib/archive-data';
 
 export type HotspotItem = {
   id: string;
@@ -244,6 +251,17 @@ export default function CaseInvestigationLayout({
 
   const unlockInputRef = useRef<HTMLInputElement>(null);
 
+  // Игровой движок: допросы, карта, терминал, хотспоты. Хранит состояние расследования
+  // (просмотренные улики, заданные вопросы, исследованные места) и проверяет условия разблокировки.
+  const engineCaseFile = (
+    caseFile && Array.isArray(caseFile.documents) && caseFile.documents.length > 0
+      ? caseFile
+      : getCaseById('001')
+  ) as CaseFile;
+  const engine = useCaseEngine({ caseFile: engineCaseFile, isGuest: !playerEmail });
+  const [activePanel, setActivePanel] = useState<'interviews' | 'map' | 'terminal' | null>(null);
+  const [activeInterviewId, setActiveInterviewId] = useState<string | null>(null);
+
   // ----------------------------------------------------------
   // СОСТОЯНИЯ ТАЙМЕРА И ФИНАЛЬНОЙ КАТ-СЦЕНЫ
   // ----------------------------------------------------------
@@ -438,7 +456,25 @@ export default function CaseInvestigationLayout({
 
   // Проверка, разблокирован ли документ
   const isDocUnlocked = (id: string) => {
-    return unlockedDocIds.includes(id);
+    return unlockedDocIds.includes(id) || (engine.state.viewedEvidence ?? []).includes(id);
+  };
+
+  // Открытый на столе материал считается просмотренным (для условий вида «улика изучена»)
+  useEffect(() => {
+    if (engine.isLoaded && isDocUnlocked(selectedItemId)) {
+      engine.markEvidenceViewed(selectedItemId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedItemId, engine.isLoaded, unlockedDocIds]);
+
+  // Открыть материал из окна допроса, карты или терминала
+  const openEvidenceFromPanel = (evidenceId: string) => {
+    if (isDocUnlocked(evidenceId)) {
+      setSelectedItemId(evidenceId);
+      setActivePanel(null);
+    } else {
+      setUnlockFeedback({ message: 'Этот материал пока недоступен. Продолжайте расследование.', type: 'info' });
+    }
   };
 
   // Разделение материалов по типам
@@ -589,7 +625,32 @@ export default function CaseInvestigationLayout({
     window.location.href = '/';
   };
 
-  const handleRestartEntireInvestigation = () => {
+  // Полный сброс состояния движка: локально и на сервере (для вошедших игроков)
+  const clearEngineProgress = async () => {
+    try {
+      localStorage.removeItem(`arg_case_state_${engineCaseFile.id}`);
+      localStorage.removeItem(`arg_terminal_solved_${engineCaseFile.id}`);
+      localStorage.removeItem(`arg_player_notes_${engineCaseFile.id}`);
+    } catch {}
+    if (playerEmail) {
+      try {
+        await fetch('/api/progress', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            caseId: engineCaseFile.id,
+            progress: 0,
+            solvedQuestions: [],
+            viewedEvidence: [],
+            notes: [],
+          }),
+        });
+      } catch {}
+    }
+  };
+
+  const handleRestartEntireInvestigation = async () => {
+    await clearEngineProgress();
     try {
       localStorage.removeItem(`arg_unlocked_docs_${caseId}`);
       localStorage.removeItem(`arg_completed_deductions_${caseId}`);
@@ -626,6 +687,21 @@ export default function CaseInvestigationLayout({
       return;
     }
 
+    if (query.length < 3) {
+      setUnlockFeedback({
+        message: '[ОТКАЗ В ДОСТУПЕ]: Слишком короткий запрос. Введите ключевое слово из материалов дела.',
+        type: 'error',
+      });
+      return;
+    }
+
+    // Состояние для проверки условий: открытые материалы считаются изученными
+    const conditionState = {
+      ...engine.state,
+      viewedEvidence: Array.from(new Set([...(engine.state.viewedEvidence ?? []), ...unlockedDocIds])),
+    };
+    let blockedByCondition = 0;
+
     // Ищем заблокированные материалы, совпадающие по search_tags, названию или id
     const newlyUnlocked = allDocuments.filter((doc) => {
       if (isDocUnlocked(doc.id)) return false;
@@ -639,7 +715,14 @@ export default function CaseInvestigationLayout({
         doc.id.toLowerCase() === query ||
         doc.id.toLowerCase().replace(/[^a-z0-9]/g, '') === query.replace(/[^a-z0-9]/g, '');
 
-      return matchesTag || matchesTitle || matchesId;
+      if (!(matchesTag || matchesTitle || matchesId)) return false;
+
+      // Материал открывается ключом только если выполнены его условия (допрос, осмотр, дедукция...)
+      if (!isConditionMet((doc as any).unlockCondition, conditionState)) {
+        blockedByCondition += 1;
+        return false;
+      }
+      return true;
     });
 
     if (newlyUnlocked.length > 0) {
@@ -661,6 +744,14 @@ export default function CaseInvestigationLayout({
         const matchesTag = d.search_tags?.some((t) => t.toLowerCase() === query);
         return (matchesTag || d.title.toLowerCase().includes(query)) && isDocUnlocked(d.id);
       });
+
+      if (blockedByCondition > 0 && !alreadyOpen) {
+        setUnlockFeedback({
+          message: '[ДОСТУП ОГРАНИЧЕН]: Идентификатор распознан, но для доступа нужно продолжить расследование: допросы, осмотр мест, сопоставление улик.',
+          type: 'info',
+        });
+        return;
+      }
 
       if (alreadyOpen) {
         setSelectedItemId(alreadyOpen.id);
@@ -691,6 +782,7 @@ export default function CaseInvestigationLayout({
 
   // Клик по интерактивной точке (hotspot) на фото
   const handleHotspotClick = (hotspot: HotspotItem) => {
+    engine.discoverHotspot(selectedItemId, hotspot.id);
     // Если точка открывает улику (например, Зеркало -> P02, Тумбочка -> P03)
     if (hotspot.resultEvidenceId) {
       const targetId = hotspot.resultEvidenceId;
@@ -743,6 +835,8 @@ export default function CaseInvestigationLayout({
         setTimeLeft(TOTAL_INVESTIGATION_TIME);
         setUnlockFeedback(null);
       } catch {}
+      // Состояние движка (допросы, карта, хотспоты) сбрасывается вместе со страницей
+      clearEngineProgress().finally(() => window.location.reload());
     }
   };
 
@@ -829,6 +923,30 @@ export default function CaseInvestigationLayout({
             <Clock className={`size-3.5 ${timeLeft <= 180 ? 'text-red-400' : 'text-[#c5a059]'}`} />
             <span className="font-bold tabular-nums text-xs sm:text-sm tracking-widest">{formatTime(timeLeft)}</span>
             <span className="text-[9px] opacity-70 hidden sm:inline">СЕССИЯ ОВР</span>
+          </div>
+
+          {/* Инструменты расследования: допросы, карта, терминал */}
+          <div className="hidden lg:flex items-center gap-1.5">
+            {(
+              [
+                { id: 'interviews', label: 'ДОПРОСЫ', icon: User },
+                { id: 'map', label: 'КАРТА', icon: MapPin },
+                // Терминал включится на этапе 4, когда архив будет закрыт условиями сценария
+                ...(process.env.NODE_ENV === 'development'
+                  ? [{ id: 'terminal', label: 'ТЕРМИНАЛ', icon: Terminal }]
+                  : []),
+              ] as { id: 'interviews' | 'map' | 'terminal'; label: string; icon: React.ElementType }[]
+            ).map((tool) => (
+              <button
+                key={tool.id}
+                type="button"
+                onClick={() => setActivePanel(tool.id)}
+                className="flex items-center gap-1.5 px-2.5 py-1 border border-[#1e232d] bg-[#12151b] hover:border-[#c5a059]/60 hover:text-[#c5a059] text-zinc-300 rounded-xs font-mono text-[11px] tracking-wider transition-colors"
+              >
+                <tool.icon className="size-3.5" />
+                <span>{tool.label}</span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -2032,6 +2150,107 @@ export default function CaseInvestigationLayout({
       )}
 
       {/* 6. Предупреждение об истечении 20-минутного таймера расследования */}
+      {/* ИНСТРУМЕНТЫ РАССЛЕДОВАНИЯ: допросы, карта, терминал */}
+      {activePanel && (() => {
+        const interviews = engine.availableInterviews;
+        const activeInterview =
+          interviews.find((i) => i.id === activeInterviewId) ?? interviews[0] ?? null;
+        const mapLocations =
+          engine.availableLocations.length > 0 ? engine.availableLocations : (engineCaseFile.locations ?? []);
+        const openDocuments = (engineCaseFile.documents ?? []).filter((d) => isDocUnlocked(d.id));
+        const titles = { interviews: 'ДОПРОСЫ', map: 'КАРТА БЕЛМОНТА', terminal: 'СЛУЖЕБНЫЙ ТЕРМИНАЛ' } as const;
+
+        return (
+          <div
+            className="fixed inset-0 bg-black/85 z-50 flex items-center justify-center p-4 backdrop-blur-xs"
+            onClick={() => setActivePanel(null)}
+          >
+            <div
+              className="w-full max-w-4xl max-h-[88vh] overflow-y-auto bg-[#101319] border border-[#1e232d] rounded-sm"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="sticky top-0 z-10 flex items-center justify-between bg-[#101319] border-b border-[#1e232d] px-4 py-2.5">
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#c5a059]">
+                  {titles[activePanel]}
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setActivePanel(null)}
+                  className="text-zinc-400 hover:text-zinc-100 transition-colors p-1"
+                  title="Закрыть"
+                >
+                  <X className="size-4" />
+                </button>
+              </div>
+
+              <div className="p-4">
+                {activePanel === 'interviews' && (
+                  <div className="space-y-3">
+                    {interviews.length === 0 ? (
+                      <p className="text-xs text-zinc-500 font-mono">Нет доступных протоколов допроса.</p>
+                    ) : (
+                      <>
+                        <div className="flex flex-wrap gap-1.5">
+                          {interviews.map((iv) => (
+                            <button
+                              key={iv.id}
+                              type="button"
+                              onClick={() => setActiveInterviewId(iv.id)}
+                              className={`px-2.5 py-1 text-[11px] font-mono rounded-xs border transition-colors ${
+                                activeInterview?.id === iv.id
+                                  ? 'border-[#c5a059]/60 bg-[#161a22] text-[#c5a059]'
+                                  : 'border-[#1e232d] text-zinc-400 hover:text-zinc-200'
+                              }`}
+                            >
+                              {iv.title}
+                            </button>
+                          ))}
+                        </div>
+                        {activeInterview && (
+                          <InterviewDialog
+                            key={activeInterview.id}
+                            interview={activeInterview}
+                            availableQuestions={activeInterview.questions.filter((q) =>
+                              q.unlockCondition ? isConditionMet(q.unlockCondition, engine.state) : true
+                            )}
+                            askedQuestionIds={engine.state.askedQuestions}
+                            onAskQuestion={(ivId, qId) => engine.askQuestion(ivId, qId)}
+                            onPresentClue={(ivId, qId, clueId) => engine.presentClue(ivId, qId, clueId)}
+                            allUnlockedDocuments={openDocuments}
+                            onOpenEvidence={openEvidenceFromPanel}
+                          />
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {activePanel === 'map' && (
+                  <CityMap
+                    locations={mapLocations}
+                    exploredLocationIds={engine.state.exploredLocations}
+                    onExploreLocation={engine.exploreLocation}
+                    onSelectEvidence={openEvidenceFromPanel}
+                  />
+                )}
+
+                {activePanel === 'terminal' && (
+                  <InvestigativeTerminal
+                    caseId={engineCaseFile.id}
+                    terminalConfig={engineCaseFile.terminal}
+                    solvedQuestionIds={engine.state.solvedQuestions}
+                    onSolveQuestion={engine.solveQuestion}
+                    isArchiveUnlocked={engine.isArchiveUnlocked}
+                    viewedEvidenceIds={engine.state.viewedEvidence}
+                    onOpenEvidence={openEvidenceFromPanel}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       {isTimerExpired && !isFinaleActive && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-6 backdrop-blur-md animate-in fade-in duration-300">
           <div className="relative flex max-h-[92vh] w-full max-w-lg flex-col border-2 border-red-600/80 bg-[#0e1015] shadow-[0_0_60px_rgba(220,38,38,0.35)] p-6 sm:p-8 text-center space-y-5 rounded-xs">
