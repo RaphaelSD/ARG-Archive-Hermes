@@ -153,7 +153,7 @@ export const case001: CaseFile = {
   callLog: {
     subject: (case001Calls as any).subject ?? 'Детализация телефонных звонков (Биллинг базовой станции)',
     pin: (case001Calls as any).pin ?? 'ОВР-БИЛЛИНГ',
-    highlightedNumber: (case001Calls as any).highlightedNumber ?? '+1 (555) 382-91-04',
+    highlightedNumber: (case001Calls as any).highlightedNumber ?? '382-91-04',
     rows: (Array.isArray(case001Calls)
       ? case001Calls
       : Array.isArray((case001Calls as any).rows)

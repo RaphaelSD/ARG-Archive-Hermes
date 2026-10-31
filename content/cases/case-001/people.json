@@ -7,47 +7,66 @@
     "description": "21 год, студентка. Приехала в Белмонт на фестиваль Riverside. Остановилась в номере 12 гостиницы Pinecrest. Убита.",
     "avatarUrl": "/images/characters/clara_vance_01.jpg",
     "image_asset": "/images/characters/clara_vance_01.jpg",
-    "linkedEvidence": ["D02", "D03", "P01", "P06", "P08"]
+    "linkedEvidence": [
+      "D02",
+      "D03",
+      "P01",
+      "P06",
+      "P08"
+    ]
   },
   {
     "id": "char_leo",
     "name": "Лео Харт",
     "role": "Случайный знакомый",
     "status": "PERSON_OF_INTEREST",
-    "description": "Познакомился с Кларой на фестивале и проводил ее до гостиницы. Утверждает, что ушел сразу, но журнал портье говорит об обратном.",
+    "description": "Познакомился с Кларой на фестивале и проводил её до гостиницы. Говорит, что попрощался у входа и ушёл домой, но журнал портье говорит иначе.",
     "avatarUrl": "/images/characters/leo_hart_01.jpg",
     "image_asset": "/images/characters/leo_hart_01.jpg",
-    "linkedEvidence": ["I02", "D04"]
+    "linkedEvidence": [
+      "I02",
+      "D04"
+    ]
   },
   {
     "id": "char_thomas",
     "name": "Томас Вэйл",
     "role": "Старый знакомый",
     "status": "SUSPECT",
-    "description": "Останавливался в той же гостинице. Искал Клару вечером. Утверждает, что во время убийства был в баре The Lantern.",
+    "description": "Гость Pinecrest (номер 10). Искал Клару вечером и скрывает, что шёл за ней после старой ссоры. Утверждает, что весь вечер провёл в баре The Lantern.",
     "avatarUrl": "/images/characters/thomas_vail_01.jpg",
     "image_asset": "/images/characters/thomas_vail_01.jpg",
-    "linkedEvidence": ["I03", "D04", "clue_thomas_left_bar"]
+    "linkedEvidence": [
+      "I03",
+      "D04",
+      "clue_thomas_left_bar"
+    ]
   },
   {
     "id": "char_edward",
     "name": "Эдвард Рид",
     "role": "Ночной портье",
     "status": "CONNECTED",
-    "description": "Дежурил на ресепшене гостиницы Pinecrest в ночь убийства. Его журнал является главным источником хронологии, но он мог заснуть на посту.",
+    "description": "Дежурил на ресепшене в ночь убийства. Его журнал — главный источник хронологии, но он спал часть смены и дописал записи задним числом.",
     "avatarUrl": "/images/characters/edward_reed_01.jpg",
     "image_asset": "/images/characters/edward_reed_01.jpg",
-    "linkedEvidence": ["I04", "D04", "clue_porter_slept"]
+    "linkedEvidence": [
+      "I04",
+      "D04",
+      "clue_porter_slept"
+    ]
   },
   {
     "id": "char_julia",
     "name": "Джулия Ривз",
     "role": "Горничная",
     "status": "MENTIONED",
-    "description": "Обнаружила тело утром. Вызвала полицию.",
+    "description": "Нашла тело утром и вызвала полицию. Скрывает, что заходила в номер раньше из-за ошибки с бельём.",
     "avatarUrl": "/images/characters/julia_reeves_01.jpg",
     "image_asset": "/images/characters/julia_reeves_01.jpg",
-    "linkedEvidence": ["D01"]
+    "linkedEvidence": [
+      "D01"
+    ]
   },
   {
     "id": "char_maggie",
@@ -57,6 +76,42 @@
     "description": "Общалась с Кларой по телефону в день убийства. Знает подробности о ее личных вещах, включая кольцо.",
     "avatarUrl": "/images/characters/maggie_brooks_01.jpg",
     "image_asset": "/images/characters/maggie_brooks_01.jpg",
-    "linkedEvidence": ["I01", "clue_ring_confirmed_stolen", "clue_strange_man_festival"]
+    "linkedEvidence": [
+      "I01",
+      "clue_ring_confirmed_stolen",
+      "clue_strange_man_festival"
+    ]
+  },
+  {
+    "id": "char_simon",
+    "name": "Саймон Крейн",
+    "role": "Бармен The Lantern",
+    "status": "CONNECTED",
+    "profession": "Бармен",
+    "description": "Работал в ночь убийства. Помнит, когда пришёл Томас Вэйл и когда он выходил, но путает минуты.",
+    "linkedEvidence": [
+      "D08"
+    ]
+  },
+  {
+    "id": "char_owen",
+    "name": "Оуэн Миллер",
+    "role": "Продавец магазина",
+    "status": "CONNECTED",
+    "profession": "Продавец",
+    "description": "Работает в семейном магазине неподалёку от бара. Подтверждает, что около полуночи к нему заходил Томас Вэйл. Больше ничего существенного не знает.",
+    "linkedEvidence": [
+      "D09"
+    ]
+  },
+  {
+    "id": "char_unknown",
+    "name": "Неизвестный мужчина",
+    "role": "Не установлен",
+    "status": "MENTIONED",
+    "description": "Человек, которого нет ни в одном журнале. Известно только то, что он был на втором этаже в ночь убийства.",
+    "linkedEvidence": [
+      "D10"
+    ]
   }
 ]

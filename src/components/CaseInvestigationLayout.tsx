@@ -450,9 +450,23 @@ export default function CaseInvestigationLayout({
   }, [caseFile?.people]);
 
   // Хронология дела
-  const timelineEntries = useMemo(() => {
+  const allTimelineEntries = useMemo(() => {
     return caseFile?.timeline || rawCaseTimeline || [];
   }, [caseFile?.timeline]);
+  const timelineEntries = useMemo(() => {
+    return (allTimelineEntries as any[]).filter((t) => {
+      if (!t?.unlockCondition) return true;
+      try {
+        return isConditionMet(t.unlockCondition, {
+          ...engine.state,
+          viewedEvidence: Array.from(new Set([...(engine.state.viewedEvidence ?? []), ...unlockedDocIds])),
+        } as any);
+      } catch {
+        return true;
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [allTimelineEntries, engine.state, unlockedDocIds]);
 
   // Проверка, разблокирован ли документ
   const isDocUnlocked = (id: string) => {
@@ -526,10 +540,6 @@ export default function CaseInvestigationLayout({
   const isCharacterUnlocked = (char: CaseCharacter) => {
     if (char.id === 'char_clara' || char.id === 'char_julia') return true;
     if (char.linkedEvidence && char.linkedEvidence.some((evId) => isDocUnlocked(evId))) {
-      return true;
-    }
-    // Если открыт журнал портье (D04) или выписка звонков (D05), круг лиц расширяется
-    if (unlockedDocIds.includes('D04') || unlockedDocIds.includes('D05')) {
       return true;
     }
     return false;
@@ -1794,7 +1804,11 @@ export default function CaseInvestigationLayout({
           <div className="space-y-3.5">
             {/* Карточка активного профиля вверху */}
             <div className="bg-[#141820] border border-[#1e232d] p-3 rounded-sm flex items-start gap-3">
-              {isCharacterUnlocked(activeCharacter) ? (
+              {isCharacterUnlocked(activeCharacter) && !(activeCharacter?.avatarUrl || activeCharacter?.image_asset) ? (
+                <div className="w-[60px] h-[72px] bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
+                  <User className="size-6 text-zinc-500" />
+                </div>
+              ) : isCharacterUnlocked(activeCharacter) ? (
                 <img
                   key={activeCharacter?.id}
                   src={activeCharacter?.avatarUrl || activeCharacter?.image_asset || '/images/characters/clara_vance_01.jpg'}
@@ -1901,7 +1915,11 @@ export default function CaseInvestigationLayout({
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
-                        {unlocked ? (
+                        {unlocked && !(char.avatarUrl || char.image_asset) ? (
+                          <div className="size-8 bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
+                            <User className="size-4 text-zinc-500" />
+                          </div>
+                        ) : unlocked ? (
                           <img
                             src={char.avatarUrl || char.image_asset || '/images/characters/clara_vance_01.jpg'}
                             alt=""

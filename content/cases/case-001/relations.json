@@ -42,17 +42,5 @@
     "type": "WITNESS",
     "label": "Портье подтверждает возвращение Томаса",
     "unlockedByDefault": true
-  },
-  {
-    "id": "rel_leo_unknown",
-    "sourceId": "char_leo",
-    "targetId": "unknown_caller",
-    "type": "SUSPICIOUS",
-    "label": "Ночной звонок в 01:15",
-    "unlockedByDefault": false,
-    "unlockCondition": {
-      "type": "EVIDENCE_VIEWED",
-      "targetId": "C05"
-    }
   }
 ]
