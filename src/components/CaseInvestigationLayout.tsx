@@ -2245,9 +2245,17 @@ export default function CaseInvestigationLayout({
                           <InterviewDialog
                             key={activeInterview.id}
                             interview={activeInterview}
-                            availableQuestions={activeInterview.questions.filter((q) =>
-                              q.unlockCondition ? isConditionMet(q.unlockCondition, engine.state) : true
-                            )}
+                            availableQuestions={activeInterview.questions.filter((q) => {
+                              if (!q.unlockCondition) return true;
+                              // «Улика предъявлена» считается только в рамках этого допроса
+                              const scopedPresented = (engine.state.presentedClues ?? [])
+                                .filter((c) => c.startsWith(`${activeInterview.id}:`))
+                                .flatMap((c) => [c, c.split(':').pop() as string]);
+                              return isConditionMet(q.unlockCondition, {
+                                ...engine.state,
+                                presentedClues: scopedPresented,
+                              });
+                            })}
                             askedQuestionIds={engine.state.askedQuestions}
                             onAskQuestion={(ivId, qId) => engine.askQuestion(ivId, qId)}
                             onPresentClue={(ivId, qId, clueId) => engine.presentClue(ivId, qId, clueId)}

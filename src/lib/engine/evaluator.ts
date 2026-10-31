@@ -54,9 +54,16 @@ export function isConditionMet(
 
     case 'CLUE_PRESENTED': {
       const id = condition.clueId ?? condition.targetId;
-      return id
-        ? (state.presentedClues ?? []).some((c) => c === id || c.endsWith(`:${id}`))
-        : true;
+      if (!id) return true;
+      const presented = state.presentedClues ?? [];
+      // «I03:D04» — улика D04 предъявлена именно на допросе I03 (ключ вида interviewId:questionId:clueId)
+      const sep = id.indexOf(':');
+      if (sep > 0) {
+        const iv = id.slice(0, sep);
+        const clue = id.slice(sep + 1);
+        return presented.some((c) => c.startsWith(`${iv}:`) && c.endsWith(`:${clue}`));
+      }
+      return presented.some((c) => c === id || c.endsWith(`:${id}`));
     }
 
     case 'ALL_OF':

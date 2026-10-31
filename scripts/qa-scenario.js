@@ -15,9 +15,9 @@ function actions(s){
   for(const d of docs){ if(avail(d)) A.push([`view ${d.id}`,()=>add(s.viewedEvidence,d.id)]);
     if(avail(d)&&s.viewedEvidence.includes(d.id)) for(const h of d.hotspots||[]) A.push([`hotspot ${h.id}`,()=>{let c=add(s.discoveredHotspots,h.id);if(h.resultEvidenceId)c=add(s.viewedEvidence,h.resultEvidenceId)||c;return c}]);}
   for(const iv of ivs){ if(iv.unlockCondition&&!isConditionMet(iv.unlockCondition,s)) continue;
-    for(const q of iv.questions){ if(q.unlockCondition&&!isConditionMet(q.unlockCondition,s))continue;
+    for(const q of iv.questions){ const sc={...s,presentedClues:s.presentedClues.filter(c=>c.startsWith(iv.id+':')).flatMap(c=>[c,c.split(':').pop()])}; if(q.unlockCondition&&!isConditionMet(q.unlockCondition,sc))continue;
       A.push([`ask ${q.id}`,()=>{let c=add(s.askedQuestions,q.id);if(q.unlockedEvidenceId)c=add(s.viewedEvidence,q.unlockedEvidenceId)||c;return c}]);}
-    for(const c of s.viewedEvidence) A.push([`present ${c}`,()=>add(s.presentedClues,c)]);}
+    for(const c of s.viewedEvidence) A.push([`present ${iv.id}:${c}`,()=>add(s.presentedClues,`${iv.id}:x:${c}`)]);}
   for(const l of locs){ if(l.unlockCondition&&!isConditionMet(l.unlockCondition,s))continue;
     A.push([`explore ${l.id}`,()=>{let c=add(s.exploredLocations,l.id);if(l.linkedEvidenceId)c=add(s.viewedEvidence,l.linkedEvidenceId)||c;return c}]);}
   for(const q of term.questions){ if(q.unlockCondition&&!isConditionMet(q.unlockCondition,s))continue; A.push([`solve ${q.id}`,()=>add(s.solvedQuestions,q.id)]);}
