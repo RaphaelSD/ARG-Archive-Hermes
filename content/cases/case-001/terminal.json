@@ -14,7 +14,24 @@
       ],
       "solvedTitle": "ВЫВОД: ОКНО БЕЗ СВИДЕТЕЛЕЙ",
       "solvedContent": "Ни один из опрошенных не находился рядом с номером 12 после 00:30. Их ложь объясняется бытовыми причинами. В гостиницу мог войти человек, не внесённый в журнал. Открыто аналитическое заключение D10.",
-      "sourceEvidenceId": "D10"
+      "sourceEvidenceId": "D10",
+      "unlockCondition": {
+        "type": "ALL_OF",
+        "conditions": [
+          {
+            "type": "EVIDENCE_VIEWED",
+            "targetId": "D04"
+          },
+          {
+            "type": "EVIDENCE_VIEWED",
+            "targetId": "clue_porter_slept"
+          },
+          {
+            "type": "EVIDENCE_VIEWED",
+            "targetId": "clue_thomas_left_bar"
+          }
+        ]
+      }
     },
     {
       "id": "Q02",

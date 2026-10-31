@@ -2290,7 +2290,23 @@ export default function CaseInvestigationLayout({
                 {activePanel === 'terminal' && (
                   <InvestigativeTerminal
                     caseId={engineCaseFile.id}
-                    terminalConfig={engineCaseFile.terminal}
+                    terminalConfig={
+                      engineCaseFile.terminal
+                        ? {
+                            ...engineCaseFile.terminal,
+                            questions: (engineCaseFile.terminal.questions ?? []).filter((q) =>
+                              q.unlockCondition
+                                ? isConditionMet(q.unlockCondition, {
+                                    ...engine.state,
+                                    viewedEvidence: Array.from(
+                                      new Set([...(engine.state.viewedEvidence ?? []), ...unlockedDocIds])
+                                    ),
+                                  } as any)
+                                : true
+                            ),
+                          }
+                        : undefined
+                    }
                     solvedQuestionIds={engine.state.solvedQuestions}
                     onSolveQuestion={engine.solveQuestion}
                     isArchiveUnlocked={engine.isArchiveUnlocked}
