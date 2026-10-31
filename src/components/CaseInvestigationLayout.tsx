@@ -154,10 +154,11 @@ const P01_HOTSPOTS: HotspotItem[] = [
 const TOTAL_INVESTIGATION_TIME = 20 * 60; // 20 минут в секундах (1200 сек)
 
 const FINALE_TEXT_PARAGRAPHS = [
-  'РАССЛЕДОВАНИЕ ПРИОСТАНОВЛЕНО...',
-  'Указанные материалы изъяты Отделом внутренних расследований.',
-  'Доступ к делу закрыт по приказу руководства.',
-  'Благодарим за участие в тестировании архива.',
+  'АНАЛИЗ ЗАВЕРШЁН.',
+  'Совпадают три признака: завешенное зеркало, забранное кольцо, числовая отметка на часах — 1, 2, 3.',
+  'Вероятная связь между тремя делами.',
+  'Личность исполнителя не установлена.',
+  'Расследование продолжается.',
 ];
 
 const FINALE_FULL_TEXT = FINALE_TEXT_PARAGRAPHS.join('\n\n');
@@ -219,7 +220,7 @@ export default function CaseInvestigationLayout({
 
   // Дедукция: игрок сам выбирает три материала, образующих повторяющийся «почерк» преступника
   const [deductionPicks, setDeductionPicks] = useState<string[]>(['', '', '']);
-  const [deductionConfirmed, setDeductionConfirmed] = useState(false);
+  const [deductionConfirmedLocal, setDeductionConfirmed] = useState(false);
   const [deductionMisses, setDeductionMisses] = useState(0);
   const [deductionMessage, setDeductionMessage] = useState<string | null>(null);
 
@@ -481,6 +482,22 @@ export default function CaseInvestigationLayout({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedItemId, engine.isLoaded, unlockedDocIds]);
 
+  // Материалы с autoUnlock (итоговые выводы, архивные карточки) открываются сами, когда выполнено условие
+  useEffect(() => {
+    if (!engine.isLoaded) return;
+    const condState = {
+      ...engine.state,
+      viewedEvidence: Array.from(new Set([...(engine.state.viewedEvidence ?? []), ...unlockedDocIds])),
+    } as any;
+    const ready = (allDocuments as any[]).filter(
+      (d) => d.autoUnlock && !unlockedDocIds.includes(d.id) && d.unlockCondition && isConditionMet(d.unlockCondition, condState)
+    );
+    if (ready.length > 0) {
+      setUnlockedDocIds((prev) => Array.from(new Set([...prev, ...ready.map((d) => d.id)])));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [engine.state, engine.isLoaded, unlockedDocIds, allDocuments]);
+
   // Открыть материал из окна допроса, карты или терминала
   const openEvidenceFromPanel = (evidenceId: string) => {
     if (isDocUnlocked(evidenceId)) {
@@ -579,6 +596,7 @@ export default function CaseInvestigationLayout({
     if (isDeductionSetCorrect(deductionPicks)) {
       setDeductionConfirmed(true);
       setDeductionMessage(null);
+      engine.solveQuestion('archive_unlocked');
       return;
     }
     const misses = deductionMisses + 1;
@@ -590,7 +608,9 @@ export default function CaseInvestigationLayout({
     );
   };
 
+  const deductionConfirmed = deductionConfirmedLocal || (engine.state.solvedQuestions ?? []).includes('archive_unlocked');
   const isAllThreeCluesFound = deductionConfirmed;
+  const archiveMatchFound = ['archive_hit_A118', 'archive_hit_C204'].every((id) => (engine.state.solvedQuestions ?? []).includes(id));
   const isFinalDeductionUnlocked = completedDeductions.includes('ded_unknown_visitor_confirmed');
 
   // Запуск финальной кат-сцены (ded_unknown_visitor_confirmed + старые архивные дела)
@@ -601,7 +621,7 @@ export default function CaseInvestigationLayout({
     setCompletedDeductions(updatedDeductions);
 
     const updatedDocs = Array.from(
-      new Set([...unlockedDocIds, 'D10', 'archive_96_1042', 'archive_94_0815'])
+      new Set([...unlockedDocIds, 'D10', 'A01', 'A02', 'A03', 'N01'])
     );
     setUnlockedDocIds(updatedDocs);
 
@@ -941,10 +961,7 @@ export default function CaseInvestigationLayout({
               [
                 { id: 'interviews', label: 'ДОПРОСЫ', icon: User },
                 { id: 'map', label: 'КАРТА', icon: MapPin },
-                // Терминал включится на этапе 4, когда архив будет закрыт условиями сценария
-                ...(process.env.NODE_ENV === 'development'
-                  ? [{ id: 'terminal', label: 'ТЕРМИНАЛ', icon: Terminal }]
-                  : []),
+                { id: 'terminal', label: 'ТЕРМИНАЛ', icon: Terminal },
               ] as { id: 'interviews' | 'map' | 'terminal'; label: string; icon: React.ElementType }[]
             ).map((tool) => (
               <button
@@ -1499,15 +1516,15 @@ export default function CaseInvestigationLayout({
               <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#1e232d] animate-in fade-in">
                 <span className="text-[11px] font-mono text-[#c5a059] flex items-center gap-1.5">
                   <Sparkles className="size-3.5 text-[#c5a059]" />
-                  <span>Связь подтверждена: эти три признака повторяются. Можно сверить их с архивом.</span>
+                  <span>Связь подтверждена: эти три признака повторяются. Служебный архив открыт — задайте запрос в терминале.</span>
                 </span>
                 <button
                   type="button"
-                  onClick={handleTriggerFinale}
+                  onClick={() => setActivePanel('terminal')}
                   className="w-full sm:w-auto px-4 py-2 bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-mono font-bold text-xs uppercase tracking-wider rounded-xs transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] active:scale-98 flex items-center justify-center gap-2 shrink-0"
                 >
                   <Sparkles className="size-3.5" />
-                  <span>СВЕРИТЬ С АРХИВОМ</span>
+                  <span>ОТКРЫТЬ АРХИВ</span>
                 </button>
               </div>
             ) : (
@@ -2252,6 +2269,24 @@ export default function CaseInvestigationLayout({
                   />
                 )}
 
+                {activePanel === 'terminal' && archiveMatchFound && !isFinaleActive && (
+                  <div className="mb-4 border border-[#c5a059]/60 bg-[#c5a059]/10 p-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <span className="text-[11px] font-mono text-[#c5a059]">
+                      {engineCaseFile.uiTexts?.UI_ARCHIVE_CONNECTION_FOUND ??
+                        'Найдены два закрытых дела с теми же признаками. Откройте карточки A-118 и C-204 среди материалов.'}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setActivePanel(null);
+                        handleTriggerFinale();
+                      }}
+                      className="px-4 py-2 bg-[#c5a059] text-[#0e1015] font-mono font-bold text-xs uppercase tracking-wider rounded-xs shrink-0"
+                    >
+                      ЗАВЕРШИТЬ РАССЛЕДОВАНИЕ
+                    </button>
+                  </div>
+                )}
                 {activePanel === 'terminal' && (
                   <InvestigativeTerminal
                     caseId={engineCaseFile.id}
@@ -2329,7 +2364,7 @@ export default function CaseInvestigationLayout({
           <div className="relative z-10 max-w-2xl w-full flex flex-col items-center text-center space-y-8 font-mono">
             {/* Гриф секретности вверху */}
             <div className="border border-[#c5a059]/40 bg-[#c5a059]/10 px-4 py-1 text-[11px] uppercase tracking-[0.2em] font-semibold text-[#c5a059] animate-pulse">
-              [ СИСТЕМА ОВР // ОСОБЫЙ СТАТУС ДЕЛА № 99-34 ]
+              [ СИСТЕМА ОВР // ДЕЛО № 99-34 // ВЕРОЯТНАЯ СЕРИЯ ]
             </div>
 
             {/* Текст TEXT-05 с эффектом печатной машинки */}

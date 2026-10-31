@@ -122,6 +122,7 @@ export const case001: CaseFile = {
     is_initially_visible: doc.is_initially_visible ?? doc.unlockedByDefault ?? true,
     access_level: doc.access_level ?? 'unlocked',
     unlock_conditions: doc.unlock_conditions,
+    autoUnlock: doc.autoUnlock ?? false,
     unlockCondition: doc.unlockCondition
       ? {
           type: doc.unlockCondition.type,
@@ -362,16 +363,16 @@ export const case001: CaseFile = {
   terminal: {
     systemHeader: 'СЛУЖЕБНЫЙ ТЕРМИНАЛ ОВР // АРХИВ-СВЯЗЬ v2.0',
     description: 'Поисковый модуль следственного терминала отдела внутренних расследований. Вводите ключевые слова, сигнатуры или команды поиска для сверки с архивной базой данных ОВР.',
-    searchExamples: ['ЗЕРКАЛО', 'ТКАНЬ', 'ЧАСЫ', '03:00', 'КОЛЬЦО', 'ПАТТЕРН', 'СЕРИЯ'],
+    searchExamples: ['чёрная ткань', 'завешенное зеркало', 'кольцо', 'часы 1'],
     questions: Array.isArray(case001Terminal) ? [] : (case001Terminal as any).questions ?? [],
     databaseIndex: Array.isArray(case001Terminal) ? {} : (case001Terminal as any).databaseIndex ?? {},
-    queries: Array.isArray(case001Terminal)
-      ? (case001Terminal as any[]).map((q) => ({
+    queries: (Array.isArray(case001Terminal) ? (case001Terminal as any[]) : ((case001Terminal as any).queries ?? [])).map((q: any) => ({
           id: q.id,
           command: q.command,
           aliases: q.aliases ?? [],
           responseText: q.responseText,
           isCritical: q.isCritical,
+          archiveHits: q.archiveHits,
           unlockedByDefault: q.unlockedByDefault,
           unlockCondition: q.unlockCondition
             ? {
@@ -388,11 +389,11 @@ export const case001: CaseFile = {
             : q.unlockedByDefault === false
             ? undefined
             : { type: 'ALWAYS' as const },
-        }))
-      : [],
+        })),
     archiveUnlockCondition: {
-      type: 'EVIDENCE_VIEWED',
-      targetId: 'note_trophy',
+      type: 'QUESTION_SOLVED',
+      targetId: 'archive_unlocked',
+      questionId: 'archive_unlocked',
     },
   },
   uiTexts: case001UITexts as Record<string, string>,

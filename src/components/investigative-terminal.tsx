@@ -124,50 +124,56 @@ export function InvestigativeTerminal({
     const matches: Array<{ key: string; title: string; record: string; classification: string; relatedEvidenceId?: string }> = [];
     let blockedArchiveMatches = 0;
 
-    // 1. Check queries array from terminal.json
+    // 1. Запросы из terminal.json: сопоставление по основам слов (порядок слов не важен),
+    //    побеждает самый конкретный (длинный) шаблон. «часы» дают шум, «часы 1» — конкретное дело.
+    const stem = (w: string) => (/^\d+$/.test(w) ? w : w.replace(/ё/g, 'е').slice(0, 3));
+    const qStems = new Set(
+      rawQuery
+        .replace(/ё/g, 'е')
+        .replace(/[^a-zа-я0-9\s]/g, ' ')
+        .split(/\s+/)
+        .filter(Boolean)
+        .map(stem)
+    );
+    const scored: Array<{ q: TerminalQuery; score: number }> = [];
     for (const q of queries) {
-      const normCmd = q.command.toLowerCase();
-      const normCmdClean = normCmd.replace(/^(search:|execute:|find:)\s*/i, '').trim();
-      const rawClean = rawQuery.replace(/^(search:|execute:|find:)\s*/i, '').trim();
-
-      const isAliasMatch = q.aliases.some((alias) => {
-        const normAlias = alias.toLowerCase();
-        return (
-          rawQuery.includes(normAlias) ||
-          normAlias.includes(rawQuery) ||
-          rawClean.includes(normAlias) ||
-          queryTokens.some((tok) => normAlias.includes(tok) || tok.includes(normAlias))
-        );
-      });
-
-      const isCommandMatch =
-        normCmd.includes(rawQuery) ||
-        rawQuery.includes(normCmd) ||
-        normCmdClean.includes(rawClean) ||
-        rawClean.includes(normCmdClean);
-
-      if (isAliasMatch || isCommandMatch) {
-        // Check unlock condition
-        let unlocked = true;
-        if (q.unlockCondition) {
-          if (q.unlockCondition.type === 'EVIDENCE_VIEWED') {
-            const target = q.unlockCondition.evidenceId ?? q.unlockCondition.targetId;
-            unlocked = target ? viewedEvidenceIds.includes(target) : isArchiveUnlocked;
-          } else if (q.unlockCondition.type !== 'ALWAYS') {
-            unlocked = isArchiveUnlocked;
-          }
+      let best = 0;
+      for (const alias of q.aliases) {
+        const aStems = alias
+          .toLowerCase()
+          .replace(/ё/g, 'е')
+          .replace(/[^a-zа-я0-9\s]/g, ' ')
+          .split(/\s+/)
+          .filter(Boolean)
+          .map(stem);
+        if (aStems.length > 0 && aStems.every((st) => qStems.has(st))) {
+          best = Math.max(best, aStems.length);
         }
-
-        if (unlocked) {
-          matches.push({
-            key: q.id,
-            title: q.command,
-            record: q.responseText,
-            classification: q.isCritical ? 'СОВПАДЕНИЕ АРХИВА // КРИТИЧЕСКИЙ МАРКЕР' : 'РЕЗУЛЬТАТ ЗАПРОСА ОВР',
-          });
+      }
+      if (best > 0) scored.push({ q, score: best });
+    }
+    const topScore = scored.reduce((m, x) => Math.max(m, x.score), 0);
+    for (const { q, score } of scored) {
+      if (score !== topScore) continue;
+      let unlocked = true;
+      if (q.unlockCondition && q.unlockCondition.type !== 'ALWAYS') {
+        if (q.unlockCondition.type === 'EVIDENCE_VIEWED') {
+          const target = q.unlockCondition.evidenceId ?? q.unlockCondition.targetId;
+          unlocked = target ? viewedEvidenceIds.includes(target) : isArchiveUnlocked;
         } else {
-          blockedArchiveMatches++;
+          unlocked = isArchiveUnlocked;
         }
+      }
+      if (unlocked) {
+        matches.push({
+          key: q.id,
+          title: q.command,
+          record: q.responseText,
+          classification: q.isCritical ? 'СОВПАДЕНИЕ АРХИВА // КРИТИЧЕСКИЙ МАРКЕР' : 'РЕЗУЛЬТАТ ЗАПРОСА ОВР',
+        });
+        q.archiveHits?.forEach((hit) => onSolveQuestion?.(hit));
+      } else {
+        blockedArchiveMatches++;
       }
     }
 
@@ -435,8 +441,7 @@ export function InvestigativeTerminal({
                   <span className="border border-amber-600/40 px-1.5 py-0.2 text-[9px]">БЛОКИРОВКА</span>
                 </div>
                 <p className="leading-relaxed">
-                  Доступ к закрытой картотеке архивных дел ограничен. В текущем расследовании ещё не подтверждена совокупность трёх ключевых сигнатур (требуются: подтверждённая чёрная ткань на зеркале [P02], факт похищения кольца [D03/P04] и зафиксированные стрелки часов на 3 [P03]).
-                </p>
+                  Закрытая картотека архивных дел недоступна. Запрос будет принят, когда по текущему делу будут выделены три повторяющихся признака. Сопоставьте материалы на доске выводов.</p>
                 <div className="text-[10px] text-muted-foreground pt-1">
                   Подсказка: изучите обстановку номера 12, сопоставьте опись с фото кисти погибшей и осмотрите механизм настольных часов.
                 </div>

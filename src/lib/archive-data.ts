@@ -91,6 +91,7 @@ export type CaseDocument = {
   access_level?: DocumentAccessLevel;
   unlock_conditions?: DocumentUnlockConditions;
   unlockCondition?: UnlockCondition;
+  autoUnlock?: boolean;
   hotspots?: PhotoHotspot[];
 };
 
@@ -166,6 +167,7 @@ export type TerminalQuery = {
   isCritical?: boolean;
   unlockedByDefault?: boolean;
   unlockCondition?: UnlockCondition;
+  archiveHits?: string[];
 };
 
 export type CaseTerminalConfig = {

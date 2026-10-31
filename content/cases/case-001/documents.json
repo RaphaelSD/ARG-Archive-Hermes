@@ -587,25 +587,10 @@
       "дело 001"
     ],
     "unlockCondition": {
-      "type": "ALL_OF",
-      "conditions": [
-        {
-          "type": "DEDUCTION_COMPLETED",
-          "targetId": "ded_thomas_alibi_broken"
-        },
-        {
-          "type": "DEDUCTION_COMPLETED",
-          "targetId": "ded_logbook_unreliable"
-        }
-      ]
+      "type": "QUESTION_SOLVED",
+      "targetId": "Q01"
     },
-    "unlock_conditions": {
-      "required_evidence": [
-        "D04",
-        "clue_porter_slept",
-        "clue_thomas_left_bar"
-      ]
-    }
+    "autoUnlock": true
   },
   {
     "id": "D06",
@@ -694,6 +679,109 @@
       "оуэн миллер",
       "мигрень",
       "томас вэйл"
+    ]
+  },
+  {
+    "id": "A01",
+    "type": "document",
+    "title": "Архивная карточка A-118 (Мелисса Кейн)",
+    "description": "Закрытое дело 14-месячной давности.",
+    "content": "АРХИВ ОВР // КАРТОЧКА A-118\nДАТА: 14 месяцев назад\nЖЕРТВА: Мелисса Кейн, 22 года\nПРИЧИНА СМЕРТИ: удушение\nСТАТУС: закрыто, исполнитель не установлен\n\nПРОТОКОЛ: тело обнаружено в арендованной комнате. Следов взлома нет. Зеркало плотно завешено чёрной тканью, ткань не принадлежала помещению.\nПРОПАЛО: кольцо с правой руки.\nОТМЕТКА: настенные часы остановлены, стрелки сведены на 1.",
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "autoUnlock": true,
+    "unlockCondition": {
+      "type": "QUESTION_SOLVED",
+      "targetId": "archive_hit_A118"
+    },
+    "search_tags": [
+      "мелисса кейн",
+      "a-118",
+      "архив",
+      "часы 1",
+      "удушение"
+    ]
+  },
+  {
+    "id": "A02",
+    "type": "document",
+    "title": "Архивная карточка C-204 (Софи Миллер)",
+    "description": "Закрытое дело семимесячной давности.",
+    "content": "АРХИВ ОВР // КАРТОЧКА C-204\nДАТА: 7 месяцев назад\nЖЕРТВА: Софи Миллер, 20 лет\nПРИЧИНА СМЕРТИ: падение с высоты после удерживания\nСТАТУС: закрыто как несчастный случай, повторно не пересматривалось\n\nПРОТОКОЛ: тело найдено под окном гостиничного номера. На теле следы удерживания. В номере зеркало завешено чёрной тканью.\nПРОПАЛО: кольцо.\nОТМЕТКА: наручные часы жертвы остановлены, стрелки сведены на 2.",
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "autoUnlock": true,
+    "unlockCondition": {
+      "type": "QUESTION_SOLVED",
+      "targetId": "archive_hit_C204"
+    },
+    "search_tags": [
+      "софи миллер",
+      "c-204",
+      "архив",
+      "часы 2",
+      "падение"
+    ]
+  },
+  {
+    "id": "A03",
+    "type": "document",
+    "title": "Итоговый отчёт ОВР: вероятная серия",
+    "description": "Автоматическое сопоставление трёх дел.",
+    "content": "АНАЛИТИЧЕСКАЯ СВОДКА // ТРИ ДЕЛА\n\nA-118 — удушение — ткань на зеркале — кольцо — часы на 1\nC-204 — падение с высоты после удерживания — ткань на зеркале — кольцо — часы на 2\nТекущее дело — удушение — ткань на зеркале — кольцо — часы на 3\n\nСпособы смерти различаются, поэтому система раннего расследования не связала дела автоматически. Совпадают три признака: завешенное зеркало, забранное кольцо, числовая отметка на часах.\n\nВЫВОД: вероятная связь между тремя делами. Личность исполнителя не установлена.",
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "autoUnlock": true,
+    "unlockCondition": {
+      "type": "ALL_OF",
+      "conditions": [
+        {
+          "type": "QUESTION_SOLVED",
+          "targetId": "archive_hit_A118"
+        },
+        {
+          "type": "QUESTION_SOLVED",
+          "targetId": "archive_hit_C204"
+        }
+      ]
+    },
+    "search_tags": [
+      "отчет",
+      "серия",
+      "три дела",
+      "вывод"
+    ]
+  },
+  {
+    "id": "N01",
+    "type": "document",
+    "title": "Заметка Орлова",
+    "description": "Необязательная личная заметка следователя.",
+    "content": "Заметка Орлова.\n\nЯ три года смотрел на закрытые дела по одному. Ткань, кольцо, часы — каждая деталь по отдельности ничего не значит. Вместе они — подпись.\nЧасы на 1, на 2, на 3. Он считает.\nЕсли это счёт, то остановиться он не собирается. Кто он — я не знаю. Пока не знаю.",
+    "unlockedByDefault": false,
+    "is_initially_visible": false,
+    "access_level": "unlocked",
+    "autoUnlock": true,
+    "unlockCondition": {
+      "type": "ALL_OF",
+      "conditions": [
+        {
+          "type": "QUESTION_SOLVED",
+          "targetId": "archive_hit_A118"
+        },
+        {
+          "type": "QUESTION_SOLVED",
+          "targetId": "archive_hit_C204"
+        }
+      ]
+    },
+    "search_tags": [
+      "орлов",
+      "заметка",
+      "счёт"
     ]
   }
 ]
