@@ -199,7 +199,8 @@
       "required_evidence": [
         "P01"
       ]
-    }
+    },
+    "autoUnlock": true
   },
   {
     "id": "D03",

@@ -37,6 +37,7 @@ import {
   AlertTriangle,
   Home,
   Sparkles,
+  ShieldHalf,
 } from 'lucide-react';
 
 
@@ -875,70 +876,32 @@ export default function CaseInvestigationLayout({
   const currentPhotoIndex = unlockedPhotos.findIndex((p) => p.id === currentItem.id);
 
   return (
-    <div className="min-h-screen bg-[#0e1015] text-[#e2e8f0] font-sans antialiased flex flex-col selection:bg-[#c5a059]/30 selection:text-white relative">
+    <div className="min-h-screen text-foreground font-sans antialiased flex flex-col selection:bg-primary/30 selection:text-white relative">
       {/* ======================================================== */}
       {/* 1. ВЕРХНИЙ БАР (HEADER)                                  */}
       {/* ======================================================== */}
-      <header className="h-14 border-b border-[#1e232d] bg-[#0e1015] px-4 flex items-center justify-between shrink-0 sticky top-0 z-40">
+      <header className="h-16 border-b border-border/70 bg-background/90 backdrop-blur px-4 sm:px-6 flex items-center justify-between shrink-0 sticky top-0 z-40">
         {/* Логотип с гербом слева */}
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center gap-3 group transition-opacity hover:opacity-90">
-            {/* SVG Герб Отдела Внутренних Расследований */}
-            <svg
-              width="32"
-              height="38"
-              viewBox="0 0 34 40"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="shrink-0 transition-transform group-hover:scale-105"
-            >
-              <path
-                d="M17 1.5 L31.5 5.5 V18 C31.5 28.5 22 36.5 17 38.5 C12 36.5 2.5 28.5 2.5 18 V5.5 L17 1.5 Z"
-                stroke="#c5a059"
-                strokeWidth="1.5"
-                fill="none"
-              />
-              <path
-                d="M17 4.5 L28.5 7.8 V17.5 C28.5 26 21 33.2 17 35 C13 33.2 5.5 26 5.5 17.5 V7.8 L17 4.5 Z"
-                stroke="#c5a059"
-                strokeWidth="0.8"
-                strokeOpacity="0.6"
-                fill="none"
-              />
-              <line x1="17" y1="8" x2="17" y2="30" stroke="#c5a059" strokeWidth="1.2" />
-              <circle cx="17" cy="8" r="1.2" fill="#c5a059" />
-              <line x1="13" y1="12" x2="21" y2="12" stroke="#c5a059" strokeWidth="1.2" />
-              <path
-                d="M11 15 C11 20, 14 24, 17 26 C20 24, 23 20, 23 15"
-                stroke="#c5a059"
-                strokeWidth="1"
-                fill="none"
-              />
-              <path
-                d="M8.5 13 C8.5 21, 13 27, 17 29 C21 27, 25.5 21, 25.5 13"
-                stroke="#c5a059"
-                strokeWidth="0.8"
-                strokeOpacity="0.7"
-                fill="none"
-              />
-            </svg>
-            <div className="flex flex-col">
-              <span className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-100 leading-tight">
-                АРХИВ ГОРОДА Н.
+            <span className="flex size-9 items-center justify-center border border-border/80 bg-secondary text-primary">
+              <ShieldHalf className="size-5" />
+            </span>
+            <span className="leading-tight">
+              <span className="block font-display text-base uppercase tracking-[0.14em] text-foreground">
+                Архив города Н.
               </span>
-              <span className="text-[11px] text-zinc-400 font-normal leading-tight">
-                Отдел внутренних расследований
-              </span>
-            </div>
+              <span className="block label-xs text-muted-foreground">Отдел внутренних расследований</span>
+            </span>
           </Link>
         </div>
 
         {/* По центру: "Дело №001 / Комната 12" + Терминальный таймер расследования */}
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center text-xs tracking-wide">
-            <span className="text-zinc-500 font-medium">{caseFile?.number || 'Дело №001'}</span>
-            <span className="text-zinc-600 mx-2.5">/</span>
-            <span className="text-zinc-200 font-medium">{caseFile?.title || 'Комната 12'}</span>
+            <span className="text-muted-foreground/80 font-medium">{caseFile?.number || 'Дело №001'}</span>
+            <span className="text-muted-foreground/60 mx-2.5">/</span>
+            <span className="text-foreground font-medium">{caseFile?.title || 'Комната 12'}</span>
           </div>
 
           {/* Стилизованный под терминал таймер обратного отсчета на 20:00 */}
@@ -946,11 +909,11 @@ export default function CaseInvestigationLayout({
             className={`flex items-center gap-1.5 px-2.5 py-1 rounded-xs font-mono text-xs border tracking-wider uppercase transition-all shadow-sm ${
               timeLeft <= 180
                 ? 'bg-red-950/70 border-red-500/80 text-red-400 animate-pulse shadow-[0_0_12px_rgba(239,68,68,0.4)]'
-                : 'bg-[#141820] border-[#c5a059]/40 text-[#c5a059]'
+                : 'bg-card border-primary/40 text-primary'
             }`}
             title="Оставшееся время следственной сессии: 20:00"
           >
-            <Clock className={`size-3.5 ${timeLeft <= 180 ? 'text-red-400' : 'text-[#c5a059]'}`} />
+            <Clock className={`size-3.5 ${timeLeft <= 180 ? 'text-red-400' : 'text-primary'}`} />
             <span className="font-bold tabular-nums text-xs sm:text-sm tracking-widest">{formatTime(timeLeft)}</span>
             <span className="text-[9px] opacity-70 hidden sm:inline">СЕССИЯ ОВР</span>
           </div>
@@ -968,7 +931,7 @@ export default function CaseInvestigationLayout({
                 key={tool.id}
                 type="button"
                 onClick={() => setActivePanel(tool.id)}
-                className="flex items-center gap-1.5 px-2.5 py-1 border border-[#1e232d] bg-[#12151b] hover:border-[#c5a059]/60 hover:text-[#c5a059] text-zinc-300 rounded-xs font-mono text-[11px] tracking-wider transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1 border border-border bg-card hover:border-primary/60 hover:text-primary text-foreground/80 rounded-xs font-mono text-[11px] tracking-wider transition-colors"
               >
                 <tool.icon className="size-3.5" />
                 <span>{tool.label}</span>
@@ -990,13 +953,13 @@ export default function CaseInvestigationLayout({
           )}
 
           <form onSubmit={handleUnlockKey} className="relative w-36 sm:w-56">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-zinc-500" />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/80" />
             <input
               type="text"
               value={keyInput}
               onChange={(e) => setKeyInput(e.target.value)}
               placeholder="Поиск по архиву..."
-              className="w-full bg-[#12151b] border border-[#1e232d] pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder:text-zinc-500 rounded-sm focus:outline-none focus:border-[#c5a059]/60 transition-colors"
+              className="w-full bg-card border border-border pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/80 rounded-sm focus:outline-none focus:border-primary/60 transition-colors"
             />
           </form>
 
@@ -1004,7 +967,7 @@ export default function CaseInvestigationLayout({
             type="button"
             onClick={handleResetProgress}
             title="Сбросить прогресс к началу (1/Всего)"
-            className="text-zinc-400 hover:text-amber-400 transition-colors p-1.5 rounded-sm hover:bg-[#181c24] flex items-center gap-1"
+            className="text-muted-foreground hover:text-amber-400 transition-colors p-1.5 rounded-sm hover:bg-secondary flex items-center gap-1"
           >
             <RotateCcw className="size-3.5" />
           </button>
@@ -1012,7 +975,7 @@ export default function CaseInvestigationLayout({
           <button
             type="button"
             title="Настройки архива"
-            className="text-zinc-400 hover:text-zinc-200 transition-colors p-1.5 rounded-sm hover:bg-[#181c24]"
+            className="text-muted-foreground hover:text-foreground transition-colors p-1.5 rounded-sm hover:bg-secondary"
           >
             <Settings className="size-4" />
           </button>
@@ -1030,11 +993,11 @@ export default function CaseInvestigationLayout({
         {/* ====================================================== */}
         {/* ЛЕВАЯ ПАНЕЛЬ: "МАТЕРИАЛЫ ДЕЛА"                         */}
         {/* ====================================================== */}
-        <aside className="flex flex-col justify-between bg-[#101319] border border-[#1e232d] rounded-sm p-3.5 min-h-[720px]">
+        <aside className="flex flex-col justify-between bg-card border border-border rounded-sm p-3.5 min-h-[720px]">
           <div className="space-y-3.5">
             {/* Заголовок панели */}
             <div className="flex items-center justify-between pb-1">
-              <h2 className="text-xs font-semibold uppercase tracking-wider text-zinc-300">
+              <h2 className="label-xs text-foreground">
                 МАТЕРИАЛЫ ДЕЛА
               </h2>
             </div>
@@ -1042,17 +1005,17 @@ export default function CaseInvestigationLayout({
             {/* Подкатегория "НОВЫЕ МАТЕРИАЛЫ (X)" */}
             {isNewBannerVisible && newMaterials.length > 0 && (
               <div className="space-y-1.5">
-                <div className="bg-[#141820] border border-[#1e232d] px-2.5 py-1.5 rounded-sm flex items-center justify-between">
+                <div className="bg-card border border-border px-2.5 py-1.5 rounded-sm flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <span className="size-1.5 rounded-full bg-[#c5a059] shadow-[0_0_6px_#c5a059]" />
-                    <span className="text-[11px] text-zinc-200 font-medium tracking-wide">
+                    <span className="size-1.5 rounded-full bg-primary shadow-[0_0_6px_var(--primary)]" />
+                    <span className="text-[11px] text-foreground font-medium tracking-wide">
                       НОВЫЕ МАТЕРИАЛЫ ({newMaterials.length})
                     </span>
                   </div>
                   <button
                     type="button"
                     onClick={() => setIsNewBannerVisible(false)}
-                    className="text-zinc-500 hover:text-zinc-300 text-xs transition-colors"
+                    className="text-muted-foreground/80 hover:text-foreground/80 text-xs transition-colors"
                     title="Скрыть оповещение"
                   >
                     ✕
@@ -1069,26 +1032,26 @@ export default function CaseInvestigationLayout({
                         onClick={() => setSelectedItemId(mat.id)}
                         className={`w-full flex items-center gap-2 p-1.5 rounded-sm transition-all text-left ${
                           isSelected
-                            ? 'bg-[#161a22] border border-[#c5a059]/40 shadow-sm'
-                            : 'bg-transparent border border-transparent hover:bg-[#141720] hover:border-[#1e232d]'
+                            ? 'bg-secondary border border-primary/40 shadow-sm'
+                            : 'bg-transparent border border-transparent hover:bg-card hover:border-border'
                         }`}
                       >
                         {mat.mediaUrl || mat.image_asset || mat.content?.startsWith?.('/images') ? (
                           <img
                             src={mat.mediaUrl || mat.image_asset || mat.content}
                             alt=""
-                            className="w-10 h-7 object-cover rounded-xs border border-[#1e232d] shrink-0"
+                            className="w-10 h-7 object-cover rounded-xs border border-border shrink-0"
                           />
                         ) : (
-                          <div className="w-10 h-7 bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
-                            <FileText className="size-3 text-zinc-400" />
+                          <div className="w-10 h-7 bg-background border border-border rounded-xs flex items-center justify-center shrink-0">
+                            <FileText className="size-3 text-muted-foreground" />
                           </div>
                         )}
                         <div className="min-w-0 flex-1">
-                          <div className="text-[11px] font-medium text-zinc-200 truncate leading-snug">
+                          <div className="text-[11px] font-medium text-foreground truncate leading-snug">
                             {mat.id} {mat.title.replace(/^Фото:\s*|Макро-фото:\s*/i, '')}
                           </div>
-                          <span className="inline-block mt-0.5 border border-[#c5a059]/70 text-[#c5a059] bg-[#c5a059]/10 text-[8px] px-1 py-0 uppercase font-mono font-semibold rounded-xs">
+                          <span className="inline-block mt-0.5 border border-primary/70 text-primary bg-primary/10 text-[8px] px-1 py-0 uppercase font-mono font-semibold rounded-xs">
                             НОВОЕ
                           </span>
                         </div>
@@ -1106,18 +1069,18 @@ export default function CaseInvestigationLayout({
                 <button
                   type="button"
                   onClick={() => setIsDocsOpen(!isDocsOpen)}
-                  className="w-full flex items-center justify-between px-2.5 py-2 text-zinc-300 hover:text-white hover:bg-[#161a22] rounded-sm transition-colors group"
+                  className="w-full flex items-center justify-between px-2.5 py-2 text-foreground/80 hover:text-white hover:bg-secondary rounded-sm transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
-                    <FileText className="size-4 text-zinc-400 group-hover:text-zinc-200" />
+                    <FileText className="size-4 text-muted-foreground group-hover:text-foreground" />
                     <span>Документы</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-zinc-500">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/80">
                     <span className="font-mono text-xs">{docsList.length}</span>
                     {isDocsOpen ? (
-                      <ChevronUp className="size-3 text-zinc-400" />
+                      <ChevronUp className="size-3 text-muted-foreground" />
                     ) : (
-                      <ChevronDown className="size-3 text-zinc-600" />
+                      <ChevronDown className="size-3 text-muted-foreground/60" />
                     )}
                   </div>
                 </button>
@@ -1141,24 +1104,24 @@ export default function CaseInvestigationLayout({
                           }}
                           className={`w-full flex items-center justify-between p-2 rounded-sm transition-all text-left ${
                             isSelected
-                              ? 'bg-[#161a22] border border-[#c5a059]/40 text-white'
+                              ? 'bg-secondary border border-primary/40 text-white'
                               : unlocked
-                              ? 'text-zinc-300 hover:bg-[#141720] hover:text-white border border-transparent'
-                              : 'text-zinc-600 hover:text-zinc-400 hover:bg-[#12141a] border border-transparent'
+                              ? 'text-foreground/80 hover:bg-card hover:text-white border border-transparent'
+                              : 'text-muted-foreground/60 hover:text-muted-foreground hover:bg-card border border-transparent'
                           }`}
                         >
                           <div className="flex items-center gap-2 min-w-0">
                             {unlocked ? (
-                              <FileText className="size-3.5 text-[#c5a059] shrink-0" />
+                              <FileText className="size-3.5 text-primary shrink-0" />
                             ) : (
-                              <Lock className="size-3.5 text-zinc-600 shrink-0" />
+                              <Lock className="size-3.5 text-muted-foreground/60 shrink-0" />
                             )}
                             <span className="text-[11px] truncate">
                               {unlocked ? `${doc.id} ${doc.title}` : `[${doc.id}] Заблокировано`}
                             </span>
                           </div>
                           {!unlocked && (
-                            <span className="text-[9px] font-mono text-zinc-600 border border-zinc-800 px-1 py-0.2 rounded-xs uppercase">
+                            <span className="text-[9px] font-mono text-muted-foreground/60 border border-border px-1 py-0.2 rounded-xs uppercase">
                               КЛЮЧ
                             </span>
                           )}
@@ -1174,18 +1137,18 @@ export default function CaseInvestigationLayout({
                 <button
                   type="button"
                   onClick={() => setIsPhotosOpen(!isPhotosOpen)}
-                  className="w-full flex items-center justify-between px-2.5 py-2 text-zinc-200 hover:bg-[#161a22] rounded-sm transition-colors group"
+                  className="w-full flex items-center justify-between px-2.5 py-2 text-foreground hover:bg-secondary rounded-sm transition-colors group"
                 >
                   <div className="flex items-center gap-2.5">
-                    <ImageIcon className="size-4 text-zinc-400 group-hover:text-zinc-200" />
+                    <ImageIcon className="size-4 text-muted-foreground group-hover:text-foreground" />
                     <span>Фотографии</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-zinc-500">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/80">
                     <span className="font-mono text-xs">{photosList.length}</span>
                     {isPhotosOpen ? (
-                      <ChevronUp className="size-3 text-zinc-400" />
+                      <ChevronUp className="size-3 text-muted-foreground" />
                     ) : (
-                      <ChevronDown className="size-3 text-zinc-600" />
+                      <ChevronDown className="size-3 text-muted-foreground/60" />
                     )}
                   </div>
                 </button>
@@ -1210,13 +1173,13 @@ export default function CaseInvestigationLayout({
                           }}
                           className={`w-full flex items-center gap-2.5 p-1.5 rounded-sm transition-all text-left ${
                             isSelected
-                              ? 'bg-[#161a22] border border-[#c5a059]/40 shadow-sm'
+                              ? 'bg-secondary border border-primary/40 shadow-sm'
                               : unlocked
-                              ? 'bg-transparent border border-transparent hover:bg-[#141720] hover:border-[#1e232d]'
+                              ? 'bg-transparent border border-transparent hover:bg-card hover:border-border'
                               : 'opacity-55 hover:opacity-80 bg-transparent border border-transparent'
                           }`}
                         >
-                          <div className="relative w-12 h-9 rounded-xs overflow-hidden border border-[#1e232d] shrink-0 bg-[#0b0d11]">
+                          <div className="relative w-12 h-9 rounded-xs overflow-hidden border border-border shrink-0 bg-background">
                             {photoUrl ? (
                               <img
                                 src={photoUrl}
@@ -1225,25 +1188,25 @@ export default function CaseInvestigationLayout({
                               />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center">
-                                <ImageIcon className="size-3 text-zinc-600" />
+                                <ImageIcon className="size-3 text-muted-foreground/60" />
                               </div>
                             )}
                             {!unlocked && (
                               <div className="absolute inset-0 bg-black/70 flex items-center justify-center">
-                                <Lock className="size-3 text-zinc-400" />
+                                <Lock className="size-3 text-muted-foreground" />
                               </div>
                             )}
                           </div>
                           <div className="min-w-0 flex-1">
-                            <div className="text-[11px] font-medium text-zinc-200 truncate leading-snug">
+                            <div className="text-[11px] font-medium text-foreground truncate leading-snug">
                               {unlocked ? `${photo.id} ${photo.title.replace(/^Фото:\s*|Макро-фото:\s*/i, '')}` : `[${photo.id}] Заблокировано`}
                             </div>
                             {unlocked ? (
-                              <span className="inline-block mt-0.5 border border-[#c5a059]/70 text-[#c5a059] bg-[#c5a059]/10 text-[8px] px-1 py-0 uppercase font-mono font-semibold rounded-xs">
+                              <span className="inline-block mt-0.5 border border-primary/70 text-primary bg-primary/10 text-[8px] px-1 py-0 uppercase font-mono font-semibold rounded-xs">
                                 ДОСТУПНО
                               </span>
                             ) : (
-                              <span className="inline-block mt-0.5 text-zinc-600 text-[8px] font-mono">
+                              <span className="inline-block mt-0.5 text-muted-foreground/60 text-[8px] font-mono">
                                 ТРЕБУЕТСЯ КЛЮЧ
                               </span>
                             )}
@@ -1263,20 +1226,20 @@ export default function CaseInvestigationLayout({
                   onClick={() => setIsCallsOpen(!isCallsOpen)}
                   className={`w-full flex items-center justify-between px-2.5 py-2 rounded-sm transition-colors group ${
                     allCalls.length === 0
-                      ? 'text-zinc-600 cursor-not-allowed opacity-50'
-                      : 'text-zinc-300 hover:text-white hover:bg-[#161a22]'
+                      ? 'text-muted-foreground/60 cursor-not-allowed opacity-50'
+                      : 'text-foreground/80 hover:text-white hover:bg-secondary'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <Phone className="size-4 text-zinc-400 group-hover:text-zinc-200" />
+                    <Phone className="size-4 text-muted-foreground group-hover:text-foreground" />
                     <span>Звонки</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-zinc-500">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/80">
                     <span className="font-mono text-xs">{allCalls.length}</span>
                     {isCallsOpen ? (
-                      <ChevronUp className="size-3 text-zinc-400" />
+                      <ChevronUp className="size-3 text-muted-foreground" />
                     ) : (
-                      <ChevronRight className="size-3 text-zinc-600 group-hover:text-zinc-400" />
+                      <ChevronRight className="size-3 text-muted-foreground/60 group-hover:text-muted-foreground" />
                     )}
                   </div>
                 </button>
@@ -1292,15 +1255,15 @@ export default function CaseInvestigationLayout({
                           onClick={() => setSelectedItemId(call.id)}
                           className={`w-full flex items-center justify-between p-2 rounded-sm text-left transition-all ${
                             isSelected
-                              ? 'bg-[#161a22] border border-[#c5a059]/40 text-white'
-                              : 'text-zinc-300 hover:bg-[#141720] hover:text-white'
+                              ? 'bg-secondary border border-primary/40 text-white'
+                              : 'text-foreground/80 hover:bg-card hover:text-white'
                           }`}
                         >
                           <div className="min-w-0">
                             <div className="text-[11px] font-medium truncate">{call.title}</div>
-                            <div className="text-[10px] text-zinc-500 font-mono">{call.duration}</div>
+                            <div className="text-[10px] text-muted-foreground/80 font-mono">{call.duration}</div>
                           </div>
-                          <ChevronRight className="size-3 text-zinc-600 shrink-0" />
+                          <ChevronRight className="size-3 text-muted-foreground/60 shrink-0" />
                         </button>
                       );
                     })}
@@ -1312,15 +1275,15 @@ export default function CaseInvestigationLayout({
               <button
                 type="button"
                 onClick={() => setActiveTab('people')}
-                className="w-full flex items-center justify-between px-2.5 py-2 text-zinc-300 hover:text-white hover:bg-[#161a22] rounded-sm transition-colors group"
+                className="w-full flex items-center justify-between px-2.5 py-2 text-foreground/80 hover:text-white hover:bg-secondary rounded-sm transition-colors group"
               >
                 <div className="flex items-center gap-2.5">
-                  <User className="size-4 text-zinc-400 group-hover:text-zinc-200" />
+                  <User className="size-4 text-muted-foreground group-hover:text-foreground" />
                   <span>Люди</span>
                 </div>
-                <div className="flex items-center gap-1.5 text-zinc-500">
+                <div className="flex items-center gap-1.5 text-muted-foreground/80">
                   <span className="font-mono text-xs">{allPeople.length}</span>
-                  <ChevronRight className="size-3 text-zinc-600 group-hover:text-zinc-400" />
+                  <ChevronRight className="size-3 text-muted-foreground/60 group-hover:text-muted-foreground" />
                 </div>
               </button>
 
@@ -1332,20 +1295,20 @@ export default function CaseInvestigationLayout({
                   onClick={() => setIsMapsOpen(!isMapsOpen)}
                   className={`w-full flex items-center justify-between px-2.5 py-2 rounded-sm transition-colors group ${
                     mapsList.length === 0
-                      ? 'text-zinc-600 cursor-not-allowed opacity-50'
-                      : 'text-zinc-300 hover:text-white hover:bg-[#161a22]'
+                      ? 'text-muted-foreground/60 cursor-not-allowed opacity-50'
+                      : 'text-foreground/80 hover:text-white hover:bg-secondary'
                   }`}
                 >
                   <div className="flex items-center gap-2.5">
-                    <MapPin className="size-4 text-zinc-400 group-hover:text-zinc-200" />
+                    <MapPin className="size-4 text-muted-foreground group-hover:text-foreground" />
                     <span>Карта</span>
                   </div>
-                  <div className="flex items-center gap-1.5 text-zinc-500">
+                  <div className="flex items-center gap-1.5 text-muted-foreground/80">
                     <span className="font-mono text-xs">{mapsList.length}</span>
                     {isMapsOpen ? (
-                      <ChevronUp className="size-3 text-zinc-400" />
+                      <ChevronUp className="size-3 text-muted-foreground" />
                     ) : (
-                      <ChevronRight className="size-3 text-zinc-600 group-hover:text-zinc-400" />
+                      <ChevronRight className="size-3 text-muted-foreground/60 group-hover:text-muted-foreground" />
                     )}
                   </div>
                 </button>
@@ -1361,12 +1324,12 @@ export default function CaseInvestigationLayout({
                           onClick={() => setSelectedItemId(mapItem.id)}
                           className={`w-full flex items-center justify-between p-2 rounded-sm text-left transition-all ${
                             isSelected
-                              ? 'bg-[#161a22] border border-[#c5a059]/40 text-white'
-                              : 'text-zinc-300 hover:bg-[#141720] hover:text-white'
+                              ? 'bg-secondary border border-primary/40 text-white'
+                              : 'text-foreground/80 hover:bg-card hover:text-white'
                           }`}
                         >
                           <span className="text-[11px] truncate">{mapItem.title}</span>
-                          <ChevronRight className="size-3 text-zinc-600 shrink-0" />
+                          <ChevronRight className="size-3 text-muted-foreground/60 shrink-0" />
                         </button>
                       );
                     })}
@@ -1377,8 +1340,8 @@ export default function CaseInvestigationLayout({
           </div>
 
           {/* Внизу виджет "ПРОГРЕСС ДЕЛА" — ДИНАМИЧЕСКИЙ РАСЧЕТ [Открыто] / [Всего] */}
-          <div className="border-t border-[#1e232d] pt-3.5 mt-4">
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
+          <div className="border-t border-border pt-3.5 mt-4">
+            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground mb-2.5">
               ПРОГРЕСС ДЕЛА
             </h3>
             <div className="flex items-center gap-3">
@@ -1387,7 +1350,7 @@ export default function CaseInvestigationLayout({
                 <svg className="size-full -rotate-90" viewBox="0 0 36 36">
                   {/* Фоновое кольцо */}
                   <path
-                    className="text-[#1c212b]"
+                    className="text-secondary"
                     strokeWidth="3"
                     stroke="currentColor"
                     fill="none"
@@ -1395,7 +1358,7 @@ export default function CaseInvestigationLayout({
                   />
                   {/* Активная дуга: вычисляется динамически */}
                   <path
-                    className="text-[#c5a059] transition-all duration-700 ease-out"
+                    className="text-primary transition-all duration-700 ease-out"
                     strokeDasharray={`${progressPercent}, 100`}
                     strokeLinecap="round"
                     strokeWidth="3"
@@ -1405,11 +1368,11 @@ export default function CaseInvestigationLayout({
                   />
                 </svg>
                 {/* Динамическое число [Открыто] / [Всего] */}
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-medium text-zinc-200">
+                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-medium text-foreground">
                   {unlockedMaterialsCount}/{totalMaterialsCount}
                 </div>
               </div>
-              <p className="text-[11px] text-zinc-400 leading-snug">
+              <p className="text-[11px] text-muted-foreground leading-snug">
                 Изучите материалы, чтобы восстановить картину происшествия.
               </p>
             </div>
@@ -1421,15 +1384,15 @@ export default function CaseInvestigationLayout({
         {/* ====================================================== */}
         <section className="flex flex-col gap-3 min-w-0">
           {/* Шапка дела */}
-          <div className="bg-[#101319] border border-[#1e232d] rounded-sm p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div className="bg-card border border-border rounded-sm p-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div className="min-w-0 flex-1">
-              <div className="text-[11px] font-mono tracking-widest text-[#c5a059] uppercase font-semibold">
+              <div className="text-[11px] font-mono tracking-widest text-primary uppercase font-semibold">
                 {caseFile?.number || 'ДЕЛО №001'}
               </div>
               <h1 className="text-2xl font-bold uppercase tracking-wider text-white mt-0.5">
                 {caseFile?.title || 'КОМНАТА 12'}
               </h1>
-              <p className="text-xs text-zinc-400 mt-1 max-w-lg leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-1 max-w-lg leading-relaxed">
                 {caseFile?.summary ||
                   'Клара Вэнс обнаружена мёртвой в номере 12 гостиницы Pinecrest. Обстоятельства смерти устанавливаются.'}
               </p>
@@ -1437,11 +1400,11 @@ export default function CaseInvestigationLayout({
 
             {/* Блок "ТЕКУЩАЯ ЗАДАЧА" */}
             <div className="md:max-w-xs flex flex-col items-start md:items-end text-left md:text-right shrink-0">
-              <div className="flex items-center gap-1.5 text-[#c5a059] text-xs font-semibold uppercase tracking-wider">
+              <div className="flex items-center gap-1.5 text-primary text-xs font-semibold uppercase tracking-wider">
                 <Crosshair className="size-3.5" />
                 <span>ТЕКУЩАЯ ЗАДАЧА</span>
               </div>
-              <p className="text-[11px] text-zinc-300 mt-1 leading-snug">
+              <p className="text-[11px] text-foreground/80 mt-1 leading-snug">
                 {isDocUnlocked('P01')
                   ? 'Изучите общий вид номера 12 и найдите, что может быть важным для дела.'
                   : 'Ознакомьтесь с первичным рапортом (D01) и введите ключевые теги для доступа к фотографиям.'}
@@ -1455,7 +1418,7 @@ export default function CaseInvestigationLayout({
                     setSelectedItemId('D01');
                   }
                 }}
-                className="mt-2.5 bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-semibold text-xs tracking-wider uppercase px-4 py-2 rounded-sm transition-colors flex items-center gap-1.5 shadow-sm active:scale-98"
+                className="mt-2.5 bg-primary hover:bg-lamp text-primary-foreground font-semibold text-xs tracking-wider uppercase px-4 py-2 rounded-sm transition-colors flex items-center gap-1.5 shadow-sm active:scale-98"
               >
                 <span>ПЕРЕЙТИ К МАТЕРИАЛАМ</span>
                 <ArrowRight className="size-3.5" />
@@ -1464,11 +1427,11 @@ export default function CaseInvestigationLayout({
           </div>
 
           {/* ПАНЕЛЬ ДЕДУКЦИИ И СОПОСТАВЛЕНИЯ УЛИК ОВР (ТРИГГЕР ФИНАЛА) */}
-          <div className="bg-[#12151c] border border-[#1e232d] rounded-sm p-3.5 space-y-2.5">
+          <div className="bg-card border border-border rounded-sm p-3.5 space-y-2.5">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="size-4 text-[#c5a059]" />
-                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-zinc-200">
+                <ShieldCheck className="size-4 text-primary" />
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-foreground">
                   СИНТЕЗ УЛИК // ПОВТОРЯЮЩИЕСЯ ПРИЗНАКИ
                 </span>
               </div>
@@ -1481,7 +1444,7 @@ export default function CaseInvestigationLayout({
                   className={`p-2 rounded-xs border flex flex-col gap-1 transition-colors ${
                     deductionConfirmed
                       ? 'border-emerald-500/50 bg-emerald-950/20 text-emerald-300'
-                      : 'border-[#1e232d] bg-[#0c0e12] text-zinc-500'
+                      : 'border-border bg-background text-muted-foreground/80'
                   }`}
                 >
                   <span className="text-[10px] uppercase tracking-wider">Признак {slot + 1}</span>
@@ -1494,7 +1457,7 @@ export default function CaseInvestigationLayout({
                       setDeductionPicks(next);
                       setDeductionMessage(null);
                     }}
-                    className="w-full bg-[#0b0d11] border border-[#1e232d] text-zinc-200 text-[11px] rounded-xs px-1.5 py-1 focus:outline-none focus:border-[#c5a059] disabled:opacity-70"
+                    className="w-full bg-background border border-border text-foreground text-[11px] rounded-xs px-1.5 py-1 focus:outline-none focus:border-primary disabled:opacity-70"
                   >
                     <option value="">— выберите материал —</option>
                     {deductionCandidates.map((d) => (
@@ -1513,22 +1476,22 @@ export default function CaseInvestigationLayout({
 
             {/* Состояние готовности дедукции */}
             {isAllThreeCluesFound && !isFinaleActive ? (
-              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-[#1e232d] animate-in fade-in">
-                <span className="text-[11px] font-mono text-[#c5a059] flex items-center gap-1.5">
-                  <Sparkles className="size-3.5 text-[#c5a059]" />
+              <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-border animate-in fade-in">
+                <span className="text-[11px] font-mono text-primary flex items-center gap-1.5">
+                  <Sparkles className="size-3.5 text-primary" />
                   <span>Связь подтверждена: эти три признака повторяются. Служебный архив открыт — задайте запрос в терминале.</span>
                 </span>
                 <button
                   type="button"
                   onClick={() => setActivePanel('terminal')}
-                  className="w-full sm:w-auto px-4 py-2 bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-mono font-bold text-xs uppercase tracking-wider rounded-xs transition-all shadow-[0_0_15px_rgba(197,160,89,0.3)] active:scale-98 flex items-center justify-center gap-2 shrink-0"
+                  className="w-full sm:w-auto px-4 py-2 bg-primary hover:bg-lamp text-primary-foreground font-mono font-bold text-xs uppercase tracking-wider rounded-xs transition-all shadow-[0_0_15px_oklch(0.78 0.13 75 / 0.3)] active:scale-98 flex items-center justify-center gap-2 shrink-0"
                 >
                   <Sparkles className="size-3.5" />
                   <span>ОТКРЫТЬ АРХИВ</span>
                 </button>
               </div>
             ) : (
-              <div className="text-[10px] font-mono text-zinc-500 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+              <div className="text-[10px] font-mono text-muted-foreground/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span>
                   {deductionMessage ??
                     'Выберите три материала дела, которые указывают на один и тот же почерк преступника.'}
@@ -1537,7 +1500,7 @@ export default function CaseInvestigationLayout({
                   type="button"
                   onClick={handleCheckDeduction}
                   disabled={isFinaleActive}
-                  className="px-3 py-1.5 border border-[#c5a059]/50 text-[#c5a059] hover:bg-[#c5a059]/10 uppercase tracking-wider rounded-xs transition-colors shrink-0 disabled:opacity-50"
+                  className="px-3 py-1.5 border border-primary/50 text-primary hover:bg-primary/10 uppercase tracking-wider rounded-xs transition-colors shrink-0 disabled:opacity-50"
                 >
                   ПРОВЕРИТЬ СВЯЗЬ
                 </button>
@@ -1546,20 +1509,20 @@ export default function CaseInvestigationLayout({
           </div>
 
           {/* КОНСОЛЬ РАЗБЛОКИРОВКИ МАТЕРИАЛОВ (ВСТРОЕННАЯ МЕХАНИКА ВВОДА КЛЮЧЕЙ) */}
-          <div className="bg-[#101319] border border-[#1e232d] rounded-sm p-3 space-y-2">
-            <div className="flex items-center justify-between text-[11px] font-mono text-[#c5a059] uppercase tracking-wider">
+          <div className="bg-card border border-border rounded-sm p-3 space-y-2">
+            <div className="flex items-center justify-between text-[11px] font-mono text-primary uppercase tracking-wider">
               <span className="flex items-center gap-1.5 font-semibold">
-                <Terminal className="size-3.5 text-[#c5a059]" />
+                <Terminal className="size-3.5 text-primary" />
                 <span>КОНСОЛЬ РАЗБЛОКИРОВКИ МАТЕРИАЛОВ ОВР</span>
               </span>
-              <span className="text-zinc-500 text-[10px]">
+              <span className="text-muted-foreground/80 text-[10px]">
                 ОТКРЫТО: {unlockedMaterialsCount} ИЗ {totalMaterialsCount}
               </span>
             </div>
 
             <form onSubmit={handleUnlockKey} className="flex flex-col sm:flex-row gap-2">
               <div className="relative flex-1">
-                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-zinc-500" />
+                <Lock className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/80" />
                 <input
                   ref={unlockInputRef}
                   type="text"
@@ -1569,12 +1532,12 @@ export default function CaseInvestigationLayout({
                     if (unlockFeedback) setUnlockFeedback(null);
                   }}
                   placeholder="ВВЕДИТЕ КЛЮЧ / ТЕГ (например: орлов, зеркало, часы, пайнкрест, 01:00...)"
-                  className="w-full bg-[#0b0d11] border border-[#1e232d] pl-8 pr-3 py-1.5 text-xs text-zinc-200 placeholder:text-zinc-600 rounded-sm font-mono focus:outline-none focus:border-[#c5a059] uppercase tracking-wide transition-colors"
+                  className="w-full bg-background border border-border pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 rounded-sm font-mono focus:outline-none focus:border-primary uppercase tracking-wide transition-colors"
                 />
               </div>
               <button
                 type="submit"
-                className="bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-semibold text-xs tracking-wider uppercase px-4 py-1.5 rounded-sm transition-colors shrink-0 shadow-sm flex items-center justify-center gap-1.5 active:scale-98"
+                className="bg-primary hover:bg-lamp text-primary-foreground font-semibold text-xs tracking-wider uppercase px-4 py-1.5 rounded-sm transition-colors shrink-0 shadow-sm flex items-center justify-center gap-1.5 active:scale-98"
               >
                 <span>ПРИМЕНИТЬ / РАЗБЛОКИРОВАТЬ</span>
                 <ArrowRight className="size-3.5" />
@@ -1605,7 +1568,7 @@ export default function CaseInvestigationLayout({
                 <button
                   type="button"
                   onClick={() => setUnlockFeedback(null)}
-                  className="text-zinc-400 hover:text-white text-xs px-1"
+                  className="text-muted-foreground hover:text-white text-xs px-1"
                 >
                   ✕
                 </button>
@@ -1614,14 +1577,14 @@ export default function CaseInvestigationLayout({
           </div>
 
           {/* ЦЕНТРАЛЬНЫЙ ПРОСМОТРЩИК УЛИК */}
-          <div className="bg-[#0b0d11] border border-[#1e232d] rounded-sm overflow-hidden flex flex-col">
+          <div className="bg-background border border-border rounded-sm overflow-hidden flex flex-col">
             {/* Заголовок вьювера */}
-            <div className="px-3.5 py-2 border-b border-[#1e232d] bg-[#12151c] flex items-center justify-between text-xs font-mono text-zinc-300">
+            <div className="px-3.5 py-2 border-b border-border bg-card flex items-center justify-between text-xs font-mono text-foreground/80">
               <div className="flex items-center gap-2">
-                <span className="text-[#c5a059] font-bold">[{currentItem.id}]</span>
+                <span className="text-primary font-bold">[{currentItem.id}]</span>
                 <span>{currentItem.title}</span>
               </div>
-              <span className="text-zinc-500 uppercase text-[10px]">
+              <span className="text-muted-foreground/80 uppercase text-[10px]">
                 {currentItem.kind === 'photo' ? 'ФОТОСНИМОК' : currentItem.kind === 'call' ? 'БИЛЛИНГ' : currentItem.kind === 'map' ? 'КАРТА' : 'ДОКУМЕНТ'}
               </span>
             </div>
@@ -1646,12 +1609,12 @@ export default function CaseInvestigationLayout({
                       className="absolute -translate-x-1/2 -translate-y-1/2 group cursor-pointer flex items-center gap-1.5 z-20 focus:outline-none"
                       title={`Осмотреть: ${hotspot.name}`}
                     >
-                      <span className="relative flex size-4 items-center justify-center rounded-full border border-white/60 bg-black/60 shadow-lg group-hover:scale-110 group-hover:border-[#c5a059] transition-transform">
-                        <span className="size-1.5 rounded-full bg-white group-hover:bg-[#c5a059]" />
+                      <span className="relative flex size-4 items-center justify-center rounded-full border border-white/60 bg-black/60 shadow-lg group-hover:scale-110 group-hover:border-primary transition-transform">
+                        <span className="size-1.5 rounded-full bg-white group-hover:bg-primary" />
                       </span>
-                      <span className="bg-black/85 border border-[#1e232d] group-hover:border-[#c5a059]/80 text-zinc-200 group-hover:text-white text-[11px] px-2 py-0.5 rounded-sm shadow-md backdrop-blur-xs flex items-center gap-1 transition-all">
+                      <span className="bg-black/85 border border-border group-hover:border-primary/80 text-foreground group-hover:text-white text-[11px] px-2 py-0.5 rounded-sm shadow-md backdrop-blur-xs flex items-center gap-1 transition-all">
                         {hotspot.iconType === 'user' && (
-                          <User className="size-3 text-zinc-400 group-hover:text-[#c5a059]" />
+                          <User className="size-3 text-muted-foreground group-hover:text-primary" />
                         )}
                         <span>{hotspot.name}</span>
                       </span>
@@ -1660,11 +1623,11 @@ export default function CaseInvestigationLayout({
                 })}
               </div>
             ) : currentItem.kind === 'document' ? (
-              <div className="p-4 sm:p-6 bg-[#0e1015] min-h-[380px] sm:min-h-[460px] flex flex-col justify-between">
+              <div className="p-4 sm:p-6 bg-background min-h-[380px] sm:min-h-[460px] flex flex-col justify-between">
                 {/* Скан документа (если есть) или архивный лист */}
                 <div className="space-y-4">
                   {(currentItem.mediaUrl || currentItem.image_asset) && (
-                    <div className="max-h-60 overflow-hidden border border-[#1e232d] rounded-sm bg-black/40 flex items-center justify-center">
+                    <div className="max-h-60 overflow-hidden border border-border rounded-sm bg-black/40 flex items-center justify-center">
                       <img
                         src={currentItem.mediaUrl || currentItem.image_asset}
                         alt=""
@@ -1676,17 +1639,17 @@ export default function CaseInvestigationLayout({
                   )}
 
                   {/* Текстовое содержимое документа */}
-                  <div className="bg-[#12151c] border border-[#1e232d] p-4 rounded-sm font-mono text-xs text-zinc-300 whitespace-pre-wrap leading-relaxed max-h-[320px] overflow-y-auto">
+                  <div className="bg-card border border-border p-4 rounded-sm font-mono text-xs text-foreground/80 whitespace-pre-wrap leading-relaxed max-h-[320px] overflow-y-auto">
                     {currentItem.content || currentItem.description || 'Текст документа отсутствует в реестре.'}
                   </div>
                 </div>
               </div>
             ) : currentItem.kind === 'call' ? (
-              <div className="p-4 sm:p-6 bg-[#0e1015] min-h-[380px] sm:min-h-[460px] flex flex-col justify-between">
-                <div className="bg-[#12151c] border border-[#1e232d] p-5 rounded-sm space-y-4">
-                  <div className="flex items-center justify-between border-b border-[#1e232d] pb-3">
+              <div className="p-4 sm:p-6 bg-background min-h-[380px] sm:min-h-[460px] flex flex-col justify-between">
+                <div className="bg-card border border-border p-5 rounded-sm space-y-4">
+                  <div className="flex items-center justify-between border-b border-border pb-3">
                     <div className="flex items-center gap-2">
-                      <Phone className="size-4 text-[#c5a059]" />
+                      <Phone className="size-4 text-primary" />
                       <span className="font-mono text-sm font-semibold text-white">
                         {currentItem.title}
                       </span>
@@ -1698,16 +1661,16 @@ export default function CaseInvestigationLayout({
 
                   <div className="grid grid-cols-2 gap-3 text-xs font-mono">
                     <div>
-                      <span className="text-zinc-500 block">Абонент:</span>
-                      <span className="text-zinc-200">{currentItem.caller || 'Не определен'}</span>
+                      <span className="text-muted-foreground/80 block">Абонент:</span>
+                      <span className="text-foreground">{currentItem.caller || 'Не определен'}</span>
                     </div>
                     <div>
-                      <span className="text-zinc-500 block">Длительность:</span>
-                      <span className="text-zinc-200">{currentItem.duration || '—'}</span>
+                      <span className="text-muted-foreground/80 block">Длительность:</span>
+                      <span className="text-foreground">{currentItem.duration || '—'}</span>
                     </div>
                   </div>
 
-                  <div className="p-3 bg-[#0b0d11] border border-[#1e232d] rounded-sm font-mono text-xs text-zinc-300 whitespace-pre-wrap leading-relaxed">
+                  <div className="p-3 bg-background border border-border rounded-sm font-mono text-xs text-foreground/80 whitespace-pre-wrap leading-relaxed">
                     {currentItem.content}
                   </div>
                 </div>
@@ -1724,29 +1687,29 @@ export default function CaseInvestigationLayout({
             )}
 
             {/* Нижняя панель просмотрщика с кнопками Осмотреть / Сравнить */}
-            <div className="border-t border-[#1e232d] bg-[#101319] px-3.5 py-2 flex items-center justify-between text-xs">
+            <div className="border-t border-border bg-card px-3.5 py-2 flex items-center justify-between text-xs">
               <div className="flex items-center gap-2">
                 <button
                   type="button"
                   onClick={() => setIsInspectModalOpen(true)}
-                  className="flex items-center gap-1.5 text-zinc-300 hover:text-white px-2.5 py-1 rounded-sm hover:bg-[#181c24] transition-colors"
+                  className="flex items-center gap-1.5 text-foreground/80 hover:text-white px-2.5 py-1 rounded-sm hover:bg-secondary transition-colors"
                 >
-                  <Search className="size-3.5 text-zinc-400" />
+                  <Search className="size-3.5 text-muted-foreground" />
                   <span>Осмотреть</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => setIsCompareModalOpen(true)}
-                  className="flex items-center gap-1.5 text-zinc-400 hover:text-white px-2.5 py-1 rounded-sm hover:bg-[#181c24] transition-colors"
+                  className="flex items-center gap-1.5 text-muted-foreground hover:text-white px-2.5 py-1 rounded-sm hover:bg-secondary transition-colors"
                 >
-                  <Columns className="size-3.5 text-zinc-500" />
+                  <Columns className="size-3.5 text-muted-foreground/80" />
                   <span>Сравнить</span>
                 </button>
               </div>
 
               {/* Пагинация между открытыми фото */}
               {currentItem.kind === 'photo' && unlockedPhotos.length > 0 && (
-                <div className="flex items-center gap-2 text-zinc-500 font-mono text-xs">
+                <div className="flex items-center gap-2 text-muted-foreground/80 font-mono text-xs">
                   <button
                     type="button"
                     disabled={currentPhotoIndex <= 0}
@@ -1755,7 +1718,7 @@ export default function CaseInvestigationLayout({
                         setSelectedItemId(unlockedPhotos[currentPhotoIndex - 1].id);
                       }
                     }}
-                    className="hover:text-zinc-300 disabled:opacity-40 transition-colors"
+                    className="hover:text-foreground/80 disabled:opacity-40 transition-colors"
                   >
                     <ChevronLeft className="size-3.5" />
                   </button>
@@ -1770,7 +1733,7 @@ export default function CaseInvestigationLayout({
                         setSelectedItemId(unlockedPhotos[currentPhotoIndex + 1].id);
                       }
                     }}
-                    className="hover:text-zinc-300 disabled:opacity-40 transition-colors"
+                    className="hover:text-foreground/80 disabled:opacity-40 transition-colors"
                   >
                     <ChevronRight className="size-3.5" />
                   </button>
@@ -1780,33 +1743,33 @@ export default function CaseInvestigationLayout({
           </div>
 
           {/* Нижний блок с инфо о текущем материале */}
-          <div className="bg-[#101319] border border-[#1e232d] rounded-sm p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+          <div className="bg-card border border-border rounded-sm p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               {currentItem.mediaUrl || currentItem.image_asset || currentItem.content?.startsWith?.('/images') ? (
                 <img
                   src={currentItem.mediaUrl || currentItem.image_asset || currentItem.content}
                   alt=""
-                  className="w-16 h-12 object-cover rounded-xs border border-[#1e232d] shrink-0"
+                  className="w-16 h-12 object-cover rounded-xs border border-border shrink-0"
                 />
               ) : (
-                <div className="w-16 h-12 bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
-                  <FileText className="size-5 text-zinc-500" />
+                <div className="w-16 h-12 bg-background border border-border rounded-xs flex items-center justify-center shrink-0">
+                  <FileText className="size-5 text-muted-foreground/80" />
                 </div>
               )}
               <div className="min-w-0">
-                <div className="text-xs font-semibold text-zinc-200 truncate">
+                <div className="text-xs font-semibold text-foreground truncate">
                   {currentItem.kind === 'photo' ? 'Фото' : 'Материал'}: {currentItem.title}
                 </div>
-                <div className="text-[11px] text-zinc-400 mt-0.5 truncate">
+                <div className="text-[11px] text-muted-foreground mt-0.5 truncate">
                   {currentItem.note || currentItem.description || 'Сделано при первичном осмотре места происшествия.'}
                 </div>
-                <div className="text-[11px] text-zinc-500 mt-0.5 truncate">
+                <div className="text-[11px] text-muted-foreground/80 mt-0.5 truncate">
                   {currentItem.subNote || 'Материал зарегистрирован в деле Отдела внутренних расследований.'}
                 </div>
               </div>
             </div>
 
-            <div className="text-right sm:text-right shrink-0 font-mono text-[11px] text-zinc-400 space-y-0.5 border-t sm:border-t-0 border-[#1e232d] pt-2 sm:pt-0 w-full sm:w-auto">
+            <div className="text-right sm:text-right shrink-0 font-mono text-[11px] text-muted-foreground space-y-0.5 border-t sm:border-t-0 border-border pt-2 sm:pt-0 w-full sm:w-auto">
               <div>Источник: {currentItem.source || 'Д01 (рапорт патрульного)'}</div>
               <div>Дата: {currentItem.date || '14.05.1998, 08:42'}</div>
               <div>Автор: {currentItem.author || 'Оперуполномоченный Л. Коваль'}</div>
@@ -1817,24 +1780,24 @@ export default function CaseInvestigationLayout({
         {/* ====================================================== */}
         {/* ПРАВАЯ ПАНЕЛЬ: ПЕРСОНАЖИ, ДНЕВНИК И ЗАМЕТКИ            */}
         {/* ====================================================== */}
-        <aside className="flex flex-col justify-between bg-[#101319] border border-[#1e232d] rounded-sm p-3.5 min-h-[720px]">
+        <aside className="flex flex-col justify-between bg-card border border-border rounded-sm p-3.5 min-h-[720px]">
           <div className="space-y-3.5">
             {/* Карточка активного профиля вверху */}
-            <div className="bg-[#141820] border border-[#1e232d] p-3 rounded-sm flex items-start gap-3">
+            <div className="bg-card border border-border p-3 rounded-sm flex items-start gap-3">
               {isCharacterUnlocked(activeCharacter) && !(activeCharacter?.avatarUrl || activeCharacter?.image_asset) ? (
-                <div className="w-[60px] h-[72px] bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
-                  <User className="size-6 text-zinc-500" />
+                <div className="w-[60px] h-[72px] bg-background border border-border rounded-xs flex items-center justify-center shrink-0">
+                  <User className="size-6 text-muted-foreground/80" />
                 </div>
               ) : isCharacterUnlocked(activeCharacter) ? (
                 <img
                   key={activeCharacter?.id}
                   src={activeCharacter?.avatarUrl || activeCharacter?.image_asset || '/images/characters/clara_vance_01.jpg'}
                   alt={activeCharacter?.name}
-                  className="w-[60px] h-[72px] object-cover rounded-xs border border-[#1e232d] grayscale contrast-125 shrink-0"
+                  className="w-[60px] h-[72px] object-cover rounded-xs border border-border grayscale contrast-125 shrink-0"
                 />
               ) : (
-                <div className="w-[60px] h-[72px] bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
-                  <Lock className="size-5 text-zinc-600" />
+                <div className="w-[60px] h-[72px] bg-background border border-border rounded-xs flex items-center justify-center shrink-0">
+                  <Lock className="size-5 text-muted-foreground/60" />
                 </div>
               )}
               <div className="min-w-0 flex-1">
@@ -1844,34 +1807,34 @@ export default function CaseInvestigationLayout({
                 <div className="text-[10px] font-mono text-[#4ade80] tracking-wider mt-0.5">
                   СТАТУС: {isCharacterUnlocked(activeCharacter) ? activeCharacter?.role.toUpperCase() : 'ЗАСЕКРЕЧЕНО'}
                 </div>
-                <div className="text-[11px] text-zinc-400 mt-1">
+                <div className="text-[11px] text-muted-foreground mt-1">
                   Возраст: {isCharacterUnlocked(activeCharacter) ? (activeCharacter?.age || '—') : '—'}
                 </div>
-                <div className="text-[11px] text-zinc-400 truncate">
+                <div className="text-[11px] text-muted-foreground truncate">
                   Профессия: {isCharacterUnlocked(activeCharacter) ? (activeCharacter?.profession || activeCharacter?.role) : '—'}
                 </div>
-                <div className="text-[11px] text-zinc-400 truncate">
+                <div className="text-[11px] text-muted-foreground truncate">
                   Адрес: {isCharacterUnlocked(activeCharacter) ? (activeCharacter?.address || '—') : '—'}
                 </div>
               </div>
             </div>
 
             {/* Краткое описание выбранного человека */}
-            <p className="text-[11px] text-zinc-400 leading-relaxed px-1">
+            <p className="text-[11px] text-muted-foreground leading-relaxed px-1">
               {isCharacterUnlocked(activeCharacter)
                 ? activeCharacter?.description || 'Описание пока не добавлено.'
                 : 'Личность не установлена. Изучите материалы дела, чтобы узнать, кто это.'}
             </p>
 
             {/* Вкладки: "Люди", "Орлов", "Дневник" */}
-            <div className="flex border-b border-[#1e232d] text-xs">
+            <div className="flex border-b border-border text-xs">
               <button
                 type="button"
                 onClick={() => setActiveTab('people')}
                 className={`flex items-center gap-1.5 pb-2 px-2 transition-colors ${
                   activeTab === 'people'
-                    ? 'border-b-2 border-[#c5a059] text-[#c5a059] font-medium'
-                    : 'text-zinc-500 hover:text-zinc-300'
+                    ? 'border-b-2 border-primary text-primary font-medium'
+                    : 'text-muted-foreground/80 hover:text-foreground/80'
                 }`}
               >
                 <User className="size-3.5" />
@@ -1882,8 +1845,8 @@ export default function CaseInvestigationLayout({
                 onClick={() => setActiveTab('orlov')}
                 className={`flex items-center gap-1.5 pb-2 px-2 transition-colors ${
                   activeTab === 'orlov'
-                    ? 'border-b-2 border-[#c5a059] text-[#c5a059] font-medium'
-                    : 'text-zinc-500 hover:text-zinc-300'
+                    ? 'border-b-2 border-primary text-primary font-medium'
+                    : 'text-muted-foreground/80 hover:text-foreground/80'
                 }`}
               >
                 <Shield className="size-3.5" />
@@ -1894,8 +1857,8 @@ export default function CaseInvestigationLayout({
                 onClick={() => setActiveTab('diary')}
                 className={`flex items-center gap-1.5 pb-2 px-2 transition-colors ${
                   activeTab === 'diary'
-                    ? 'border-b-2 border-[#c5a059] text-[#c5a059] font-medium'
-                    : 'text-zinc-500 hover:text-zinc-300'
+                    ? 'border-b-2 border-primary text-primary font-medium'
+                    : 'text-muted-foreground/80 hover:text-foreground/80'
                 }`}
               >
                 <BookOpen className="size-3.5" />
@@ -1925,38 +1888,38 @@ export default function CaseInvestigationLayout({
                       }}
                       className={`w-full flex items-center justify-between p-2 rounded-sm text-left transition-all ${
                         isSelected
-                          ? 'bg-[#161a22] border border-[#c5a059]/50 shadow-xs'
+                          ? 'bg-secondary border border-primary/50 shadow-xs'
                           : unlocked
-                          ? 'bg-transparent border border-transparent hover:bg-[#141720] hover:border-[#1e232d]'
-                          : 'opacity-60 bg-transparent border border-transparent hover:bg-[#12141a]'
+                          ? 'bg-transparent border border-transparent hover:bg-card hover:border-border'
+                          : 'opacity-60 bg-transparent border border-transparent hover:bg-card'
                       }`}
                     >
                       <div className="flex items-center gap-2.5 min-w-0">
                         {unlocked && !(char.avatarUrl || char.image_asset) ? (
-                          <div className="size-8 bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
-                            <User className="size-4 text-zinc-500" />
+                          <div className="size-8 bg-background border border-border rounded-xs flex items-center justify-center shrink-0">
+                            <User className="size-4 text-muted-foreground/80" />
                           </div>
                         ) : unlocked ? (
                           <img
                             src={char.avatarUrl || char.image_asset || '/images/characters/clara_vance_01.jpg'}
                             alt=""
-                            className="size-8 object-cover rounded-xs border border-[#1e232d] shrink-0"
+                            className="size-8 object-cover rounded-xs border border-border shrink-0"
                           />
                         ) : (
-                          <div className="size-8 bg-[#0b0d11] border border-[#1e232d] rounded-xs flex items-center justify-center shrink-0">
-                            <Lock className="size-3.5 text-zinc-500" />
+                          <div className="size-8 bg-background border border-border rounded-xs flex items-center justify-center shrink-0">
+                            <Lock className="size-3.5 text-muted-foreground/80" />
                           </div>
                         )}
                         <div className="min-w-0">
-                          <div className="text-xs font-medium text-zinc-200 truncate">
+                          <div className="text-xs font-medium text-foreground truncate">
                             {unlocked ? char.name : '[ЛИЧНОСТЬ НЕ ОПОЗНАНА]'}
                           </div>
-                          <div className="text-[10px] text-zinc-500 mt-0.5">
+                          <div className="text-[10px] text-muted-foreground/80 mt-0.5">
                             {unlocked ? char.role : 'Засекречено 🔒'}
                           </div>
                         </div>
                       </div>
-                      <ChevronRight className="size-3.5 text-zinc-600 shrink-0" />
+                      <ChevronRight className="size-3.5 text-muted-foreground/60 shrink-0" />
                     </button>
                   );
                 })}
@@ -1965,14 +1928,14 @@ export default function CaseInvestigationLayout({
 
             {/* Вкладка Орлова */}
             {activeTab === 'orlov' && (
-              <div className="p-3 bg-[#141820] border border-[#1e232d] rounded-sm text-xs space-y-2 text-zinc-300">
-                <div className="font-semibold text-white uppercase text-[11px] text-[#c5a059]">
+              <div className="p-3 bg-card border border-border rounded-sm text-xs space-y-2 text-foreground/80">
+                <div className="font-semibold text-white uppercase text-[11px] text-primary">
                   ЛИЧНОЕ ДЕЛО: МАКСИМ ОРЛОВ
                 </div>
-                <p className="text-[11px] text-zinc-400 leading-relaxed">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
                   Старший следователь Отдела внутренних расследований. 11 лет службы. Специализация: закрытые дела, аномалии и преступления с сокрытием улик.
                 </p>
-                <div className="font-mono text-[10px] text-zinc-500 border-t border-[#1e232d] pt-2">
+                <div className="font-mono text-[10px] text-muted-foreground/80 border-t border-border pt-2">
                   Статус дела: В РАЗРАБОТКЕ
                 </div>
               </div>
@@ -1980,16 +1943,16 @@ export default function CaseInvestigationLayout({
 
             {/* Вкладка Дневника */}
             {activeTab === 'diary' && (
-              <div className="p-3 bg-[#141820] border border-[#1e232d] rounded-sm text-xs space-y-2 text-zinc-300 max-h-[380px] overflow-y-auto">
-                <div className="font-semibold text-white uppercase text-[11px] text-[#c5a059]">
+              <div className="p-3 bg-card border border-border rounded-sm text-xs space-y-2 text-foreground/80 max-h-[380px] overflow-y-auto">
+                <div className="font-semibold text-white uppercase text-[11px] text-primary">
                   ХРОНИКА СОБЫТИЙ ДЕЛА
                 </div>
-                <div className="space-y-2 text-[11px] font-mono text-zinc-400">
+                <div className="space-y-2 text-[11px] font-mono text-muted-foreground">
                   {timelineEntries.length > 0 ? (
                     timelineEntries.map((t: any, idx: number) => (
-                      <div key={idx} className="border-b border-[#1e232d]/60 pb-1.5">
-                        <div className="text-[#c5a059] text-[10px]">{t.time || t.date}</div>
-                        <div className="text-zinc-300 mt-0.5">{t.event || t.text}</div>
+                      <div key={idx} className="border-b border-border/60 pb-1.5">
+                        <div className="text-primary text-[10px]">{t.time || t.date}</div>
+                        <div className="text-foreground/80 mt-0.5">{t.event || t.text}</div>
                       </div>
                     ))
                   ) : (
@@ -2007,19 +1970,19 @@ export default function CaseInvestigationLayout({
           </div>
 
           {/* Блок "ЗАМЕТКИ" внизу с полем для текста и сохранением в localStorage */}
-          <div className="border-t border-[#1e232d] pt-3 mt-3">
-            <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wider text-zinc-300 mb-2">
+          <div className="border-t border-border pt-3 mt-3">
+            <div className="flex items-center justify-between label-xs text-foreground mb-2">
               <div className="flex items-center gap-1.5">
-                <BookText className="size-3.5 text-zinc-400" />
+                <BookText className="size-3.5 text-muted-foreground" />
                 <span>ЗАМЕТКИ</span>
               </div>
-              <Edit3 className="size-3.5 text-zinc-500 hover:text-zinc-300 cursor-pointer" />
+              <Edit3 className="size-3.5 text-muted-foreground/80 hover:text-foreground/80 cursor-pointer" />
             </div>
             <textarea
               value={notesText}
               onChange={handleNotesChange}
               placeholder="Здесь можно делать заметки, фиксировать версии и вопросы..."
-              className="w-full h-20 bg-[#0e1015] border border-[#1e232d] rounded-sm p-2 text-[11px] text-zinc-300 placeholder:text-zinc-600 resize-none focus:outline-none focus:border-[#c5a059]/60 leading-relaxed font-mono"
+              className="w-full h-20 bg-background border border-border rounded-sm p-2 text-[11px] text-foreground/80 placeholder:text-muted-foreground/60 resize-none focus:outline-none focus:border-primary/60 leading-relaxed font-mono"
             />
           </div>
         </aside>
@@ -2032,9 +1995,9 @@ export default function CaseInvestigationLayout({
         <button
           type="button"
           onClick={() => setIsHintModalOpen(true)}
-          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-[#c5a059] hover:text-[#dfb86c] bg-[#141820]/90 hover:bg-[#161a22] border border-[#c5a059]/40 px-3 py-2 rounded-sm shadow-lg transition-all backdrop-blur-xs group"
+          className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-primary hover:text-lamp bg-card/90 hover:bg-secondary border border-primary/40 px-3 py-2 rounded-sm shadow-lg transition-all backdrop-blur-xs group"
         >
-          <Lightbulb className="size-4 text-[#c5a059] fill-[#c5a059]/20 group-hover:scale-110 transition-transform" />
+          <Lightbulb className="size-4 text-primary fill-primary/20 group-hover:scale-110 transition-transform" />
           <span>ПОДСКАЗКА</span>
         </button>
       </div>
@@ -2046,10 +2009,10 @@ export default function CaseInvestigationLayout({
       {/* 1. Модальное окно осмотра интерактивной точки */}
       {activeHotspotModal && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-[#101319] border border-[#c5a059]/60 max-w-md w-full p-5 rounded-sm space-y-3 shadow-2xl animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-[#1e232d] pb-2">
+          <div className="bg-card border border-primary/60 max-w-md w-full p-5 rounded-sm space-y-3 shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-border pb-2">
               <div className="flex items-center gap-2">
-                <Crosshair className="size-4 text-[#c5a059]" />
+                <Crosshair className="size-4 text-primary" />
                 <h3 className="font-semibold text-white uppercase text-sm">
                   ОСМОТР: {activeHotspotModal.name}
                 </h3>
@@ -2057,19 +2020,19 @@ export default function CaseInvestigationLayout({
               <button
                 type="button"
                 onClick={() => setActiveHotspotModal(null)}
-                className="text-zinc-400 hover:text-white"
+                className="text-muted-foreground hover:text-white"
               >
                 <X className="size-4" />
               </button>
             </div>
-            <p className="text-xs text-zinc-300 leading-relaxed font-sans">
+            <p className="text-xs text-foreground/80 leading-relaxed font-sans">
               {activeHotspotModal.description}
             </p>
             <div className="pt-2 flex justify-end">
               <button
                 type="button"
                 onClick={() => setActiveHotspotModal(null)}
-                className="bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-semibold text-xs px-4 py-1.5 rounded-sm transition-colors uppercase"
+                className="bg-primary hover:bg-lamp text-primary-foreground font-semibold text-xs px-4 py-1.5 rounded-sm transition-colors uppercase"
               >
                 Принято к сведению
               </button>
@@ -2081,14 +2044,14 @@ export default function CaseInvestigationLayout({
       {/* 2. Модальное окно "Осмотреть" (полный зум) */}
       {isInspectModalOpen && (
         <div className="fixed inset-0 bg-black/95 z-50 flex flex-col p-4 backdrop-blur-md">
-          <div className="flex items-center justify-between pb-3 border-b border-[#1e232d]">
-            <div className="text-sm font-mono text-[#c5a059]">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div className="text-sm font-mono text-primary">
               [{currentItem.id}] {currentItem.title} — РЕЖИМ МАКСИМАЛЬНОГО ОСМОТРА
             </div>
             <button
               type="button"
               onClick={() => setIsInspectModalOpen(false)}
-              className="text-zinc-400 hover:text-white p-1"
+              className="text-muted-foreground hover:text-white p-1"
             >
               <X className="size-5" />
             </button>
@@ -2097,7 +2060,7 @@ export default function CaseInvestigationLayout({
             <img
               src={currentItem.mediaUrl || currentItem.image_asset || currentItem.content || '/images/case-001/room_overview.jpg'}
               alt={currentItem.title}
-              className="max-h-[85vh] max-w-full object-contain border border-[#1e232d] shadow-2xl"
+              className="max-h-[85vh] max-w-full object-contain border border-border shadow-2xl"
             />
           </div>
         </div>
@@ -2106,10 +2069,10 @@ export default function CaseInvestigationLayout({
       {/* 3. Модальное окно "Подсказка" */}
       {isHintModalOpen && (
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs">
-          <div className="bg-[#101319] border border-[#c5a059] max-w-md w-full p-5 rounded-sm space-y-3 shadow-2xl animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-[#1e232d] pb-2">
-              <div className="flex items-center gap-2 text-[#c5a059]">
-                <Lightbulb className="size-4 fill-[#c5a059]/20" />
+          <div className="bg-card border border-primary max-w-md w-full p-5 rounded-sm space-y-3 shadow-2xl animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-border pb-2">
+              <div className="flex items-center gap-2 text-primary">
+                <Lightbulb className="size-4 fill-primary/20" />
                 <h3 className="font-semibold text-white uppercase text-sm">
                   СЛЕДСТВЕННАЯ НАВОДКА ДЕТЕКТИВА
                 </h3>
@@ -2117,12 +2080,12 @@ export default function CaseInvestigationLayout({
               <button
                 type="button"
                 onClick={() => setIsHintModalOpen(false)}
-                className="text-zinc-400 hover:text-white"
+                className="text-muted-foreground hover:text-white"
               >
                 <X className="size-4" />
               </button>
             </div>
-            <div className="space-y-2 text-xs text-zinc-300 leading-relaxed">
+            <div className="space-y-2 text-xs text-foreground/80 leading-relaxed">
               <p>
                 <strong>1. Изучите Рапорт патрульного (D01):</strong> В тексте отчета упоминаются ключевые слова (например, фамилии, место происшествия). Вводите их в Консоль Разблокировки!
               </p>
@@ -2137,7 +2100,7 @@ export default function CaseInvestigationLayout({
               <button
                 type="button"
                 onClick={() => setIsHintModalOpen(false)}
-                className="bg-[#c5a059] hover:bg-[#d4af66] text-[#0e1015] font-semibold text-xs px-4 py-1.5 rounded-sm transition-colors uppercase"
+                className="bg-primary hover:bg-lamp text-primary-foreground font-semibold text-xs px-4 py-1.5 rounded-sm transition-colors uppercase"
               >
                 Понятно
               </button>
@@ -2149,35 +2112,35 @@ export default function CaseInvestigationLayout({
       {/* 4. Модальное окно "Сравнить" */}
       {isCompareModalOpen && (
         <div className="fixed inset-0 bg-black/90 z-50 flex flex-col p-4 backdrop-blur-md">
-          <div className="flex items-center justify-between pb-3 border-b border-[#1e232d]">
-            <div className="text-sm font-mono text-[#c5a059]">
+          <div className="flex items-center justify-between pb-3 border-b border-border">
+            <div className="text-sm font-mono text-primary">
               СРАВНЕНИЕ МАТЕРИАЛОВ: МАКРОСЪЕМКА И ОБЩИЙ ПЛАН
             </div>
             <button
               type="button"
               onClick={() => setIsCompareModalOpen(false)}
-              className="text-zinc-400 hover:text-white p-1"
+              className="text-muted-foreground hover:text-white p-1"
             >
               <X className="size-5" />
             </button>
           </div>
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-4 p-4 items-center justify-center">
             <div className="space-y-2 text-center">
-              <div className="text-xs font-mono text-zinc-400">P01 — ОБЩИЙ ВИД НОМЕРА 12</div>
+              <div className="text-xs font-mono text-muted-foreground">P01 — ОБЩИЙ ВИД НОМЕРА 12</div>
               <img
                 src="/images/case-001/room_overview.jpg"
                 alt="P01"
-                className="max-h-[70vh] mx-auto border border-[#1e232d] object-cover"
+                className="max-h-[70vh] mx-auto border border-border object-cover"
               />
             </div>
             <div className="space-y-2 text-center">
-              <div className="text-xs font-mono text-zinc-400">
+              <div className="text-xs font-mono text-muted-foreground">
                 {currentItem.id !== 'P01' ? `[${currentItem.id}] ${currentItem.title}` : 'P02 — ЗЕРКАЛО (МАКРО)'}
               </div>
               <img
                 src={currentItem.id !== 'P01' ? (currentItem.mediaUrl || currentItem.image_asset || currentItem.content || '/images/case-001/macro_mirror.jpg') : '/images/case-001/macro_mirror.jpg'}
                 alt=""
-                className="max-h-[70vh] mx-auto border border-[#1e232d] object-cover"
+                className="max-h-[70vh] mx-auto border border-border object-cover"
               />
             </div>
           </div>
@@ -2201,17 +2164,17 @@ export default function CaseInvestigationLayout({
             onClick={() => setActivePanel(null)}
           >
             <div
-              className="w-full max-w-4xl max-h-[88vh] overflow-y-auto bg-[#101319] border border-[#1e232d] rounded-sm"
+              className="w-full max-w-4xl max-h-[88vh] overflow-y-auto bg-card border border-border rounded-sm"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="sticky top-0 z-10 flex items-center justify-between bg-[#101319] border-b border-[#1e232d] px-4 py-2.5">
-                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-[#c5a059]">
+              <div className="sticky top-0 z-10 flex items-center justify-between bg-card border-b border-border px-4 py-2.5">
+                <span className="text-xs font-mono font-semibold uppercase tracking-wider text-primary">
                   {titles[activePanel]}
                 </span>
                 <button
                   type="button"
                   onClick={() => setActivePanel(null)}
-                  className="text-zinc-400 hover:text-zinc-100 transition-colors p-1"
+                  className="text-muted-foreground hover:text-foreground transition-colors p-1"
                   title="Закрыть"
                 >
                   <X className="size-4" />
@@ -2222,7 +2185,7 @@ export default function CaseInvestigationLayout({
                 {activePanel === 'interviews' && (
                   <div className="space-y-3">
                     {interviews.length === 0 ? (
-                      <p className="text-xs text-zinc-500 font-mono">Нет доступных протоколов допроса.</p>
+                      <p className="text-xs text-muted-foreground/80 font-mono">Нет доступных протоколов допроса.</p>
                     ) : (
                       <>
                         <div className="flex flex-wrap gap-1.5">
@@ -2233,8 +2196,8 @@ export default function CaseInvestigationLayout({
                               onClick={() => setActiveInterviewId(iv.id)}
                               className={`px-2.5 py-1 text-[11px] font-mono rounded-xs border transition-colors ${
                                 activeInterview?.id === iv.id
-                                  ? 'border-[#c5a059]/60 bg-[#161a22] text-[#c5a059]'
-                                  : 'border-[#1e232d] text-zinc-400 hover:text-zinc-200'
+                                  ? 'border-primary/60 bg-secondary text-primary'
+                                  : 'border-border text-muted-foreground hover:text-foreground'
                               }`}
                             >
                               {iv.title}
@@ -2278,8 +2241,8 @@ export default function CaseInvestigationLayout({
                 )}
 
                 {activePanel === 'terminal' && archiveMatchFound && !isFinaleActive && (
-                  <div className="mb-4 border border-[#c5a059]/60 bg-[#c5a059]/10 p-3 flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <span className="text-[11px] font-mono text-[#c5a059]">
+                  <div className="mb-4 border border-primary/60 bg-primary/10 p-3 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <span className="text-[11px] font-mono text-primary">
                       {engineCaseFile.uiTexts?.UI_ARCHIVE_CONNECTION_FOUND ??
                         'Найдены два закрытых дела с теми же признаками. Откройте карточки A-118 и C-204 среди материалов.'}
                     </span>
@@ -2289,7 +2252,7 @@ export default function CaseInvestigationLayout({
                         setActivePanel(null);
                         handleTriggerFinale();
                       }}
-                      className="px-4 py-2 bg-[#c5a059] text-[#0e1015] font-mono font-bold text-xs uppercase tracking-wider rounded-xs shrink-0"
+                      className="px-4 py-2 bg-primary text-primary-foreground font-mono font-bold text-xs uppercase tracking-wider rounded-xs shrink-0"
                     >
                       ЗАВЕРШИТЬ РАССЛЕДОВАНИЕ
                     </button>
@@ -2330,7 +2293,7 @@ export default function CaseInvestigationLayout({
 
       {isTimerExpired && !isFinaleActive && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 sm:p-6 backdrop-blur-md animate-in fade-in duration-300">
-          <div className="relative flex max-h-[92vh] w-full max-w-lg flex-col border-2 border-red-600/80 bg-[#0e1015] shadow-[0_0_60px_rgba(220,38,38,0.35)] p-6 sm:p-8 text-center space-y-5 rounded-xs">
+          <div className="relative flex max-h-[92vh] w-full max-w-lg flex-col border-2 border-red-600/80 bg-background shadow-[0_0_60px_rgba(220,38,38,0.35)] p-6 sm:p-8 text-center space-y-5 rounded-xs">
             <div className="size-16 rounded-full border-2 border-red-500/50 bg-red-950/40 mx-auto flex items-center justify-center animate-pulse">
               <AlertTriangle className="size-8 text-red-500" />
             </div>
@@ -2339,13 +2302,13 @@ export default function CaseInvestigationLayout({
               <h2 className="font-mono text-base sm:text-lg font-bold text-red-400 uppercase tracking-wider leading-snug">
                 ⚠️ ВНИМАНИЕ: СРОК РАССЛЕДОВАНИЯ ИСТЕК. ДОСТУП К АРХИВУ ЗАБЛОКИРОВАН
               </h2>
-              <p className="font-mono text-xs sm:text-sm text-zinc-400 leading-relaxed">
+              <p className="font-mono text-xs sm:text-sm text-muted-foreground leading-relaxed">
                 Лимит времени сессии следственного доступа (20:00) исчерпан. Согласно протоколу безопасности ОВР № 8-Б, материалы дела №001 временно заблокированы.
               </p>
             </div>
 
-            <div className="border border-[#1e232d] bg-[#141820] p-3 text-[11px] font-mono text-zinc-400 text-left space-y-1">
-              <div className="text-[#c5a059] font-semibold">СТАТУС СЕССИИ:</div>
+            <div className="border border-border bg-card p-3 text-[11px] font-mono text-muted-foreground text-left space-y-1">
+              <div className="text-primary font-semibold">СТАТУС СЕССИИ:</div>
               <div>• Таймер: 00:00 / 20:00 [ИСТЕК]</div>
               <div>• Протокол: АВТОМАТИЧЕСКАЯ БЛОКИРОВКА АРХИВА</div>
             </div>
@@ -2354,14 +2317,14 @@ export default function CaseInvestigationLayout({
               <button
                 type="button"
                 onClick={handleRestartTimer}
-                className="flex items-center justify-center gap-2 border border-[#c5a059] bg-[#c5a059] px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-[#0e1015] hover:bg-[#d4af66] transition-colors rounded-xs shadow-md active:scale-98"
+                className="flex items-center justify-center gap-2 border border-primary bg-primary px-5 py-2.5 text-xs font-semibold uppercase tracking-wider text-primary-foreground hover:bg-lamp transition-colors rounded-xs shadow-md active:scale-98"
               >
                 <RotateCcw className="size-4" />
                 <span>ПРОДЛИТЬ СЕССИЮ / ПЕРЕЗАПУСК</span>
               </button>
               <Link
                 href="/"
-                className="flex items-center justify-center gap-2 border border-[#1e232d] bg-[#141820] px-5 py-2.5 text-xs font-mono uppercase tracking-wider text-zinc-300 hover:text-white hover:border-zinc-500 transition-colors rounded-xs"
+                className="flex items-center justify-center gap-2 border border-border bg-card px-5 py-2.5 text-xs font-mono uppercase tracking-wider text-foreground/80 hover:text-white hover:border-muted-foreground transition-colors rounded-xs"
               >
                 <Home className="size-4" />
                 <span>ГЛАВНОЕ МЕНЮ</span>
@@ -2373,7 +2336,7 @@ export default function CaseInvestigationLayout({
 
       {/* 7. ФИНАЛЬНАЯ КАТ-СЦЕНА / РЕТРО-ТЕРМИНАЛ (TEXT-05) */}
       {isFinaleActive && (
-        <div className="fixed inset-0 z-[100] bg-black text-[#c5a059] flex flex-col items-center justify-center p-6 sm:p-12 select-none overflow-hidden animate-in fade-in duration-1000">
+        <div className="fixed inset-0 z-[100] bg-black text-primary flex flex-col items-center justify-center p-6 sm:p-12 select-none overflow-hidden animate-in fade-in duration-1000">
           {/* Ретро-сканлайны и сетка монитора */}
           <div
             className="absolute inset-0 pointer-events-none opacity-20"
@@ -2387,16 +2350,16 @@ export default function CaseInvestigationLayout({
           {/* Контейнер ретро-монитора */}
           <div className="relative z-10 max-w-2xl w-full flex flex-col items-center text-center space-y-8 font-mono">
             {/* Гриф секретности вверху */}
-            <div className="border border-[#c5a059]/40 bg-[#c5a059]/10 px-4 py-1 text-[11px] uppercase tracking-[0.2em] font-semibold text-[#c5a059] animate-pulse">
+            <div className="border border-primary/40 bg-primary/10 px-4 py-1 text-[11px] uppercase tracking-[0.2em] font-semibold text-primary animate-pulse">
               [ СИСТЕМА ОВР // ДЕЛО № 99-34 // ВЕРОЯТНАЯ СЕРИЯ ]
             </div>
 
             {/* Текст TEXT-05 с эффектом печатной машинки */}
             <div className="min-h-[180px] sm:min-h-[220px] flex items-center justify-center">
-              <div className="text-sm sm:text-base md:text-lg leading-relaxed text-[#c5a059] tracking-wide whitespace-pre-wrap drop-shadow-[0_0_12px_rgba(197,160,89,0.5)] font-mono font-medium max-w-xl">
+              <div className="text-sm sm:text-base md:text-lg leading-relaxed text-primary tracking-wide whitespace-pre-wrap drop-shadow-[0_0_12px_oklch(0.78 0.13 75 / 0.5)] font-mono font-medium max-w-xl">
                 {FINALE_FULL_TEXT.slice(0, finaleCharIndex)}
                 {!isFinaleTypingDone && (
-                  <span className="inline-block w-2.5 h-5 bg-[#c5a059] ml-1 animate-pulse align-middle" />
+                  <span className="inline-block w-2.5 h-5 bg-primary ml-1 animate-pulse align-middle" />
                 )}
               </div>
             </div>
@@ -2406,7 +2369,7 @@ export default function CaseInvestigationLayout({
               <button
                 type="button"
                 onClick={handleSkipTyping}
-                className="text-[11px] text-zinc-500 hover:text-[#c5a059] transition-colors underline underline-offset-4 tracking-widest uppercase font-mono"
+                className="text-[11px] text-muted-foreground/80 hover:text-primary transition-colors underline underline-offset-4 tracking-widest uppercase font-mono"
               >
                 [ Нажмите для мгновенного вывода ]
               </button>
@@ -2414,18 +2377,18 @@ export default function CaseInvestigationLayout({
 
             {/* Кнопка "ЗАНОВО / ГЛАВНОЕ МЕНЮ" (появляется после завершения печати) */}
             {isFinaleTypingDone && (
-              <div className="pt-6 border-t border-[#c5a059]/30 w-full flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in duration-500">
+              <div className="pt-6 border-t border-primary/30 w-full flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in duration-500">
                 <button
                   type="button"
                   onClick={handleReturnToMainMenu}
-                  className="w-full sm:w-auto px-8 py-3.5 border-2 border-[#c5a059] bg-[#c5a059] text-black font-bold font-mono text-xs sm:text-sm uppercase tracking-[0.15em] hover:bg-[#d4af66] hover:shadow-[0_0_25px_rgba(197,160,89,0.5)] transition-all active:scale-98"
+                  className="w-full sm:w-auto px-8 py-3.5 border-2 border-primary bg-primary text-black font-bold font-mono text-xs sm:text-sm uppercase tracking-[0.15em] hover:bg-lamp hover:shadow-[0_0_25px_oklch(0.78 0.13 75 / 0.5)] transition-all active:scale-98"
                 >
                   ЗАНОВО / ГЛАВНОЕ МЕНЮ
                 </button>
                 <button
                   type="button"
                   onClick={handleRestartEntireInvestigation}
-                  className="w-full sm:w-auto px-6 py-3.5 border border-[#c5a059]/50 bg-black/80 text-[#c5a059] font-mono text-xs uppercase tracking-wider hover:bg-[#161a22] hover:border-[#c5a059] transition-all"
+                  className="w-full sm:w-auto px-6 py-3.5 border border-primary/50 bg-black/80 text-primary font-mono text-xs uppercase tracking-wider hover:bg-secondary hover:border-primary transition-all"
                 >
                   ПЕРЕЗАПУСТИТЬ ДЕЛО ЗАНОВО
                 </button>
