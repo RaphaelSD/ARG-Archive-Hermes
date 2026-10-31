@@ -256,7 +256,9 @@
       "00:31",
       "ресепшн",
       "орлов"
-    ]
+    ],
+    "mediaUrl": "/images/case-001/pinecrest_reception_logbook_ru.jpg",
+    "image_asset": "/images/case-001/pinecrest_reception_logbook_ru.jpg"
   },
   {
     "id": "D05",
@@ -278,16 +280,18 @@
       "ресепшн",
       "номер 12",
       "орлов"
-    ]
+    ],
+    "mediaUrl": "/images/case-001/pinecrest_call_log_1999_ru.jpg",
+    "image_asset": "/images/case-001/pinecrest_call_log_1999_ru.jpg"
   },
   {
     "id": "MAP-02",
     "type": "map",
     "title": "План этажа гостиницы Pinecrest",
     "description": "Архитектурный план 2-го этажа с расположением номера 12, соседних номеров и лестницы.",
-    "content": "/images/case-001/pinecrest_floor_plan_90s.jpg",
-    "mediaUrl": "/images/case-001/pinecrest_floor_plan_90s.jpg",
-    "image_asset": "/images/case-001/pinecrest_floor_plan_90s.jpg",
+    "content": "/images/case-001/pinecrest_floor_plan_90s_ru.jpg",
+    "mediaUrl": "/images/case-001/pinecrest_floor_plan_90s_ru.jpg",
+    "image_asset": "/images/case-001/pinecrest_floor_plan_90s_ru.jpg",
     "unlockedByDefault": true,
     "is_initially_visible": false,
     "access_level": "unlocked",

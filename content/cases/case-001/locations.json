@@ -7,8 +7,8 @@
       "x": 45,
       "y": 30
     },
-    "image_asset": "/images/case-001/pinecrest_floor_plan_90s.jpg",
-    "mapUrl": "/images/case-001/pinecrest_floor_plan_90s.jpg",
+    "image_asset": "/images/case-001/pinecrest_floor_plan_90s_ru.jpg",
+    "mapUrl": "/images/case-001/pinecrest_floor_plan_90s_ru.jpg",
     "exploredByDefault": false,
     "findings": [
       "Слабый контроль за входом в ночное время.",
