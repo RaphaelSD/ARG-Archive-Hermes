@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { evidenceTitle } from '@/lib/evidence-title';
+import { TypedText } from '@/components/typed-text';
 import type { CaseTerminalConfig, HypothesisQuestion, TerminalQuery } from '@/lib/archive-data';
 import { getCaseById } from '@/lib/cases/loader';
 
@@ -37,11 +38,6 @@ export function InvestigativeTerminal({
   const questions = activeConfig?.questions ?? [];
   const databaseIndex = activeConfig?.databaseIndex ?? {};
   const queries: TerminalQuery[] = activeConfig?.queries ?? [];
-  const searchExamples =
-    activeConfig?.searchExamples ??
-    (queries.length > 0
-      ? queries.flatMap((q) => q.aliases.slice(0, 2))
-      : Object.keys(databaseIndex).slice(0, 6));
   const systemHeader = activeConfig?.systemHeader ?? 'СЛУЖЕБНЫЙ ТЕРМИНАЛ ОВР // АРХИВ-СВЯЗЬ v2.0';
   const description =
     activeConfig?.description ??
@@ -56,6 +52,7 @@ export function InvestigativeTerminal({
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<Array<{ key: string; title: string; record: string; classification: string; relatedEvidenceId?: string }>>([]);
   const [hasSearched, setHasSearched] = useState(false);
+  const [searchRun, setSearchRun] = useState(0);
   const [isArchiveBlockedNotice, setIsArchiveBlockedNotice] = useState(false);
 
   // Sync with external solvedQuestionIds if provided
@@ -116,6 +113,7 @@ export function InvestigativeTerminal({
     if (!rawQuery) return;
 
     setHasSearched(true);
+    setSearchRun((n) => n + 1);
 
     const queryTokens = rawQuery
       .replace(/[.,/#!$%^&*;:{}=\-_`~()?"«»]/g, ' ')
@@ -226,7 +224,7 @@ export function InvestigativeTerminal({
   return (
     <div className="space-y-6">
       {/* Terminal Header */}
-      <div className="border border-border/80 bg-background/95 p-4 sm:p-5 text-foreground shadow-2xl relative overflow-hidden">
+      <div className="border border-primary/30 bg-[#06080b] p-4 sm:p-5 text-foreground shadow-2xl relative overflow-hidden">
         <div className="absolute top-0 right-0 left-0 h-0.5 bg-gradient-to-r from-primary via-stamp to-primary opacity-75" />
 
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/60 pb-3">
@@ -383,94 +381,82 @@ export function InvestigativeTerminal({
         </div>
       )}
 
-      {/* SECTION 2: Forensic Archive Database Search */}
-      <div className="border border-border/80 bg-card/60 p-4 sm:p-5 space-y-4">
-        <div className="flex items-center gap-2 border-b border-border/60 pb-2">
-          <Search className="size-4 text-primary" />
-          <h3 className="font-display uppercase tracking-wider text-sm text-foreground">
-            Поисковый запрос к базе данных ОВР
-          </h3>
+      {/* SECTION 2: Архивный поиск — экран старого терминала */}
+      <div className="relative overflow-hidden border border-primary/30 bg-[#06080b] p-4 sm:p-5 space-y-4 shadow-[inset_0_0_60px_rgba(0,0,0,0.9)]">
+        <div
+          className="pointer-events-none absolute inset-0 opacity-[0.12]"
+          style={{
+            backgroundImage:
+              'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.9) 3px, rgba(0,0,0,0.9) 4px)',
+          }}
+        />
+        <div className="relative flex items-center justify-between border-b border-primary/20 pb-2 font-mono text-[11px] uppercase tracking-[0.18em] text-primary">
+          <span className="flex items-center gap-2">
+            <Search className="size-3.5" />
+            АРХИВ ОВР // ПОИСК ПО ЗАКРЫТЫМ ДЕЛАМ
+          </span>
+          <span className={isArchiveUnlocked ? 'text-emerald-400' : 'text-muted-foreground'}>
+            {isArchiveUnlocked ? '● ДОСТУП ОТКРЫТ' : '○ ДОСТУП ЗАКРЫТ'}
+          </span>
         </div>
 
-        <p className="text-xs text-muted-foreground">
-          Поиск по ключевым словам и поисковым командам
-          {searchExamples.length > 0 && (
-            <>
-              {' (попробуйте: '}
-              {searchExamples.map((item, idx) => (
-                <span key={item}>
-                  {idx > 0 && ', '}
-                  <code
-                    className="text-primary font-mono cursor-pointer hover:underline"
-                    onClick={() => {
-                      setSearchQuery(item);
-                      executeSearch(item);
-                    }}
-                  >
-                    {item}
-                  </code>
-                </span>
-              ))}
-              {')'}
-            </>
-          )}:
+        <p className="relative font-mono text-xs leading-relaxed text-muted-foreground">
+          Введите ключевые слова описания: признаки, повторяющиеся в делах. Чем точнее запрос, тем меньше шума.
         </p>
 
-        <form onSubmit={handleSearchSubmit} className="flex gap-2 max-w-xl">
+        <form onSubmit={handleSearchSubmit} className="relative flex items-center gap-2 font-mono">
+          <span className="shrink-0 text-xs text-primary">ОВР://АРХИВ&gt;</span>
           <input
             type="text"
-            placeholder="Фамилия, телефон, организация, адрес..."
+            autoComplete="off"
+            spellCheck={false}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="flex-1 border border-border/80 bg-background px-3 py-2 text-xs font-mono text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary"
+            className="flex-1 border-0 border-b border-primary/30 bg-transparent px-1 py-1.5 text-sm text-primary caret-primary placeholder:text-muted-foreground/40 focus:border-primary focus:outline-none"
+            placeholder="_"
           />
           <button
             type="submit"
-            className="flex items-center gap-1.5 border border-border bg-secondary px-4 py-2 text-xs label-xs text-foreground hover:border-primary hover:text-primary transition-colors shrink-0"
+            className="shrink-0 border border-primary/50 bg-primary/10 px-3 py-1.5 text-[11px] uppercase tracking-wider text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
           >
-            <Search className="size-3.5" />
-            <span>Запрос</span>
+            Выполнить
           </button>
         </form>
 
         {hasSearched && (
-          <div className="mt-3 space-y-3">
+          <div className="relative mt-3 space-y-3 font-mono">
             {isArchiveBlockedNotice ? (
-              <div className="border border-amber-600/60 bg-amber-950/30 p-4 space-y-2 text-xs font-mono text-amber-400 animate-in fade-in">
+              <div className="border border-amber-600/50 bg-amber-950/20 p-4 space-y-2 text-xs text-amber-400 animate-in fade-in">
                 <div className="flex items-center justify-between border-b border-amber-800/40 pb-1.5 font-bold uppercase">
                   <span>[СИСТЕМА ОВР]: ДОСТУП К АРХИВУ ОГРАНИЧЕН</span>
-                  <span className="border border-amber-600/40 px-1.5 py-0.2 text-[9px]">БЛОКИРОВКА</span>
+                  <span className="border border-amber-600/40 px-1.5 text-[9px]">БЛОКИРОВКА</span>
                 </div>
                 <p className="leading-relaxed">
-                  Закрытая картотека архивных дел недоступна. Запрос будет принят, когда по текущему делу будут выделены три повторяющихся признака. Сопоставьте материалы на доске выводов.</p>
-                <div className="text-[10px] text-muted-foreground pt-1">
-                  Подсказка: изучите обстановку номера 12, сопоставьте опись с фото кисти погибшей и осмотрите механизм настольных часов.
-                </div>
+                  Закрытая картотека недоступна. Запрос будет принят, когда по текущему делу будут выделены три повторяющихся признака. Сопоставьте материалы на доске выводов.
+                </p>
               </div>
             ) : searchResults.length > 0 ? (
               <>
-                <div className="text-[11px] font-mono text-muted-foreground">
-                  Найдено записей в базе данных: {searchResults.length}
+                <div className="text-[11px] text-muted-foreground">
+                  &gt; найдено записей: {searchResults.length}
                 </div>
                 {searchResults.map((item, idx) => (
-                  <div key={idx} className="border border-primary/40 bg-secondary/50 p-4 space-y-2 animate-in fade-in">
-                    <div className="flex items-center justify-between border-b border-border/60 pb-1.5">
-                      <span className="font-mono text-xs text-primary font-bold">
-                        {item.title}
-                      </span>
-                      <span className="border border-border/60 px-1.5 py-0.5 text-[9px] font-mono text-muted-foreground uppercase">
+                  <div key={`${item.key}-${searchRun}`} className="border border-primary/30 bg-background/60 p-4 space-y-2 animate-in fade-in">
+                    <div className="flex items-center justify-between border-b border-primary/15 pb-1.5">
+                      <span className="text-xs font-bold text-primary">{item.title}</span>
+                      <span className="border border-border px-1.5 py-0.5 text-[9px] uppercase text-muted-foreground">
                         {item.classification}
                       </span>
                     </div>
-                    <p className="font-mono text-xs text-foreground/90 leading-relaxed whitespace-pre-wrap">
-                      {item.record}
+                    <p className="text-xs leading-relaxed text-foreground/90 whitespace-pre-wrap">
+                      <TypedText text={item.record} animate={idx === 0} />
                     </p>
                     {item.relatedEvidenceId && onOpenEvidence && (
-                      <div className="pt-2 border-t border-border/30 flex justify-end">
+                      <div className="flex justify-end border-t border-border/30 pt-2">
                         <button
                           type="button"
                           onClick={() => onOpenEvidence(item.relatedEvidenceId!)}
-                          className="flex items-center gap-1.5 border border-primary/60 bg-primary/10 px-2.5 py-1 text-xs font-mono text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                          className="flex items-center gap-1.5 border border-primary/60 bg-primary/10 px-2.5 py-1 text-xs text-primary transition-colors hover:bg-primary hover:text-primary-foreground"
                         >
                           <span>Приобщить к делу: {evidenceTitle(item.relatedEvidenceId)}</span>
                           <ArrowRight className="size-3" />
@@ -481,8 +467,8 @@ export function InvestigativeTerminal({
                 ))}
               </>
             ) : (
-              <div className="border border-border/60 bg-secondary/30 p-3 text-xs font-mono text-muted-foreground">
-                [СИСТЕМА]: По запросу «{searchQuery}» совпадений в открытых сводках ОВР не найдено. Убедитесь в корректности написания фамилии, адреса или номера.
+              <div className="border border-border/60 bg-secondary/30 p-3 text-xs text-muted-foreground">
+                &gt; По запросу «{searchQuery}» совпадений не найдено. Попробуйте другие слова.
               </div>
             )}
           </div>

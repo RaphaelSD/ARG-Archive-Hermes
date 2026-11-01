@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { evidenceTitle } from '@/lib/evidence-title';
+import { TypedText } from '@/components/typed-text';
 import type { Interview, InterviewQuestion, CaseDocument } from '@/lib/archive-data';
 
 export type DialogueTurn = {
@@ -127,16 +128,16 @@ export function InterviewDialog({
       {/* Witness Dossier Header */}
       <div className="border border-border/80 bg-card p-4 sm:p-5 text-foreground shadow-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3.5">
-          <div className="flex size-12 shrink-0 items-center justify-center border-2 border-primary/60 bg-secondary text-primary font-display text-lg shadow-inner">
+          <div className="flex h-[92px] w-[72px] shrink-0 items-center justify-center border border-primary/50 bg-background text-primary shadow-inner overflow-hidden">
             {interview.avatarUrl ? (
-              <img src={interview.avatarUrl} alt={interview.title} className="size-full object-cover" />
+              <img src={interview.avatarUrl} alt={interview.title} className="size-full object-cover grayscale contrast-125" />
             ) : (
-              <User className="size-6" />
+              <User className="size-7 text-muted-foreground" />
             )}
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <span className="font-display text-base uppercase tracking-wider text-foreground font-bold">
+              <span className="text-sm uppercase tracking-[0.08em] text-foreground font-semibold">
                 {interview.title}
               </span>
               <span className="border border-border/70 bg-secondary px-2 py-0.5 text-[10px] font-mono uppercase text-primary">
@@ -159,11 +160,11 @@ export function InterviewDialog({
       </div>
 
       {/* Witness Introduction Statement */}
-      <div className="paper-card p-4 border border-ink/20 space-y-1.5 text-ink">
-        <span className="label-xs text-ink/60 font-mono block uppercase">
-          ВСТУПИТЕЛЬНЫЕ ПОКАЗАНИЯ СВИДЕТЕЛЯ:
+      <div className="p-4 border border-border border-l-2 border-l-primary bg-background space-y-1.5">
+        <span className="text-[10px] tracking-[0.18em] text-muted-foreground font-mono block uppercase">
+          ВСТУПИТЕЛЬНЫЕ ПОКАЗАНИЯ СВИДЕТЕЛЯ
         </span>
-        <p className="font-body text-xs sm:text-sm italic leading-relaxed text-ink/90">
+        <p className="text-xs sm:text-sm italic leading-relaxed text-foreground/90">
           «{interview.introduction}»
         </p>
       </div>
@@ -173,7 +174,7 @@ export function InterviewDialog({
         {/* Left: Interrogation Dialogue Log */}
         <div className="border border-border/80 bg-background/95 p-4 sm:p-5 flex flex-col min-h-[420px] max-h-[580px] overflow-hidden shadow-inner">
           <div className="flex items-center justify-between border-b border-border/60 pb-2 mb-3">
-            <span className="label-xs text-primary font-display uppercase tracking-wider flex items-center gap-1.5">
+            <span className="text-[11px] font-semibold text-primary uppercase tracking-[0.12em] flex items-center gap-1.5">
               <MessageSquare className="size-3.5" />
               СТЕНОГРАММА ДОПРОСА
             </span>
@@ -192,7 +193,8 @@ export function InterviewDialog({
                 </p>
               </div>
             ) : (
-              dialogueHistory.map((turn) => {
+              dialogueHistory.map((turn, turnIdx) => {
+                const isLast = turnIdx === dialogueHistory.length - 1;
                 if (turn.type === 'question') {
                   return (
                     <div key={turn.id} className="flex flex-col items-end">
@@ -212,8 +214,8 @@ export function InterviewDialog({
                       <span className="text-[10px] font-mono text-muted-foreground mb-1">
                         {turn.speaker}:
                       </span>
-                      <div className="paper-card p-3 text-xs text-ink max-w-md border border-ink/20 shadow-sm leading-relaxed">
-                        {turn.text}
+                      <div className="p-3 text-xs text-foreground max-w-md border border-border border-l-2 border-l-primary bg-secondary leading-relaxed">
+                        <TypedText text={turn.text} animate={isLast} />
                       </div>
                     </div>
                   );
@@ -222,7 +224,7 @@ export function InterviewDialog({
                 if (turn.type === 'presentation') {
                   return (
                     <div key={turn.id} className="my-2 flex justify-center">
-                      <div className="border border-stamp/70 bg-stamp/10 px-3 py-1.5 text-xs font-mono text-stamp flex items-center gap-2 uppercase">
+                      <div className="border border-primary/60 bg-primary/10 px-3 py-1.5 text-xs font-mono text-primary flex items-center gap-2 uppercase">
                         <ShieldAlert className="size-3.5" />
                         <span>{turn.text}</span>
                       </div>
@@ -245,7 +247,7 @@ export function InterviewDialog({
                             : 'border-border bg-secondary/40 text-muted-foreground italic'
                         )}
                       >
-                        {turn.text}
+                        <TypedText text={turn.text} animate={isLast} />
                       </div>
                     </div>
                   );
@@ -261,7 +263,7 @@ export function InterviewDialog({
         <div className="space-y-4">
           {/* Questions Box */}
           <div className="border border-border/80 bg-card p-4 space-y-3">
-            <span className="label-xs text-primary font-display uppercase tracking-wider block border-b border-border/60 pb-1.5">
+            <span className="text-[11px] font-semibold text-primary uppercase tracking-[0.12em] block border-b border-border/60 pb-1.5">
               ДОСТУПНЫЕ ВОПРОСЫ
             </span>
 
@@ -299,7 +301,7 @@ export function InterviewDialog({
 
           {/* Clue Presentation Trigger */}
           <div className="border border-border/80 bg-secondary/30 p-4 space-y-3">
-            <span className="label-xs text-stamp font-display uppercase tracking-wider block border-b border-border/60 pb-1.5">
+            <span className="text-[11px] font-semibold text-primary uppercase tracking-[0.12em] block border-b border-border/60 pb-1.5">
               ПРОВЕРКА ПОКАЗАНИЙ УЛИКАМИ
             </span>
 
@@ -312,9 +314,9 @@ export function InterviewDialog({
               disabled={!activeQuestionId}
               onClick={() => setIsPickerOpen(true)}
               className={cn(
-                'w-full flex items-center justify-center gap-2 border px-4 py-2.5 text-xs font-display uppercase tracking-wider transition-colors shadow-sm',
+                'w-full flex items-center justify-center gap-2 border px-4 py-2.5 text-xs uppercase tracking-wider transition-colors shadow-sm',
                 activeQuestionId
-                  ? 'border-stamp bg-stamp/15 text-stamp hover:bg-stamp hover:text-white'
+                  ? 'border-primary/60 bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground'
                   : 'border-border/40 text-muted-foreground/40 cursor-not-allowed'
               )}
             >
@@ -369,7 +371,7 @@ export function InterviewDialog({
           <div className="relative flex max-h-[85vh] w-full max-w-xl flex-col border border-border/80 bg-card p-5 shadow-2xl overflow-hidden space-y-4">
             <div className="flex items-center justify-between border-b border-border/60 pb-2">
               <div>
-                <span className="font-display text-sm uppercase tracking-wider text-foreground font-bold block">
+                <span className="text-sm uppercase tracking-wider text-foreground font-bold block">
                   ВЫБЕРИТЕ УЛИКУ ДЛЯ ПРЕДЪЯВЛЕНИЯ
                 </span>
                 <span className="text-xs text-muted-foreground font-mono">
@@ -425,9 +427,9 @@ export function InterviewDialog({
                 disabled={!selectedClueId}
                 onClick={handleConfirmPresentClue}
                 className={cn(
-                  'border px-4 py-2 text-xs font-display uppercase tracking-wider transition-colors',
+                  'border px-4 py-2 text-xs uppercase tracking-wider transition-colors',
                   selectedClueId
-                    ? 'border-stamp bg-stamp text-white hover:bg-stamp/80'
+                    ? 'border-primary bg-primary text-primary-foreground hover:bg-lamp'
                     : 'border-border/40 text-muted-foreground/40 cursor-not-allowed'
                 )}
               >

@@ -364,7 +364,7 @@ export const case001: CaseFile = {
   terminal: {
     systemHeader: 'СЛУЖЕБНЫЙ ТЕРМИНАЛ ОВР // АРХИВ-СВЯЗЬ v2.0',
     description: 'Поисковый модуль следственного терминала отдела внутренних расследований. Вводите ключевые слова, сигнатуры или команды поиска для сверки с архивной базой данных ОВР.',
-    searchExamples: ['чёрная ткань', 'завешенное зеркало', 'кольцо', 'часы 1'],
+    searchExamples: [],
     questions: Array.isArray(case001Terminal) ? [] : (case001Terminal as any).questions ?? [],
     databaseIndex: Array.isArray(case001Terminal) ? {} : (case001Terminal as any).databaseIndex ?? {},
     queries: (Array.isArray(case001Terminal) ? (case001Terminal as any[]) : ((case001Terminal as any).queries ?? [])).map((q: any) => ({

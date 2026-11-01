@@ -34,17 +34,17 @@ function CityBackdrop() {
     }
   }
   const tones = [
-    'oklch(0.23 0.01 70)',
-    'oklch(0.25 0.012 70)',
-    'oklch(0.22 0.009 68)',
-    'oklch(0.26 0.012 72)',
+    'oklch(0.23 0.012 255)',
+    'oklch(0.25 0.014 255)',
+    'oklch(0.22 0.011 255)',
+    'oklch(0.26 0.014 255)',
   ];
   return (
     <svg viewBox="0 0 160 110" preserveAspectRatio="none" className="absolute inset-0 size-full" aria-hidden>
-      <rect width="160" height="110" fill="oklch(0.17 0.008 70)" />
+      <rect width="160" height="110" fill="oklch(0.17 0.010 255)" />
       {/* кварталы */}
       {blocks.map((b, i) => (
-        <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} fill={tones[b.tone]} stroke="oklch(0.3 0.01 70)" strokeWidth="0.25" />
+        <rect key={i} x={b.x} y={b.y} width={b.w} height={b.h} fill={tones[b.tone]} stroke="oklch(0.3 0.012 255)" strokeWidth="0.25" />
       ))}
       {/* парк Riverside у набережной */}
       <path
@@ -59,10 +59,10 @@ function CityBackdrop() {
         ))}
       </g>
       {/* диагональный проспект */}
-      <path d="M0 98 L128 8" stroke="oklch(0.36 0.012 75)" strokeWidth="2.2" fill="none" />
-      <path d="M0 98 L128 8" stroke="oklch(0.18 0.008 70)" strokeWidth="0.5" strokeDasharray="2 2" fill="none" />
+      <path d="M0 98 L128 8" stroke="oklch(0.36 0.014 255)" strokeWidth="2.2" fill="none" />
+      <path d="M0 98 L128 8" stroke="oklch(0.18 0.010 255)" strokeWidth="0.5" strokeDasharray="2 2" fill="none" />
       {/* улицы */}
-      <g stroke="oklch(0.34 0.011 72)" strokeWidth="1.6" fill="none">
+      <g stroke="oklch(0.34 0.013 255)" strokeWidth="1.6" fill="none">
         {hStreets.map((y) => (
           <path key={y} d={`M0 ${y} H134`} />
         ))}
@@ -71,8 +71,8 @@ function CityBackdrop() {
         ))}
       </g>
       {/* железная дорога у вокзала */}
-      <path d="M0 101 H160" stroke="oklch(0.4 0.012 75)" strokeWidth="1.4" fill="none" />
-      <path d="M0 101 H160" stroke="oklch(0.17 0.008 70)" strokeWidth="1" strokeDasharray="1.2 2.2" fill="none" />
+      <path d="M0 101 H160" stroke="oklch(0.4 0.014 255)" strokeWidth="1.4" fill="none" />
+      <path d="M0 101 H160" stroke="oklch(0.17 0.010 255)" strokeWidth="1" strokeDasharray="1.2 2.2" fill="none" />
       {/* река */}
       <path
         d="M146 0 C154 24, 140 46, 150 70 S144 100, 152 110 L160 110 L160 0 Z"
@@ -84,9 +84,9 @@ function CityBackdrop() {
         strokeWidth="0.6"
         fill="none"
       />
-      <path d="M138 0 C146 24, 132 46, 142 70 S136 100, 144 110" stroke="oklch(0.3 0.012 72)" strokeWidth="0.8" fill="none" />
+      <path d="M138 0 C146 24, 132 46, 142 70 S136 100, 144 110" stroke="oklch(0.3 0.014 255)" strokeWidth="0.8" fill="none" />
       {/* подписи */}
-      <g fontFamily="var(--font-display)" fill="oklch(0.58 0.02 75)" fontSize="3" letterSpacing="0.5">
+      <g fontFamily="var(--font-display)" fill="oklch(0.58 0.024 255)" fontSize="3" letterSpacing="0.5">
         <text x="33" y="16.2">ГЛАВНАЯ УЛ.</text>
         <text x="3" y="60.2">МЕЛЬНИЧНАЯ УЛ.</text>
         <text x="65" y="82.2">СТАНЦИОННАЯ УЛ.</text>
@@ -95,16 +95,16 @@ function CityBackdrop() {
         <text x="146" y="60" transform="rotate(90 146 60)" fill="oklch(0.55 0.04 235)">РЕКА ВЕСНА</text>
         <text x="106" y="40.5" fill="oklch(0.55 0.05 150)">ПАРК RIVERSIDE</text>
       </g>
-      <text x="80" y="108" textAnchor="middle" fontFamily="var(--font-display)" fontSize="3.2" letterSpacing="2" fill="oklch(0.45 0.015 75)">
+      <text x="80" y="108" textAnchor="middle" fontFamily="var(--font-display)" fontSize="3.2" letterSpacing="2" fill="oklch(0.45 0.018 255)">
         БЕЛМОНТ // 1999
       </text>
       {/* север */}
-      <g transform="translate(8 9)" stroke="oklch(0.6 0.03 75)" fill="oklch(0.6 0.03 75)" strokeWidth="0.5">
+      <g transform="translate(8 9)" stroke="oklch(0.6 0.036 255)" fill="oklch(0.6 0.036 255)" strokeWidth="0.5">
         <path d="M0 6 L0 -4" fill="none" />
         <path d="M0 -6 L-1.6 -2.5 L1.6 -2.5 Z" />
         <text x="2.5" y="-1.5" fontSize="3" stroke="none" fontFamily="var(--font-display)">С</text>
       </g>
-      <rect x="0.5" y="0.5" width="159" height="109" fill="none" stroke="oklch(0.34 0.01 70)" strokeWidth="0.6" />
+      <rect x="0.5" y="0.5" width="159" height="109" fill="none" stroke="oklch(0.34 0.012 255)" strokeWidth="0.6" />
     </svg>
   );
 }
@@ -146,7 +146,7 @@ export function CityMap({
 
   return (
     <div className={cn('grid gap-5', compact ? 'md:grid-cols-[1fr_240px]' : 'lg:grid-cols-[1fr_300px]')}>
-      <div className="relative aspect-[16/11] overflow-hidden border border-border/70 bg-[oklch(0.19_0.008_70)]">
+      <div className="relative aspect-[16/11] overflow-hidden border border-border/70 bg-background">
         <CityBackdrop />
 
         {allLocations.map((loc) => {
@@ -167,6 +167,9 @@ export function CityMap({
                 active === loc.id && 'scale-125',
               )}
             >
+              {!explored && !loc.current && (
+                <span className="pointer-events-none absolute left-1/2 top-1/2 size-5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/30 animate-ping" />
+              )}
               <MapPin className="size-5 drop-shadow" fill={active === loc.id ? 'currentColor' : 'none'} />
             </button>
           );
