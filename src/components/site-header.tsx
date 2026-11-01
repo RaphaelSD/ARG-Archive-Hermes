@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
-import { ChevronDown, LogOut, ShieldHalf, UserRound, ShieldCheck, KeyRound } from 'lucide-react';
+import { ChevronDown, LogOut, UserRound, ShieldCheck, KeyRound } from 'lucide-react';
 import { AuthModal, type AuthUser } from '@/components/auth-modal';
 
 const nav = [
@@ -83,16 +83,54 @@ export function SiteHeader() {
     <>
       <header className="sticky top-0 z-40 border-b border-border/70 bg-background/90 backdrop-blur">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-6 px-4 sm:px-6">
-          <Link href="/" className="flex items-center gap-3">
-            <span className="flex size-9 items-center justify-center border border-border/80 bg-secondary text-primary">
-              <ShieldHalf className="size-5" />
-            </span>
-            <span className="leading-tight">
-              <span className="block font-display text-base uppercase tracking-[0.14em] text-foreground">
-                Архив города Н.
+          <Link href="/" className="flex items-center gap-3 group transition-opacity hover:opacity-90">
+            {/* SVG Герб Отдела Внутренних Расследований */}
+            <svg
+              width="32"
+              height="38"
+              viewBox="0 0 34 40"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              className="shrink-0 transition-transform group-hover:scale-105"
+            >
+              <path
+                d="M17 1.5 L31.5 5.5 V18 C31.5 28.5 22 36.5 17 38.5 C12 36.5 2.5 28.5 2.5 18 V5.5 L17 1.5 Z"
+                stroke="#c5a059"
+                strokeWidth="1.5"
+                fill="none"
+              />
+              <path
+                d="M17 4.5 L28.5 7.8 V17.5 C28.5 26 21 33.2 17 35 C13 33.2 5.5 26 5.5 17.5 V7.8 L17 4.5 Z"
+                stroke="#c5a059"
+                strokeWidth="0.8"
+                strokeOpacity="0.6"
+                fill="none"
+              />
+              <line x1="17" y1="8" x2="17" y2="30" stroke="#c5a059" strokeWidth="1.2" />
+              <circle cx="17" cy="8" r="1.2" fill="#c5a059" />
+              <line x1="13" y1="12" x2="21" y2="12" stroke="#c5a059" strokeWidth="1.2" />
+              <path
+                d="M11 15 C11 20, 14 24, 17 26 C20 24, 23 20, 23 15"
+                stroke="#c5a059"
+                strokeWidth="1"
+                fill="none"
+              />
+              <path
+                d="M8.5 13 C8.5 21, 13 27, 17 29 C21 27, 25.5 21, 25.5 13"
+                stroke="#c5a059"
+                strokeWidth="0.8"
+                strokeOpacity="0.7"
+                fill="none"
+              />
+            </svg>
+            <div className="flex flex-col">
+              <span className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-100 leading-tight">
+                АРХИВ ГОРОДА Н.
               </span>
-              <span className="block label-xs text-muted-foreground">Отдел внутренних расследований</span>
-            </span>
+              <span className="text-[11px] text-zinc-400 font-normal leading-tight">
+                Отдел внутренних расследований
+              </span>
+            </div>
           </Link>
 
           <nav className="ml-auto hidden items-center gap-7 lg:flex">

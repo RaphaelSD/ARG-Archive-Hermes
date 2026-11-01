@@ -59,47 +59,47 @@
 
 :root {
   --radius: 0.125rem;
-  --background: oklch(0.14 0.004 60);
-  --foreground: oklch(0.9 0.012 80);
-  --card: oklch(0.18 0.006 60);
-  --card-foreground: oklch(0.9 0.012 80);
-  --popover: oklch(0.17 0.006 60);
-  --popover-foreground: oklch(0.9 0.012 80);
-  --primary: oklch(0.78 0.13 75);
-  --primary-foreground: oklch(0.16 0.01 60);
-  --secondary: oklch(0.24 0.008 65);
-  --secondary-foreground: oklch(0.88 0.012 80);
-  --muted: oklch(0.22 0.007 65);
-  --muted-foreground: oklch(0.63 0.015 75);
-  --accent: oklch(0.26 0.012 65);
-  --accent-foreground: oklch(0.9 0.012 80);
+  --background: #0e1015;
+  --foreground: #e2e8f0;
+  --card: #101319;
+  --card-foreground: #e2e8f0;
+  --popover: #101319;
+  --popover-foreground: #e2e8f0;
+  --primary: #c5a059;
+  --primary-foreground: #0e1015;
+  --secondary: #161a22;
+  --secondary-foreground: #e2e8f0;
+  --muted: #141820;
+  --muted-foreground: #a1a1aa;
+  --accent: #161a22;
+  --accent-foreground: #e2e8f0;
   --destructive: oklch(0.55 0.19 25);
   --destructive-foreground: oklch(0.95 0.01 80);
-  --border: oklch(0.3 0.008 65);
-  --input: oklch(0.28 0.008 65);
-  --ring: oklch(0.6 0.09 75);
+  --border: #1e232d;
+  --input: #1e232d;
+  --ring: #c5a059;
   --paper: oklch(0.87 0.035 82);
   --paper-foreground: oklch(0.25 0.03 60);
-  --lamp: oklch(0.82 0.15 78);
-  --lamp-foreground: oklch(0.16 0.01 60);
+  --lamp: #d4af66;
+  --lamp-foreground: #0e1015;
   --ink: oklch(0.32 0.04 55);
   --stamp: oklch(0.5 0.18 25);
-  --sidebar: oklch(0.17 0.006 60);
-  --sidebar-foreground: oklch(0.88 0.012 80);
-  --sidebar-primary: oklch(0.78 0.13 75);
-  --sidebar-primary-foreground: oklch(0.16 0.01 60);
-  --sidebar-accent: oklch(0.24 0.008 65);
-  --sidebar-accent-foreground: oklch(0.9 0.012 80);
-  --sidebar-border: oklch(0.3 0.008 65);
-  --sidebar-ring: oklch(0.6 0.09 75);
+  --sidebar: #101319;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #c5a059;
+  --sidebar-primary-foreground: #0e1015;
+  --sidebar-accent: #161a22;
+  --sidebar-accent-foreground: #e2e8f0;
+  --sidebar-border: #1e232d;
+  --sidebar-ring: #c5a059;
 }
 
 .dark {
-  --background: oklch(0.14 0.004 60);
-  --foreground: oklch(0.9 0.012 80);
-  --card: oklch(0.18 0.006 60);
-  --card-foreground: oklch(0.9 0.012 80);
-  --border: oklch(0.3 0.008 65);
+  --background: #0e1015;
+  --foreground: #e2e8f0;
+  --card: #101319;
+  --card-foreground: #e2e8f0;
+  --border: #1e232d;
 }
 
 @layer base {
@@ -115,11 +115,7 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background-image: url('/images/Gemini_Generated_Image_.jpg');
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
-    background-repeat: no-repeat;
+    background-color: #0e1015;
     color: var(--foreground);
     font-family: var(--font-sans);
   }
