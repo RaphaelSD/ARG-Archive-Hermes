@@ -557,10 +557,10 @@ export default function CaseInvestigationLayout({
   // Остальные открываются, если разблокированы связанные с ними улики (или упомянуты в найденных тегах).
   const isCharacterUnlocked = (char: CaseCharacter) => {
     if (char.id === 'char_clara' || char.id === 'char_julia') return true;
-    if (char.linkedEvidence && char.linkedEvidence.some((evId) => isDocUnlocked(evId))) {
-      return true;
-    }
-    return false;
+    const viewed = engine.state.viewedEvidence ?? [];
+    // Человек становится известен, когда изучен связанный с ним материал или стал доступен его допрос
+    if (char.linkedEvidence && char.linkedEvidence.some((evId) => viewed.includes(evId))) return true;
+    return (engine.availableInterviews ?? []).some((iv: any) => iv.personId === char.id);
   };
 
   const activeCharacter = useMemo(() => {
@@ -803,7 +803,7 @@ export default function CaseInvestigationLayout({
   // Клик по заблокированному материалу
   const handleLockedItemClick = (item: CaseMaterial) => {
     setUnlockFeedback({
-      message: `🔒 ТРЕБУЕТСЯ КЛЮЧ ДОСТУПА для материала [${item.id}: ${item.title}]. Введите ключевой идентификатор в консоль ниже.`,
+      message: `🔒 Материал заблокирован. Введите тег в консоль ниже.`,
       type: 'error',
     });
     if (unlockInputRef.current) {
@@ -952,17 +952,6 @@ export default function CaseInvestigationLayout({
             </div>
           )}
 
-          <form onSubmit={handleUnlockKey} className="relative w-36 sm:w-56">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 size-3.5 text-muted-foreground/80" />
-            <input
-              type="text"
-              value={keyInput}
-              onChange={(e) => setKeyInput(e.target.value)}
-              placeholder="Поиск по архиву..."
-              className="w-full bg-card border border-border pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/80 rounded-sm focus:outline-none focus:border-primary/60 transition-colors"
-            />
-          </form>
-
           <button
             type="button"
             onClick={handleResetProgress}
@@ -1049,7 +1038,7 @@ export default function CaseInvestigationLayout({
                         )}
                         <div className="min-w-0 flex-1">
                           <div className="text-[11px] font-medium text-foreground truncate leading-snug">
-                            {mat.id} {mat.title.replace(/^Фото:\s*|Макро-фото:\s*/i, '')}
+                            {mat.title.replace(/^Фото:\s*|Макро-фото:\s*/i, '')}
                           </div>
                           <span className="inline-block mt-0.5 border border-primary/70 text-primary bg-primary/10 text-[8px] px-1 py-0 uppercase font-mono font-semibold rounded-xs">
                             НОВОЕ
@@ -1117,7 +1106,7 @@ export default function CaseInvestigationLayout({
                               <Lock className="size-3.5 text-muted-foreground/60 shrink-0" />
                             )}
                             <span className="text-[11px] truncate">
-                              {unlocked ? `${doc.id} ${doc.title}` : `[${doc.id}] Заблокировано`}
+                              {unlocked ? doc.title : 'Заблокировано'}
                             </span>
                           </div>
                           {!unlocked && (
@@ -1199,7 +1188,7 @@ export default function CaseInvestigationLayout({
                           </div>
                           <div className="min-w-0 flex-1">
                             <div className="text-[11px] font-medium text-foreground truncate leading-snug">
-                              {unlocked ? `${photo.id} ${photo.title.replace(/^Фото:\s*|Макро-фото:\s*/i, '')}` : `[${photo.id}] Заблокировано`}
+                              {unlocked ? photo.title.replace(/^Фото:\s*|Макро-фото:\s*/i, '') : 'Заблокировано'}
                             </div>
                             {unlocked ? (
                               <span className="inline-block mt-0.5 border border-primary/70 text-primary bg-primary/10 text-[8px] px-1 py-0 uppercase font-mono font-semibold rounded-xs">
@@ -1531,7 +1520,7 @@ export default function CaseInvestigationLayout({
                     setKeyInput(e.target.value);
                     if (unlockFeedback) setUnlockFeedback(null);
                   }}
-                  placeholder="ВВЕДИТЕ КЛЮЧ / ТЕГ (например: орлов, зеркало, часы, пайнкрест, 01:00...)"
+                  placeholder="ВВЕДИТЕ ТЕГ"
                   className="w-full bg-background border border-border pl-8 pr-3 py-1.5 text-xs text-foreground placeholder:text-muted-foreground/60 rounded-sm font-mono focus:outline-none focus:border-primary uppercase tracking-wide transition-colors"
                 />
               </div>
@@ -1581,8 +1570,7 @@ export default function CaseInvestigationLayout({
             {/* Заголовок вьювера */}
             <div className="px-3.5 py-2 border-b border-border bg-card flex items-center justify-between text-xs font-mono text-foreground/80">
               <div className="flex items-center gap-2">
-                <span className="text-primary font-bold">[{currentItem.id}]</span>
-                <span>{currentItem.title}</span>
+                <span className="text-primary font-bold">{currentItem.title}</span>
               </div>
               <span className="text-muted-foreground/80 uppercase text-[10px]">
                 {currentItem.kind === 'photo' ? 'ФОТОСНИМОК' : currentItem.kind === 'call' ? 'БИЛЛИНГ' : currentItem.kind === 'map' ? 'КАРТА' : 'ДОКУМЕНТ'}
@@ -2046,7 +2034,7 @@ export default function CaseInvestigationLayout({
         <div className="fixed inset-0 bg-black/95 z-50 flex flex-col p-4 backdrop-blur-md">
           <div className="flex items-center justify-between pb-3 border-b border-border">
             <div className="text-sm font-mono text-primary">
-              [{currentItem.id}] {currentItem.title} — РЕЖИМ МАКСИМАЛЬНОГО ОСМОТРА
+              {currentItem.title} — РЕЖИМ МАКСИМАЛЬНОГО ОСМОТРА
             </div>
             <button
               type="button"
@@ -2135,7 +2123,7 @@ export default function CaseInvestigationLayout({
             </div>
             <div className="space-y-2 text-center">
               <div className="text-xs font-mono text-muted-foreground">
-                {currentItem.id !== 'P01' ? `[${currentItem.id}] ${currentItem.title}` : 'P02 — ЗЕРКАЛО (МАКРО)'}
+                {currentItem.id !== 'P01' ? currentItem.title : 'Макро-фото: Зеркало'}
               </div>
               <img
                 src={currentItem.id !== 'P01' ? (currentItem.mediaUrl || currentItem.image_asset || currentItem.content || '/images/case-001/macro_mirror.jpg') : '/images/case-001/macro_mirror.jpg'}

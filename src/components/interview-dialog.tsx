@@ -14,6 +14,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { evidenceTitle } from '@/lib/evidence-title';
 import type { Interview, InterviewQuestion, CaseDocument } from '@/lib/archive-data';
 
 export type DialogueTurn = {
@@ -353,7 +354,7 @@ export function InterviewDialog({
                   onClick={() => onOpenEvidence(presentationFeedback.unlockedEvidenceId!)}
                   className="mt-2 flex items-center gap-1.5 border border-emerald-500/80 bg-emerald-500/20 px-2.5 py-1 text-[11px] text-emerald-300 hover:bg-emerald-500 hover:text-black transition-colors"
                 >
-                  <span>Открыть новую улику {presentationFeedback.unlockedEvidenceId.toUpperCase()}</span>
+                  <span>Открыть новый материал: {evidenceTitle(presentationFeedback.unlockedEvidenceId)}</span>
                   <ArrowRight className="size-3" />
                 </button>
               )}
@@ -404,11 +405,11 @@ export function InterviewDialog({
                         {doc.title}
                       </span>
                       <span className="font-mono text-[10px] text-muted-foreground">
-                        {doc.archiveId ?? doc.id} • {doc.date ?? 'В материалах'}
+                        {doc.date ?? 'В материалах дела'}
                       </span>
                     </div>
                     <span className="border border-border/60 px-1.5 py-0.5 text-[9px] font-mono uppercase text-primary">
-                      {doc.kind}
+                      {({ photo: 'фото', document: 'документ', call: 'звонок', map: 'карта', note: 'заметка', audio: 'аудио' } as Record<string, string>)[doc.kind] ?? doc.kind}
                     </span>
                   </button>
                 );
@@ -417,7 +418,7 @@ export function InterviewDialog({
 
             <div className="border-t border-border/60 pt-3 flex items-center justify-between">
               <span className="text-xs text-muted-foreground font-mono">
-                {selectedClueId ? `Выбрано: ${selectedClueId.toUpperCase()}` : 'Выберите улику из списка'}
+                {selectedClueId ? `Выбрано: ${evidenceTitle(selectedClueId)}` : 'Выберите улику из списка'}
               </span>
               <button
                 type="button"

@@ -249,6 +249,7 @@ export const case001: CaseFile = {
     avatarUrl: it.avatarUrl,
     introduction: it.introduction ?? '',
     unlockedByDefault: it.unlockedByDefault,
+    unlockCondition: it.unlockCondition,
     questions: (Array.isArray(it.questions) ? it.questions : []).map((q: any) => ({
       id: q.id,
       text: q.text,

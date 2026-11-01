@@ -100,7 +100,11 @@
         "reaction": "Откуда это у вас? Хорошо... Хорошо, я зашёл с ней внутрь. Но я ничего не сделал.",
         "unlocksQuestionId": "q_leo_02"
       }
-    ]
+    ],
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "D04"
+    }
   },
   {
     "id": "I03",
@@ -160,7 +164,11 @@
         "reaction": "Это журнал портье? Да... Хорошо, давайте начистоту.",
         "unlocksQuestionId": "q_thomas_04"
       }
-    ]
+    ],
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "D04"
+    }
   },
   {
     "id": "I04",
@@ -220,7 +228,11 @@
         "reaction": "Да, это тот самый журнал... Простите, часть записей я делал по памяти.",
         "unlocksQuestionId": "q_edward_03"
       }
-    ]
+    ],
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "D04"
+    }
   },
   {
     "id": "I05",
@@ -260,6 +272,10 @@
         "reaction": "Рапорт... Да, я всё рассказала. Почти всё.",
         "unlocksQuestionId": "q_julia_02"
       }
-    ]
+    ],
+    "unlockCondition": {
+      "type": "EVIDENCE_VIEWED",
+      "targetId": "D01"
+    }
   }
 ]

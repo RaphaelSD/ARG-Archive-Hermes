@@ -12,6 +12,7 @@ import {
   CornerDownLeft,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { evidenceTitle } from '@/lib/evidence-title';
 import type { CaseTerminalConfig, HypothesisQuestion, TerminalQuery } from '@/lib/archive-data';
 import { getCaseById } from '@/lib/cases/loader';
 
@@ -365,7 +366,7 @@ export function InvestigativeTerminal({
                             onClick={() => onOpenEvidence(q.sourceEvidenceId!)}
                             className="text-[10px] font-mono text-ink/70 hover:text-ink underline decoration-ink/40 underline-offset-2 flex items-center gap-1"
                           >
-                            <span>Открыть улику {q.sourceEvidenceId.toUpperCase()}</span>
+                            <span>Открыть: {evidenceTitle(q.sourceEvidenceId)}</span>
                             <ArrowRight className="size-3" />
                           </button>
                         )}
@@ -471,7 +472,7 @@ export function InvestigativeTerminal({
                           onClick={() => onOpenEvidence(item.relatedEvidenceId!)}
                           className="flex items-center gap-1.5 border border-primary/60 bg-primary/10 px-2.5 py-1 text-xs font-mono text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
                         >
-                          <span>Приобщить к делу [{item.relatedEvidenceId.toUpperCase()}]</span>
+                          <span>Приобщить к делу: {evidenceTitle(item.relatedEvidenceId)}</span>
                           <ArrowRight className="size-3" />
                         </button>
                       </div>

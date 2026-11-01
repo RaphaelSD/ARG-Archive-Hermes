@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { locations as defaultLocations, type CaseLocation } from '@/lib/locations-data';
 import { cn } from '@/lib/utils';
+import { evidenceTitle } from '@/lib/evidence-title';
 
 // Схематичная карта города Белмонт: река с востока, парк у набережной, квартальная сетка, вокзал
 function CityBackdrop() {
@@ -208,7 +209,7 @@ export function CityMap({
                     onClick={() => onSelectEvidence?.(evId)}
                     className="border border-border/60 bg-secondary/70 px-1.5 py-0.5 text-[10px] font-mono text-primary hover:border-primary transition-colors"
                   >
-                    {evId.toUpperCase()}
+                    {evidenceTitle(evId)}
                   </button>
                 ))}
               </div>
@@ -305,7 +306,7 @@ export function CityMap({
                         className="flex items-center gap-1.5 border border-primary/60 bg-primary/10 px-2.5 py-1 text-xs font-mono text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
                       >
                         <Eye className="size-3.5" />
-                        <span>Изучить улика [{evId.toUpperCase()}]</span>
+                        <span>Изучить: {evidenceTitle(evId)}</span>
                         <ArrowRight className="size-3" />
                       </button>
                     ))}
