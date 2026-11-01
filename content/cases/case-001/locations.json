@@ -20,8 +20,8 @@
     "title": "Фестиваль Riverside",
     "description": "Музыкальный фестиваль под открытым небом у реки. Место, где Клару видели в последний раз до гостиницы.",
     "coordinates": {
-      "x": 75,
-      "y": 20
+      "x": 74,
+      "y": 22
     },
     "exploredByDefault": false,
     "linkedEvidenceId": "D07",
@@ -35,8 +35,8 @@
     "title": "Таксофон у старой автобусной станции",
     "description": "Будка с жетонным телефоном рядом с заброшенными кассами.",
     "coordinates": {
-      "x": 35,
-      "y": 78
+      "x": 38,
+      "y": 64
     },
     "exploredByDefault": false,
     "unlockCondition": {
@@ -54,8 +54,8 @@
     "title": "Бар The Lantern",
     "description": "Местный бар с бильярдом. По словам Томаса Вэйла, он провёл здесь весь вечер.",
     "coordinates": {
-      "x": 15,
-      "y": 60
+      "x": 14,
+      "y": 56
     },
     "exploredByDefault": false,
     "unlockCondition": {
@@ -69,30 +69,12 @@
     ]
   },
   {
-    "id": "loc_leo_house",
-    "title": "Дом Лео Харта",
-    "description": "Частный сектор на Норт-стрит.",
-    "coordinates": {
-      "x": 55,
-      "y": 15
-    },
-    "exploredByDefault": false,
-    "unlockCondition": {
-      "type": "QUESTION_ASKED",
-      "targetId": "q_leo_01"
-    },
-    "findings": [
-      "Пешком от гостиницы до дома Лео 18 минут.",
-      "Живёт один, соседи ночью его не видели."
-    ]
-  },
-  {
     "id": "loc_clothing_store",
     "title": "Магазин одежды",
     "description": "Небольшой семейный магазин, работающий допоздна. Находится в двух кварталах от бара.",
     "coordinates": {
-      "x": 20,
-      "y": 55
+      "x": 22,
+      "y": 41
     },
     "exploredByDefault": false,
     "unlockCondition": {
@@ -109,8 +91,8 @@
     "title": "Квартира Мэгги",
     "description": "Жильё подруги жертвы на другом конце города.",
     "coordinates": {
-      "x": 80,
-      "y": 80
+      "x": 77,
+      "y": 57
     },
     "exploredByDefault": false,
     "unlockCondition": {
