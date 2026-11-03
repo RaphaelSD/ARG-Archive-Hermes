@@ -34,7 +34,7 @@
       "unlockedByDefault": false,
       "unlockCondition": {
         "type": "HOTSPOT_DISCOVERED",
-        "targetId": "hotspot_black_cloth"
+        "targetId": "hotspot_mirror"
       }
     },
     {
@@ -62,7 +62,7 @@
       "message": "Лео действительно лжет о времени ухода, но Журнал портье сам по себе не доказывает, что Лео поднимался на этаж."
     },
     {
-      "cluePair": ["I03", "M03"],
+      "cluePair": ["I03", "MAP-01"],
       "message": "Томас был в баре, но расстояние по карте показывает, что он мог успеть вернуться к моменту убийства. Нужно более точное подтверждение его алиби."
     }
   ]

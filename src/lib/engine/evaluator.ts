@@ -28,9 +28,8 @@ export function isConditionMet(
       const [a, b] = condition.clueIds;
       const key1 = `${a}+${b}`;
       const key2 = `${b}+${a}`;
-      return (state.completedDeductions ?? []).some(
-        (ded) => ded === key1 || ded === key2 || (ded.includes(a) && ded.includes(b))
-      );
+      // Точное совпадение: подстроки давали ложные срабатывания (например, "M1" внутри "M10").
+      return (state.completedDeductions ?? []).some((ded) => ded === key1 || ded === key2);
     }
 
     case 'DEDUCTION_COMPLETED': {
@@ -67,7 +66,8 @@ export function isConditionMet(
       return condition.conditions.some((c) => isConditionMet(c, state));
 
     default:
-      return true;
+      // Неизвестный тип условия считаем невыполненным, чтобы закрытый контент не открывался случайно.
+      return false;
   }
 }
 
