@@ -91,7 +91,9 @@
     "description": "Работал в ночь убийства. Помнит, когда пришёл Томас Вэйл и когда он выходил, но путает минуты.",
     "linkedEvidence": [
       "D08"
-    ]
+    ],
+    "avatarUrl": "/images/characters/simon_crane_01.jpg",
+    "image_asset": "/images/characters/simon_crane_01.jpg"
   },
   {
     "id": "char_owen",
