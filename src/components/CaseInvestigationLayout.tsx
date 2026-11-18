@@ -48,6 +48,7 @@ import rawCasePeople from '../../content/cases/case-001/people.json';
 import rawCaseTimeline from '../../content/cases/case-001/timeline.json';
 import { useCaseEngine } from '@/lib/engine/useCaseEngine';
 import { isConditionMet } from '@/lib/engine/evaluator';
+import { BackgroundMusic } from '@/components/background-music';
 import { InterviewDialog } from '@/components/interview-dialog';
 import { CityMap } from '@/components/city-map';
 import { InvestigativeTerminal } from '@/components/investigative-terminal';
@@ -220,6 +221,18 @@ export default function CaseInvestigationLayout({
 
   // Дедукция: игрок сам выбирает три материала, образующих повторяющийся «почерк» преступника
   const [deductionPicks, setDeductionPicks] = useState<string[]>(['', '', '']);
+  const deductionKey = `arg_deduction_picks_${caseId}`;
+  useEffect(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem(deductionKey) ?? 'null');
+      if (Array.isArray(saved) && saved.length === 3) setDeductionPicks(saved.map((x) => (typeof x === 'string' ? x : '')));
+    } catch {}
+  }, [deductionKey]);
+  useEffect(() => {
+    try {
+      localStorage.setItem(deductionKey, JSON.stringify(deductionPicks));
+    } catch {}
+  }, [deductionKey, deductionPicks]);
   const [deductionConfirmedLocal, setDeductionConfirmed] = useState(false);
   const [deductionMisses, setDeductionMisses] = useState(0);
   const [deductionMessage, setDeductionMessage] = useState<string | null>(null);
@@ -653,6 +666,7 @@ export default function CaseInvestigationLayout({
       localStorage.removeItem(`arg_case_state_${engineCaseFile.id}`);
       localStorage.removeItem(`arg_terminal_solved_${engineCaseFile.id}`);
       localStorage.removeItem(`arg_player_notes_${engineCaseFile.id}`);
+      localStorage.removeItem(`arg_deduction_picks_${caseId}`);
     } catch {}
     if (playerEmail) {
       try {
@@ -914,11 +928,11 @@ export default function CaseInvestigationLayout({
                 fill="none"
               />
             </svg>
-            <div className="flex flex-col">
+            <div className="hidden min-[420px]:flex flex-col">
               <span className="text-[13px] font-semibold uppercase tracking-[0.08em] text-zinc-100 leading-tight">
                 АРХИВ ГОРОДА Н.
               </span>
-              <span className="text-[11px] text-zinc-400 font-normal leading-tight">
+              <span className="hidden sm:block text-[11px] text-zinc-400 font-normal leading-tight">
                 Отдел внутренних расследований
               </span>
             </div>
@@ -990,21 +1004,36 @@ export default function CaseInvestigationLayout({
             <RotateCcw className="size-3.5" />
           </button>
 
-          <button
-            type="button"
-            title="Настройки архива"
-            className="text-zinc-400 hover:text-zinc-200 transition-colors p-1.5 rounded-sm hover:bg-[#181c24]"
-          >
-            <Settings className="size-4" />
-          </button>
+          <BackgroundMusic />
         </div>
       </header>
+
+      {/* Нижняя панель инструментов для телефонов и планшетов (в шапке кнопки видны только на широком экране) */}
+      <nav className="lg:hidden fixed bottom-0 inset-x-0 z-40 grid grid-cols-3 border-t border-[#1e232d] bg-[#0e1015]/95 backdrop-blur">
+        {(
+          [
+            { id: 'interviews', label: 'ДОПРОСЫ', icon: User },
+            { id: 'map', label: 'КАРТА', icon: MapPin },
+            { id: 'terminal', label: 'ТЕРМИНАЛ', icon: Terminal },
+          ] as { id: 'interviews' | 'map' | 'terminal'; label: string; icon: React.ElementType }[]
+        ).map((tool) => (
+          <button
+            key={tool.id}
+            type="button"
+            onClick={() => setActivePanel(tool.id)}
+            className="flex flex-col items-center gap-1 py-2.5 text-zinc-300 active:text-[#c5a059] font-mono text-[10px] tracking-wider"
+          >
+            <tool.icon className="size-4" />
+            <span>{tool.label}</span>
+          </button>
+        ))}
+      </nav>
 
       {/* ======================================================== */}
       {/* ОСНОВНОЙ КОНТЕНТ: СЕТКА ИЗ 3 ПАНЕЛЕЙ (GRID LAYOUT)        */}
       {/* ======================================================== */}
       <main
-        className={`flex-1 p-3 sm:p-4 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_280px] xl:grid-cols-[275px_minmax(0,1fr)_295px] gap-3.5 max-w-[1720px] mx-auto w-full transition-all duration-300 ${
+        className={`flex-1 p-3 pb-20 lg:pb-4 sm:p-4 sm:pb-20 grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_280px] xl:grid-cols-[275px_minmax(0,1fr)_295px] gap-3.5 max-w-[1720px] mx-auto w-full transition-all duration-300 ${
           isTimerExpired ? 'filter blur-[2px] pointer-events-none select-none opacity-40' : ''
         }`}
       >
