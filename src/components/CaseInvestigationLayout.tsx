@@ -521,14 +521,6 @@ export default function CaseInvestigationLayout({
     return allDocuments.filter((d) => d.kind === 'map');
   }, [allDocuments]);
 
-  // ДИНАМИЧЕСКИЙ ПРОГРЕСС РАССЛЕДОВАНИЯ:
-  // [Количество открытых материалов] / [Общее количество материалов в деле]
-  const totalMaterialsCount = allDocuments.length;
-  const unlockedMaterialsCount = allDocuments.filter((d) => isDocUnlocked(d.id)).length;
-  const progressPercent = totalMaterialsCount > 0
-    ? Math.min(100, Math.round((unlockedMaterialsCount / totalMaterialsCount) * 100))
-    : 0;
-
   // Новые разблокированные материалы (для подкатегории "НОВЫЕ МАТЕРИАЛЫ")
   const newMaterials = useMemo(() => {
     return allDocuments
@@ -1364,45 +1356,6 @@ export default function CaseInvestigationLayout({
               </div>
             </div>
           </div>
-
-          {/* Внизу виджет "ПРОГРЕСС ДЕЛА" — ДИНАМИЧЕСКИЙ РАСЧЕТ [Открыто] / [Всего] */}
-          <div className="border-t border-[#1e232d] pt-3.5 mt-4">
-            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-zinc-400 mb-2.5">
-              ПРОГРЕСС ДЕЛА
-            </h3>
-            <div className="flex items-center gap-3">
-              {/* Круговой динамический SVG прогресс-бар */}
-              <div className="relative size-[52px] shrink-0">
-                <svg className="size-full -rotate-90" viewBox="0 0 36 36">
-                  {/* Фоновое кольцо */}
-                  <path
-                    className="text-[#1c212b]"
-                    strokeWidth="3"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  {/* Активная дуга: вычисляется динамически */}
-                  <path
-                    className="text-[#c5a059] transition-all duration-700 ease-out"
-                    strokeDasharray={`${progressPercent}, 100`}
-                    strokeLinecap="round"
-                    strokeWidth="3"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                {/* Динамическое число [Открыто] / [Всего] */}
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs font-medium text-zinc-200">
-                  {unlockedMaterialsCount}/{totalMaterialsCount}
-                </div>
-              </div>
-              <p className="text-[11px] text-zinc-400 leading-snug">
-                Изучите материалы, чтобы восстановить картину происшествия.
-              </p>
-            </div>
-          </div>
         </aside>
 
         {/* ====================================================== */}
@@ -1540,9 +1493,6 @@ export default function CaseInvestigationLayout({
               <span className="flex items-center gap-1.5 font-semibold">
                 <Terminal className="size-3.5 text-[#c5a059]" />
                 <span>КОНСОЛЬ РАЗБЛОКИРОВКИ МАТЕРИАЛОВ ОВР</span>
-              </span>
-              <span className="text-zinc-500 text-[10px]">
-                ОТКРЫТО: {unlockedMaterialsCount} ИЗ {totalMaterialsCount}
               </span>
             </div>
 
