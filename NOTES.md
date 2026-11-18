@@ -98,3 +98,6 @@
 - Доска выводов теперь сохраняет выбор игрока между перезагрузками.
 - Картинки сжаты: public 121 МБ → 10 МБ (макс. сторона 1920 px, JPEG 82).
 - НАЙДЕНО: autopsy_report_clara_90s.jpg содержит «МЭГГИ ЛИ, 24 года» и «№99-4011» вместо Клары Вэнс, 21 — нужно перерисовать.
+
+## Redrawn documents D01–D03
+D01 (patrol report), D02 (autopsy), D03 (inventory) are now drawn by code (scripts/render-case-docs.py) with texts matching the canon; the old defective images were removed. P03 (watch macro) and P07 (nightstand) photos still need to be replaced by hand-generated ones.
