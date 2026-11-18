@@ -104,7 +104,9 @@
     "description": "Работает в семейном магазине неподалёку от бара. Подтверждает, что около полуночи к нему заходил Томас Вэйл. Больше ничего существенного не знает.",
     "linkedEvidence": [
       "D09"
-    ]
+    ],
+    "avatarUrl": "/images/characters/owen_miller_01.jpg",
+    "image_asset": "/images/characters/owen_miller_01.jpg"
   },
   {
     "id": "char_unknown",
@@ -114,6 +116,8 @@
     "description": "Человек, которого нет ни в одном журнале. Известно только то, что он был на втором этаже в ночь убийства.",
     "linkedEvidence": [
       "D10"
-    ]
+    ],
+    "avatarUrl": "/images/characters/unknown_man_01.jpg",
+    "image_asset": "/images/characters/unknown_man_01.jpg"
   }
 ]
